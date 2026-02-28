@@ -1,5 +1,7 @@
 // app/settings/page.tsx
 import AvatarForm from "@/components/Settings/AvatarForm"
+import DataForm from "@/components/Settings/DataForm"
+import MaxWidth from "@/components/UI/MaxWidth"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -29,12 +31,11 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">
-        Settings
-      </h1>
-
-      <AvatarForm />
-    </div>
+    <MaxWidth>
+      <div className="flex flex-col items-center gap-8 py-8">
+        <AvatarForm />
+        <DataForm />
+      </div>
+    </MaxWidth>
   )
 }

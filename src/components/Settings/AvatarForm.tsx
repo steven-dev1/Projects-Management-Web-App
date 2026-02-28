@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { uploadAvatar } from "@/lib/updateAvatar"
-import Image from "next/image"
-import { useAppSelector } from "@/store/hooks"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { Avatar, Spinner } from "@heroui/react"
+import { fetchUserAndProfile } from "@/store/slices/AuthSlice"
 
 export default function AvatarForm() {
-  const [preview, setPreview] = useState<string | null>(null)
+  const dispatch = useAppDispatch()
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { profile } = useAppSelector(state => state.auth)
@@ -19,7 +20,6 @@ export default function AvatarForm() {
 
     setError(null)
 
-    // Validaciones
     if (!file.type.startsWith("image/")) {
       setError("Solo se permiten imágenes")
       return
@@ -29,9 +29,6 @@ export default function AvatarForm() {
       setError("Máximo 4MB")
       return
     }
-
-    // Preview instantáneo
-    setPreview(URL.createObjectURL(file))
     setUploading(true)
 
     const result = await uploadAvatar(file)
@@ -40,35 +37,24 @@ export default function AvatarForm() {
       setError(result.error)
     }
 
-    if (result?.url) {
-      setPreview(result.url)
-    }
-
     setUploading(false)
+    dispatch(fetchUserAndProfile())
   }
 
   return (
     <div className="flex flex-col gap-4 max-w-sm">
-      <div className="w-32 h-32 rounded-full overflow-hidden border">
-        { preview ? (
-          <Image
-            src={ preview ?? profile?.avatar_url ?? "/avatar.png" }
-            width={500}
-            height={500}
-            alt="Avatar"
-            className="w-full h-full object-cover animate-pulse"
-          />
+        { profile?.avatar_url ? (
+          <Avatar isBordered className="w-36 h-36" src={profile.avatar_url} size="lg" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-sm">
-            Sin avatar
+          <div className="w-36 h-36 flex items-center justify-center text-sm bg-zinc-200 rounded-full animate-pulse">
+            
           </div>
         )}
-      </div>
 
       <label className="cursor-pointer inline-block">
-        <span className="px-4 py-2 bg-black text-white rounded">
-          {uploading ? "Subiendo..." : "Cambiar avatar"}
-        </span>
+        <div className="px-4 py-2 bg-morado hover:bg-morado-lighter transition-all duration-100 text-white rounded-xl flex items-center justify-center">
+          {uploading ? <Spinner color="default" size="sm" /> : "Cambiar avatar"}
+        </div>
         <input
           type="file"
           accept="image/*"

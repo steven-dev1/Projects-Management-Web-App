@@ -4,7 +4,16 @@
 
 @source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 
+@theme {
+  --color-morado: #7828c8;           /* sin comillas */
+  --color-morado-dark: #5b1e9b;
+  --color-morado-light: #a834e8;
+  --color-morado-lighter: #c167f0;
+  --color-morado-lightest: #e9a9ff;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
+

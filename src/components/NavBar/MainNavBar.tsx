@@ -23,13 +23,12 @@ import { fetchUserAndProfile } from "@/store/slices/AuthSlice";
 
 export default function MainNavBar() {
   const dispatch = useAppDispatch();
-
+  const { profile, isLoading } = useAppSelector(state => state.auth) 
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  
   useEffect(() => {
     dispatch(fetchUserAndProfile());
   }, [dispatch]);
-
-  const { profile, isLoading } = useAppSelector(state => state.auth) 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div className="flex items-center border-b gap-2 p-4 border-b-zinc-200 ">
