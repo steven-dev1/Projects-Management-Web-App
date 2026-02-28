@@ -11,8 +11,8 @@ export default function AppLayout({
     <>
       <ClientLayoutWrapper>
         <MainNavBar />
+        <main>{children}</main>
       </ClientLayoutWrapper>
-      <main>{children}</main>
     </>
   )
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
+import { ReduxProvider } from "../Providers/ReduxProvider"
 
 const hideOn = ["/signin", "/signup"]
 
@@ -11,5 +12,5 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     return null
   }
 
-  return <>{children}</>
+  return <ReduxProvider>{children}</ReduxProvider>
 }
