@@ -1,20 +1,24 @@
 'use client'
-import ClientLayoutWrapper from "@/components/UI/ClientLayoutWrapper"
-import dynamic from 'next/dynamic'
-
-const MainNavBar = dynamic(() => import('@/components/NavBar/MainNavBar'), { ssr: false })
-
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useEffect } from "react";
+import { fetchUserAndProfile } from "@/store/slices/AuthSlice";
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const dispatch = useAppDispatch();
+  const { user, isLoading } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(fetchUserAndProfile());
+    }
+  }, [dispatch, user, isLoading]);
+
   return (
     <>
-      <ClientLayoutWrapper>
-        <MainNavBar />
         <main>{children}</main>
-      </ClientLayoutWrapper>
     </>
   )
 }

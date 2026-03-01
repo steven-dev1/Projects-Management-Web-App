@@ -13,7 +13,7 @@ import {
   Unlink,
 } from "lucide-react";
 import { Avatar } from "@heroui/avatar";
-import { signOutAction } from "../Auth/SignOutAction";
+import { signOutAction } from "../../lib/SignOutAction";
 import Link from "next/link";
 import { Button, Skeleton, useDisclosure } from "@heroui/react";
 import NavBarMobile from "./NavBarMobile";
@@ -22,13 +22,8 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchUserAndProfile } from "@/store/slices/AuthSlice";
 
 export default function MainNavBar() {
-  const dispatch = useAppDispatch();
   const { profile, isLoading } = useAppSelector(state => state.auth) 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  
-  useEffect(() => {
-    dispatch(fetchUserAndProfile());
-  }, [dispatch]);
 
   return (
     <div className="flex items-center border-b gap-2 p-4 border-b-zinc-200 ">
@@ -45,21 +40,18 @@ export default function MainNavBar() {
         {/* DESKTOP */}
         <Dropdown className="items-center gap-2 hidden sm:flex">
           <DropdownTrigger className="cursor-pointer hidden sm:flex">
-            {isLoading ? (
-              <Skeleton className="w-10 h-10 rounded-full" />
-            ) : (
+            {profile?.avatar_url ? (
               <Avatar
-                as="button"
-                className="transition-transform"
                 isBordered
                 radius="full"
                 color="default"
-                showFallback
                 name={profile?.full_name}
-                src={profile?.avatar_url ?? "/avatar.png"}
+                src={profile?.avatar_url}
                 size="md"
               />
-            )}
+              ) : (
+                <Skeleton className="w-10 h-10 rounded-full" />
+              )}
           </DropdownTrigger>
           <DropdownMenu variant="flat">
             <DropdownItem key="projects">

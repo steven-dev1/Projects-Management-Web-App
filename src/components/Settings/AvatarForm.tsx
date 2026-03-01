@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { uploadAvatar } from "@/lib/updateAvatar"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
-import { Avatar, Spinner } from "@heroui/react"
-import { fetchUserAndProfile } from "@/store/slices/AuthSlice"
+import { addToast, Avatar, Spinner } from "@heroui/react"
+import { refreshAvatarUrl } from "@/store/slices/AuthSlice"
 
 export default function AvatarForm() {
   const dispatch = useAppDispatch()
@@ -38,7 +38,14 @@ export default function AvatarForm() {
     }
 
     setUploading(false)
-    dispatch(fetchUserAndProfile())
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const result = await dispatch(refreshAvatarUrl()).unwrap()
+      addToast({ title: "Avatar actualizado", color: "success", icon: "Check" })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (rejectedValueOrError) {
+      addToast({ title: "Error al actualizar avatar", color: "danger" })
+    }
   }
 
   return (

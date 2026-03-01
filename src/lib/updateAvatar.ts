@@ -11,8 +11,6 @@ export async function uploadAvatar(file: File) {
   }
 
   const filePath = `${user.id}/avatar.png`
-  console.log("User ID:", user.id)
-    console.log("File path:", filePath)
 
   const { error } = await supabase.storage
     .from("avatars")

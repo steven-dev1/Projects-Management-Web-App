@@ -8,7 +8,7 @@ import {
 } from "@heroui/react";
 import { ArrowRightFromLine, FolderOpenDot, Settings, Unlink } from "lucide-react";
 import Link from "next/link";
-import { signOutAction } from "../Auth/SignOutAction";
+import { signOutAction } from "../../lib/SignOutAction";
 
 export default function NavBarMobile({
   isOpen,

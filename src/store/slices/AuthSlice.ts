@@ -1,5 +1,3 @@
-// store/slices/authSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { createClient } from "@/lib/supabaseClient";
 import {
@@ -82,10 +80,8 @@ export const updateUserData = createAsyncThunk<
   UpdateUserProfileData,
   { state: RootState; rejectValue: string }
 >("auth/updateUserData", async (data, { getState, rejectWithValue }) => {
-  const supabase = createClient();
   const { auth } = getState();
 
-  // Mejor usar el user que ya tienes en el estado
   const userId = auth.user?.id;
 
   if (!userId) {
@@ -98,7 +94,6 @@ export const updateUserData = createAsyncThunk<
       preferences?: PreferencesUpdate;
     } = {};
 
-    // 1. Actualizar preferences (tabla user_preferences)
     if (data.language || data.timezone) {
       const preferencesData: Partial<PreferencesUpdate> = {};
       if (data.language) preferencesData.language = data.language;
@@ -114,7 +109,6 @@ export const updateUserData = createAsyncThunk<
       updates.preferences = preferencesData;
     }
 
-    // 2. Actualizar profile (solo si viene full_name)
     if (data.full_name) {
       const { error: profileError } = await supabase
         .from("profiles")
@@ -126,13 +120,59 @@ export const updateUserData = createAsyncThunk<
       updates.profile = { full_name: data.full_name.trim() };
     }
 
-    // Retornamos solo lo que se actualizó
     return updates;
   } catch (err: unknown) {
     const message =
       err instanceof Error
         ? err.message
         : "Error desconocido al actualizar perfil";
+    return rejectWithValue(message);
+  }
+});
+
+// REFRESCAR AVATAR SOLAMENTE
+export const refreshAvatarUrl = createAsyncThunk<
+  { avatar_url: string | null }, // lo que retorna (éxito)
+  void, // no recibe argumentos
+  { state: RootState; rejectValue: string }
+>("auth/refreshAvatarUrl", async (_, { getState, rejectWithValue }) => {
+  try {
+    const { auth } = getState();
+    const userId = auth.user?.id;
+
+    if (!userId) {
+      return rejectWithValue("No hay usuario autenticado");
+    }
+
+    // 1. Obtener el avatar_url actual de la tabla profiles
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", userId)
+      .single();
+
+    if (profileError) throw profileError;
+    if (!profile?.avatar_url) {
+      return { avatar_url: null };
+    }
+
+    // 2. Obtener la URL pública actualizada
+    const { data: storageData } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(profile.avatar_url);
+
+    // Opcional: agregar timestamp solo aquí para forzar refresh visual
+    // Puedes quitarlo si prefieres que el navegador cachee agresivamente
+    const freshAvatarUrl = storageData.publicUrl
+      ? `${storageData.publicUrl}?t=${Date.now()}`
+      : null;
+
+    // 3. Retornamos solo lo necesario
+    return { avatar_url: freshAvatarUrl };
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : "Error al refrescar avatar";
+    console.error("refreshAvatarUrl error:", err);
     return rejectWithValue(message);
   }
 });
@@ -161,6 +201,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
         state.isLoading = false;
       })
+
       //   UPDATE
       .addCase(updateUserData.pending, (state) => {
         state.isLoading = true;
@@ -182,7 +223,7 @@ const authSlice = createSlice({
             action.payload.profile.full_name !== state.profile?.full_name
           ) {
             if (state.profile) {
-              state.profile.full_name = action.payload.profile.full_name; // muta directamente (RTK lo permite)
+              state.profile.full_name = action.payload.profile.full_name;
             } else {
               state.profile = { full_name: action.payload.profile.full_name };
             }
@@ -213,7 +254,24 @@ const authSlice = createSlice({
       .addCase(updateUserData.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload ?? "Error al actualizar datos";
-      });
+      })
+
+      // REFRESCAR AVATAR
+      .addCase(refreshAvatarUrl.pending, (state) => {
+      // Opcional: podrías poner un mini-loading solo para avatar
+      // state.avatarLoading = true;
+    })
+    .addCase(refreshAvatarUrl.fulfilled, (state, action) => {
+      if (state.profile) {
+        state.profile.avatar_url = action.payload.avatar_url;
+      }
+      // state.avatarLoading = false; // si usaste loading específico
+    })
+    .addCase(refreshAvatarUrl.rejected, (state, action) => {
+      // state.avatarLoading = false;
+      state.error = action.payload ?? "Error refrescando avatar";
+      console.warn("Refresh avatar falló:", action.payload);
+    });
   },
 });
 

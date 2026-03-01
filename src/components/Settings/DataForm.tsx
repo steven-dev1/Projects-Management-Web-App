@@ -1,35 +1,36 @@
 "use client";
 import { capitalizeWords } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Button, Form, Input} from "@heroui/react";
-import SelectsDataForm from "./SelectsDataForm";
-import SkeletonDataForm from "./SkeletonDataForm";
+import { addToast, Button, Form, Input } from "@heroui/react";
 import { Save } from "lucide-react";
 import { UpdateUserProfileData } from "@/types";
 import { updateUserData } from "@/store/slices/AuthSlice";
+import SkeletonDataForm from "./SkeletonDataForm";
+import SelectsDataForm from "./SelectsDataForm";
 
 export default function DataForm() {
-const dispatch = useAppDispatch();
-  const { user, profile, isLoading } = useAppSelector(
-    (state) => state.auth,
-  );
+  const dispatch = useAppDispatch();
+  const { user, profile, isLoading } = useAppSelector((state) => state.auth);
   const capitalizeName = capitalizeWords(profile?.full_name ?? "");
 
   const handleSubmit = async (formData: FormData) => {
-  const data = Object.fromEntries(formData) as unknown as UpdateUserProfileData;
+    const data = Object.fromEntries(formData) as unknown as UpdateUserProfileData;
 
-  if (!data.full_name || !data.language || !data.timezone) {
-    console.error("Faltan campos requeridos");
-    return;
-  }
-
-  dispatch(updateUserData(data));
-};
+    if (!data.full_name || !data.language || !data.timezone) {
+      console.error("Faltan campos requeridos");
+      return;
+    }
+    try {
+      const result = await dispatch(updateUserData(data)).unwrap();
+      addToast({ title: "Datos actualizados", color: "success", icon: "Check" });
+    } 
+    catch (rejectedValueOrError) {
+      addToast({ title: "Error al actualizar datos", color: "danger" });
+    }
+  };
 
   if (isLoading) {
-    return (
-      <SkeletonDataForm />
-    );
+    return <SkeletonDataForm />;
   }
   return (
     <Form
@@ -56,7 +57,9 @@ const dispatch = useAppDispatch();
         type="text"
       />
       <SelectsDataForm />
-      <Button type="submit" color="secondary" startContent={<Save size={18} />}>Guardar</Button>
+      <Button type="submit" color="secondary" startContent={<Save size={18} />}>
+        Guardar
+      </Button>
     </Form>
   );
 }
