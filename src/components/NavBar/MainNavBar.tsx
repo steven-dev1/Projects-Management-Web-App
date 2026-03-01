@@ -17,12 +17,10 @@ import { signOutAction } from "../../lib/SignOutAction";
 import Link from "next/link";
 import { Button, Skeleton, useDisclosure } from "@heroui/react";
 import NavBarMobile from "./NavBarMobile";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchUserAndProfile } from "@/store/slices/AuthSlice";
+import { useAppSelector } from "@/store/hooks";
 
 export default function MainNavBar() {
-  const { profile, isLoading } = useAppSelector(state => state.auth) 
+  const { profile} = useAppSelector(state => state.auth) 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (

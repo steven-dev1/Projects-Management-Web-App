@@ -1,6 +1,7 @@
 // app/settings/page.tsx
 import AvatarForm from "@/components/Settings/AvatarForm"
 import DataForm from "@/components/Settings/DataForm"
+import TabsComponent from "@/components/Settings/Tabs"
 import MaxWidth from "@/components/UI/MaxWidth"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
@@ -34,7 +35,7 @@ export default async function SettingsPage() {
     <MaxWidth>
       <div className="flex flex-col items-center gap-8 py-8">
         <AvatarForm />
-        <DataForm />
+        <TabsComponent />
       </div>
     </MaxWidth>
   )

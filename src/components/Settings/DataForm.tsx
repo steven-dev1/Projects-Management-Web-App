@@ -61,13 +61,14 @@ export default function DataForm() {
   }
   return (
     <Form
-      className="w-full flex flex-col items-center justify-center sm:w-1/2 lg:w-1/3"
+      className="w-full items-center justify-center flex flex-col sm:w-1/2 lg:w-1/3"
       onSubmit={(e) => handleSubmit(new FormData(e.currentTarget), e)}
     >
       <Input
         label="Nombre completo"
         labelPlacement="inside"
         name="full_name"
+        
         defaultValue={capitalizeName}
         placeholder="John Doe"
         isRequired
