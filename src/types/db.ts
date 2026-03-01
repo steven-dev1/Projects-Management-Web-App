@@ -6,3 +6,9 @@ export interface Preferences {
   timezone?: string
   emailNotifications?: boolean
 }
+
+export interface PasswordResetData {
+  current_password: string
+  new_password: string
+  confirm_password: string
+}

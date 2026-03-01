@@ -1,6 +1,5 @@
 // app/settings/page.tsx
 import AvatarForm from "@/components/Settings/AvatarForm"
-import DataForm from "@/components/Settings/DataForm"
 import TabsComponent from "@/components/Settings/Tabs"
 import MaxWidth from "@/components/UI/MaxWidth"
 import { createServerClient } from "@supabase/ssr"

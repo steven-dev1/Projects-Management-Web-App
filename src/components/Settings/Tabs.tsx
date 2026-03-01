@@ -1,6 +1,7 @@
 'use client'
 import {Tabs, Tab} from "@heroui/react";
 import DataForm from "./DataForm";
+import SecurityTab from "./SecurityTab";
 
 export default function TabsComponent() {
   return (
@@ -9,8 +10,8 @@ export default function TabsComponent() {
             <Tab value="basic-info" title="Información básica" className="flex w-full justify-center">
                 <DataForm />
             </Tab>
-            <Tab value="security" title="Seguridad">
-                <p>Información de seguridad</p>
+            <Tab value="security" title="Seguridad" className="flex w-full justify-center">
+                <SecurityTab />
             </Tab>
         </Tabs>
     </div>
