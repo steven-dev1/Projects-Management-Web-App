@@ -257,6 +257,7 @@ const authSlice = createSlice({
       })
 
       // REFRESCAR AVATAR
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .addCase(refreshAvatarUrl.pending, (state) => {
       // Opcional: podrías poner un mini-loading solo para avatar
       // state.avatarLoading = true;
