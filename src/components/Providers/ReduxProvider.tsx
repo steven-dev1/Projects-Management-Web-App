@@ -20,7 +20,7 @@ export function ReduxProvider({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <MainNavBar />
-      <MaxWidth>
+      <MaxWidth className="mt-8">
         <ToastProvider placement="bottom-right"/> 
         {children}
       </MaxWidth>

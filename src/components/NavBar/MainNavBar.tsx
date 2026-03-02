@@ -24,11 +24,11 @@ export default function MainNavBar() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="flex items-center border-b gap-2 p-4 border-b-zinc-200 ">
+    <nav className="flex items-center border-b gap-2 p-4 border-b-zinc-200 w-full sticky top-0 z-10 backdrop-blur-xl">
       <div className="w-7xl mx-auto flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Unlink color="#7828c8" size="32" />
-          <h1 className="text-xl font-semibold">Projects M.</h1>
+          <Unlink color="#a742ff" size="32" />
+          <h1 className="text-xl hidden sm:block font-semibold">Projects M.</h1>
         </Link>
         {/* MOBILE */}
         <Button variant="light" onPress={onOpen} className="sm:hidden">
@@ -53,7 +53,7 @@ export default function MainNavBar() {
           </DropdownTrigger>
           <DropdownMenu variant="flat">
             <DropdownItem key="projects">
-              <Link href="/projects" className="flex items-center gap-2">
+              <Link href="/dashboard/projects" className="flex items-center gap-2">
                 <FolderOpenDot size={18} /> Mis proyectos
               </Link>
             </DropdownItem>
@@ -74,6 +74,6 @@ export default function MainNavBar() {
           </DropdownMenu>
         </Dropdown>
       </div>
-    </div>
+    </nav>
   );
 }
