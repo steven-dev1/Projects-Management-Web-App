@@ -1,17 +1,19 @@
 'use client'
-import ButtonCreateProject from '@/components/Dashboard/ButtonCreateProject'
-import { LayoutDashboard } from 'lucide-react'
+import EmptyProjects from '@/components/Dashboard/EmptyProjects';
+import ProjectsList from '@/components/Dashboard/ProjectsList';
+import { useAppSelector } from '@/store/hooks';
+import { Spinner } from '@heroui/react';
 import React from 'react'
 
-export default function page() {
+export default function DashboardPage() {
+  const { boards, status } = useAppSelector((state) => state.boards);
+  if(status === 'loading' || status === 'idle') {
+    return <div className='flex items-center justify-center'><Spinner color="default" size="lg" /></div>
+  }
+  if (boards.length === 0 && status === 'succeeded') {
+    return <EmptyProjects />;
+  }
   return (
-    <div className='flex flex-col gap-2 items-center justify-center'>
-      <div className='p-3 bg-purple-100 rounded-full'>
-        <LayoutDashboard size={32} color='#a742ff' />
-      </div>
-      <h5 className='font-bold text-xl'>Aún no tienes proyectos</h5>
-      <p>Comienza creando tu primer tablero para organizar tus tareas y proyectos</p>
-      <ButtonCreateProject />
-    </div>
+    <ProjectsList boards={boards} />
   )
 }

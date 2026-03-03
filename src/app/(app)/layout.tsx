@@ -1,9 +1,9 @@
 'use client'
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
-import { fetchUserAndProfile } from "@/store/slices/AuthSlice";
 import { usePathname } from "next/navigation";
 import DashboardSideNav from "@/components/Dashboard/DashboardSideNav";
+import { fetchUserAndProfile } from "@/store/features/auth/AuthThunks";
 export default function AppLayout({
   children,
 }: {

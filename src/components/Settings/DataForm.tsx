@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToast, Button, Form, Input } from "@heroui/react";
 import { Save } from "lucide-react";
 import { UpdateUserProfileData } from "@/types";
-import { updateUserData } from "@/store/slices/AuthSlice";
 import SkeletonDataForm from "./SkeletonDataForm";
 import SelectsDataForm from "./SelectsDataForm";
+import { updateUserData } from "@/store/features/auth/AuthThunks";
 
 export default function DataForm() {
   const dispatch = useAppDispatch();

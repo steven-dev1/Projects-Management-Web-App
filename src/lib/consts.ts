@@ -7,3 +7,10 @@ export const TOP_TIMEZONES = [
   "Europe/Madrid",
   "Europe/London",
 ]
+
+export const FILTER_OPTIONS_BOARDS = [
+  { label: "A-Z", value: "a-z" },
+  { label: "Z-A", value: "z-a" },
+  { label: "Más reciente", value: "recent" },
+  { label: "Más antiguo", value: "oldest" },
+]

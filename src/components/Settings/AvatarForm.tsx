@@ -4,7 +4,7 @@ import { useState } from "react"
 import { uploadAvatar } from "@/lib/updateAvatar"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { addToast, Avatar, Spinner } from "@heroui/react"
-import { refreshAvatarUrl } from "@/store/slices/AuthSlice"
+import { refreshAvatarUrl } from "@/store/features/auth/AuthThunks"
 
 export default function AvatarForm() {
   const dispatch = useAppDispatch()
