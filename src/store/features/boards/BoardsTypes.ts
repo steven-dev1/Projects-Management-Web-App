@@ -1,8 +1,11 @@
+import { BoardMembersResponse } from "@/types";
+
 export interface Board{
   id?: string;
   name: string;
   description?: string;
   lists: BoardList[];
+  board_members: BoardMembersResponse;
   background_color?: string;
   created_at: string;
   updated_at: string;

@@ -1,7 +1,8 @@
 import { Board } from "@/store/features/boards/BoardsTypes";
-import { createBoard, fetchBoards } from "@/store/features/boards/BoradsThunks";
+import { createBoard,  } from "@/store/features/boards/BoradsThunks";
 import { useAppDispatch } from "@/store/hooks";
 import {addToast,Button,Divider,Form,Input,Modal,ModalBody,ModalContent,ModalHeader,Spinner,useDisclosure} from "@heroui/react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
@@ -23,7 +24,7 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await dispatch(createBoard({ name: newName, description: newDescription })).unwrap();
-      dispatch(fetchBoards());
+      // dispatch(fetchBoards());
       addToast({
         title: "Proyecto creado",
         color: "success",
@@ -39,8 +40,8 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
   };
   return (
     <>
-      <Button size={size} className="bg-morado text-white" onPress={onOpen}>
-        Crear nuevo proyecto
+      <Button size={size} className="bg-morado min-w-fit whitespace-nowrap hidden sm:block text-white" onPress={onOpen}>
+        Crear
       </Button>
       <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
         <ModalContent>

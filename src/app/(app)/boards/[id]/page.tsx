@@ -1,3 +1,7 @@
+'use client';
+
 export default function BoardPage() {
-  return <div>Board Page</div>
+  return <div>
+    page
+  </div>
 }

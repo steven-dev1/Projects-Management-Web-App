@@ -31,7 +31,7 @@ const boardsSlice = createSlice({
 
       // CREATE
       .addCase(createBoard.fulfilled, (state, action: PayloadAction<Board>) => {
-        state.boards.unshift(action.payload);
+        state.boards.unshift({...action.payload, lists: []});
       })
       .addCase(createBoard.rejected, (state, action) => {
         state.error = action.payload as string;

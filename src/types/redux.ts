@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js";
-import { Preferences } from "./db";
+import { Preferences, Profile } from "./db";
 
 export interface ProfileUpdate {
   full_name?: string
@@ -9,11 +9,6 @@ export interface PreferencesUpdate {
   language?: string
   timezone?: string
 }
-
-export type Profile = {
-  full_name?: string;
-  avatar_url?: string | null;
-};
 
 export interface AuthState {
   user: User | null;
