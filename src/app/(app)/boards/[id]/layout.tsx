@@ -1,5 +1,6 @@
 'use client';
 import BoardHeader from "@/components/Board/BoardHeader";
+import SkeletonBoardHeader from "@/components/Board/SkeletonBoardHeader";
 import { Board } from "@/store/features/boards/BoardsTypes";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,7 +22,7 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
       console.error(error);
     }
   }, [id]);
-  if (!board) return <div>No se encontró el proyecto</div>;
+  if (!board) return <SkeletonBoardHeader />;
   return (
     <>
       <BoardHeader board={board}/>

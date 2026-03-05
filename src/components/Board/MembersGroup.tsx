@@ -9,7 +9,7 @@ export default function MembersGroup({ members }: { members: BoardMembersRespons
       size="sm"
       max={3}>
         {members.map((member) => (
-          <Avatar key={member.id} size="sm" src={member.profiles.avatar_url as string} />
+          <Avatar isBordered key={member.id} size="sm" name={member.profiles.full_name} />
         ))}
       </AvatarGroup>
   );

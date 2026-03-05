@@ -12,7 +12,7 @@ export default function BoardHeader({ board }: { board: Board }) {
         <h1 className="text-lg font-semibold">{board.name}</h1>
         <ViewDropdown boardId={board.id as string}/>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
         <ShareButton />
         <MembersGroup members={board.board_members as BoardMembersResponse} />
       </div>
