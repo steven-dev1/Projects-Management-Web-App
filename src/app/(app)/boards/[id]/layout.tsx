@@ -1,31 +1,26 @@
 'use client';
 import BoardHeader from "@/components/Board/BoardHeader";
 import SkeletonBoardHeader from "@/components/Board/SkeletonBoardHeader";
-import { Board } from "@/store/features/boards/BoardsTypes";
+import { fetchBoardById } from "@/store/features/boards/BoardsThunks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function BoardLayout({ children }: { children: React.ReactNode }) {
-  const { id } = useParams();
-  const [board, setBoard] = useState<Board>();
+  const { id } = useParams<{ id: string }>()
+  const {currentBoard} = useAppSelector((state) => state.boards);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    try {
-      const fetchBoard = async () => {
-        const response = await fetch(`/api/boards/${id}`);
-        const data = await response.json();
-        console.log(data);
-        setBoard(data);
-      };
-      fetchBoard();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [id]);
-  if (!board) return <SkeletonBoardHeader />;
+    if (!id) return;
+    dispatch(fetchBoardById(id));
+  }, [dispatch, id]);
+  
+  
+  if (!currentBoard) return <SkeletonBoardHeader />;
   return (
     <>
-      <BoardHeader board={board}/>
+      <BoardHeader board={currentBoard}/>
       {children}
     </>
   );

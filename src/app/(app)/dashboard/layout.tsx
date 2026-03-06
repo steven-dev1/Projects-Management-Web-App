@@ -1,5 +1,5 @@
 'use client'
-import { fetchBoards } from "@/store/features/boards/BoradsThunks"
+import { fetchBoards } from "@/store/features/boards/BoardsThunks"
 import { useAppDispatch } from "@/store/hooks"
 import { useEffect } from "react"
 

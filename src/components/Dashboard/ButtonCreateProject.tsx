@@ -1,5 +1,5 @@
 import { Board } from "@/store/features/boards/BoardsTypes";
-import { createBoard,  } from "@/store/features/boards/BoradsThunks";
+import { createBoard,  } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch } from "@/store/hooks";
 import {addToast,Button,Divider,Form,Input,Modal,ModalBody,ModalContent,ModalHeader,Spinner,useDisclosure} from "@heroui/react";
 import { Plus } from "lucide-react";

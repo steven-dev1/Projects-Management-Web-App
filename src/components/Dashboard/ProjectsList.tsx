@@ -1,11 +1,11 @@
-import { Board } from "@/store/features/boards/BoardsTypes";
+import { BoardResponse } from "@/store/features/boards/BoardsTypes";
 import ProjectCard from "./ProjectCard";
 import ButtonCreateProject from "./ButtonCreateProject";
 import { Select, SelectItem } from "@heroui/react";
 import { FILTER_OPTIONS_BOARDS } from "@/lib/consts";
 import { useMemo, useState } from "react";
 
-export default function ProjectsList({ boards }: { boards: Board[] }) {
+export default function ProjectsList({ boards }: { boards: BoardResponse[] }) {
   const [filter, setFilter] = useState("a-z");
 
   const view = useMemo(() => {
@@ -50,7 +50,7 @@ export default function ProjectsList({ boards }: { boards: Board[] }) {
         <ButtonCreateProject size="md" />
       </div>
       <div className="w-full grid gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
-        {view.map((board: Board) => (
+        {view.map((board: BoardResponse) => (
           <ProjectCard key={board.id} board={board} />
         ))}
       </div>

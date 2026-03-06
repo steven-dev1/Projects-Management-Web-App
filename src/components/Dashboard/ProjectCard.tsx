@@ -1,9 +1,9 @@
-import { Board } from "@/store/features/boards/BoardsTypes";
+import { BoardResponse } from "@/store/features/boards/BoardsTypes";
 import { Divider } from "@heroui/react";
 import { ListCheck, Scroll } from "lucide-react";
 import Link from "next/link";
 
-export default function ProjectCard({ board }: { board: Board }) {
+export default function ProjectCard({ board }: { board: BoardResponse }) {
   const totalCards = board.lists?.reduce((acc, list) => acc + list.cards.length, 0) ?? 0;
   return (
     <Link
