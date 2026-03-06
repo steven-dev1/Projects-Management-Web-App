@@ -1,6 +1,7 @@
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
+import CardView from "./CardView";
 
 export default function CardItem({ card }: { card: Card }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -17,8 +18,7 @@ export default function CardItem({ card }: { card: Card }) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="bg-white p-2 mb-2 rounded">
-      <h1>{card.title}</h1>
-      <p className="text-zinc-500 text-sm">{card.description}</p>
+      <CardView card={card} />
     </div>
   );
 }

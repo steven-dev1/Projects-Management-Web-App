@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Board, BoardResponse, BoardsState } from "./BoardsTypes";
 import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "./BoardsThunks";
+import { arrayMove } from "@dnd-kit/sortable";
 
 const initialState: BoardsState = {
   boards: [],
@@ -13,10 +14,7 @@ const boardsSlice = createSlice({
   name: "boards",
   initialState,
   reducers: {
-    moveCard: (
-      state,
-      action: PayloadAction<{ cardId: string; fromListId: string; toListId: string; newIndex: number }>,
-    ) => {
+    moveCard: (state, action) => {
       const { cardId, fromListId, toListId, newIndex } = action.payload;
 
       const fromList = state.currentBoard?.lists.find((l) => l.id === fromListId);
@@ -25,21 +23,26 @@ const boardsSlice = createSlice({
       if (!fromList || !toList) return;
 
       const cardIndex = fromList.cards.findIndex((c) => c.id === cardId);
-      if (cardIndex === -1) return;
-
-      // Extraer la card
       const [movedCard] = fromList.cards.splice(cardIndex, 1);
 
-      // Actualizar el list_id de la card
-      movedCard.list_id = toListId;
-
-      // Insertar en la nueva posición
       toList.cards.splice(newIndex, 0, movedCard);
 
-      // Opcional: Re-calcular 'position' numérico de todas las cards en la lista destino
-      toList.cards.forEach((card, index) => {
-        card.position = index;
+      fromList.cards.forEach((card, idx) => {
+        card.position = idx;
       });
+      toList.cards.forEach((card, idx) => {
+        card.position = idx;
+      });
+    },
+
+    moveList: (state, action: PayloadAction<{ oldIndex: number; newIndex: number }>) => {
+      if (state.currentBoard) {
+        const reorderedLists = arrayMove(state.currentBoard.lists, action.payload.oldIndex, action.payload.newIndex);
+        state.currentBoard.lists = reorderedLists.map((list, index) => ({
+          ...list,
+          position: index, 
+        }));
+      }
     },
   },
   extraReducers: (builder) => {
@@ -105,5 +108,5 @@ const boardsSlice = createSlice({
   },
 });
 
-export const { moveCard } = boardsSlice.actions;
+export const { moveCard, moveList } = boardsSlice.actions;
 export default boardsSlice.reducer;
