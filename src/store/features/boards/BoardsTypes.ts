@@ -7,7 +7,7 @@ export interface BoardResponse extends Board {
   updated_at: string;
 }
 export interface Board{
-  id?: string;
+  id: string;
   name: string;
   description?: string;
   background_color?: string;
@@ -19,6 +19,7 @@ export interface Board{
 export interface BoardList {
   id: string;
   title: string;
+  description?: string;
   cards: Card[];
   position: number;
   board_id: string;
@@ -27,15 +28,21 @@ export interface BoardList {
   updated_at: string;
 }
 
+export interface ListPayload {
+  title: string;
+  position: number;
+  board_id: string;
+}
+
 export interface Card {
   id?: string;
-  list_id: string;
   title: string;
   description?: string;
+  list_id: string;
   position: number;
   due_date?: string;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface BoardForm {

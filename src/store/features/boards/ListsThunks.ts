@@ -1,4 +1,25 @@
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ListPayload } from "./BoardsTypes";
+
+export const createList = createAsyncThunk(
+  "boards/createList",
+  async (payload: ListPayload, { rejectWithValue }) => {
+    try {
+      const response = await fetch("/api/boards/lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Error al crear la lista");
+      return await response.json();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al crear la lista";
+      return rejectWithValue(message);
+    }
+  }
+);  
 
 export const updateListOrderSupabase = createAsyncThunk(
   "boards/updateListOrder",

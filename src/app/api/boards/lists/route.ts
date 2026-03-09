@@ -8,12 +8,11 @@ export async function POST(request: Request) {
   if (body.title) {
     try {
       const { data, error } = await supabase
-        .from("cards")
+        .from("lists")
         .insert([
           {
             title: body.title,
-            list_id: body.list_id,
-            description: body.description || null,
+            board_id: body.board_id,
             position: body.position,
           },
         ])
@@ -21,22 +20,21 @@ export async function POST(request: Request) {
         .single();
 
       if (error) {
-        console.error("Error creando card:", error);
+        console.error("Error creando lista:", error);
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
 
       return NextResponse.json({ success: true, data });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error interno del servidor creando card";
+      const message = err instanceof Error ? err.message : "Error interno del servidor creando lista";
       return NextResponse.json({ error: message }, { status: 500 });
     }
   }
   try {
-    const { data, error } = await supabase.rpc("update_card_positions", {
-      p_card_id: body.cardId,
-      p_new_list_id: body.newListId,
+    const { data, error } = await supabase.rpc("update_list_positions", {
+      p_list_id: body.listId,
       p_new_position: body.newIndex,
-      p_old_list_id: body.oldListId,
+      p_board_id: body.boardId,
     });
 
     if (error) {
@@ -45,6 +43,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
-    return NextResponse.json({ error: "Error interno del servidor reordenando cards" }, { status: 500 });
+    return NextResponse.json({ error: "Error interno del servidor reordenando lists" }, { status: 500 });
   }
 }

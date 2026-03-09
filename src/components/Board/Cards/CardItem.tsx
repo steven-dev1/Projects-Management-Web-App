@@ -17,7 +17,7 @@ export default function CardItem({ card }: { card: Card }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="bg-white p-2 mb-2 rounded">
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="bg-white shadow p-2 mb-2 rounded-lg">
       <CardView card={card} />
     </div>
   );

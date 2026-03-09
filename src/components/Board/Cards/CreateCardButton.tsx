@@ -1,31 +1,56 @@
-import { Board } from "@/store/features/boards/BoardsTypes";
-import { createBoard,  } from "@/store/features/boards/BoardsThunks";
+import { Card } from "@/store/features/boards/BoardsTypes";
+import { createCard } from "@/store/features/boards/CardsThunks";
 import { useAppDispatch } from "@/store/hooks";
-import {addToast,Button,Divider,Form,Input,Modal,ModalBody,ModalContent,ModalHeader,Spinner,useDisclosure} from "@heroui/react";
+import {
+  addToast,
+  Button,
+  DateInput,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Spinner,
+  useDisclosure,
+} from "@heroui/react";
+import { getLocalTimeZone, now } from "@internationalized/date";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
-export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+type CreateCardButtonProps = {
+  listId: string;
+  boardId: string;
+  lastPosition: number;
+};
+
+export default function CreateCardButton({ listId, lastPosition }: CreateCardButtonProps) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
+  const zonaHoraria = getLocalTimeZone();
+  const tiempoActual = now(zonaHoraria);
+
   const handleSubmit = async (formData: FormData, e: React.SyntheticEvent) => {
     e.preventDefault();
-    const data = Object.fromEntries(formData) as unknown as Board;
-    const newName = data.name || "";
+    const data = Object.fromEntries(formData) as unknown as Card;
+    const newTitle = data.title || "";
     const newDescription = data.description;
 
-    if (!data.name) {
+    if (!data.title) {
       console.error("Faltan campos requeridos");
       return;
     }
     setLoading(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const result = await dispatch(createBoard({ name: newName, description: newDescription })).unwrap();
-      // dispatch(fetchBoards());
+      const result = await dispatch(
+        createCard({ title: newTitle, description: newDescription, list_id: listId, due_date: data.due_date, position: lastPosition }),
+      ).unwrap();
       addToast({
-        title: "Proyecto creado",
+        title: "Tarea creada",
         color: "success",
         icon: "Check",
       });
@@ -39,14 +64,15 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
   };
   return (
     <>
-      <Button size={size} className="bg-morado min-w-fit whitespace-nowrap hidden sm:block text-white" onPress={onOpen}>
-        Crear
+      <Button className="w-full min-w-fit" variant="flat" onPress={onOpen}>
+        <Plus size={18} />
+        <span className="hidden sm:inline">Añadir tarjeta</span>
       </Button>
       <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Crear tarea</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Crear nuevo proyecto</ModalHeader>
               <Divider className="my-2" />
               <ModalBody>
                 <Form
@@ -57,16 +83,18 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
                 >
                   <Input
                     autoFocus
-                    name="name"
-                    label="Nombre del proyecto"
-                    placeholder="Escribe el nombre del proyecto"
+                    name="title"
+                    label="Nombre de la tarea"
+                    placeholder="Escribe el nombre de la tarea"
                     isRequired
                   />
                   <Input
                     name="description"
                     label="Descripción (Opcional)"
-                    placeholder="Escribe una descripción del proyecto"
+                    placeholder="Escribe una descripción de la tarea"
                   />
+                  <DateInput name="due_date" label="Date and time" defaultValue={tiempoActual} minValue={tiempoActual} />
+
                   <div className="flex items-center gap-2 justify-end w-full mt-2">
                     <Button variant="flat" onPress={onClose}>
                       Cancelar

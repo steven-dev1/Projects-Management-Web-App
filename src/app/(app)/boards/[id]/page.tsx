@@ -2,6 +2,7 @@
 
 import CardItem from "@/components/Board/Cards/CardItem";
 import CardView from "@/components/Board/Cards/CardView";
+import CreateListButton from "@/components/Board/Lists/CreateListButton";
 import List from "@/components/Board/Lists/List";
 import { moveCard, moveList } from "@/store/features/boards/BoardsSlice";
 import { BoardList, Card } from "@/store/features/boards/BoardsTypes";
@@ -9,7 +10,6 @@ import { updateCardOrder } from "@/store/features/boards/CardsThunks";
 import { updateListOrderSupabase } from "@/store/features/boards/ListsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
-  closestCenter,
   DragOverlay,
   DndContext,
   PointerSensor,
@@ -17,8 +17,8 @@ import {
   useSensors,
   type DragEndEvent,
   DragStartEvent,
-  defaultDropAnimationSideEffects,
   DragOverEvent,
+  closestCorners,
 } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { useState } from "react";
@@ -47,64 +47,55 @@ export default function BoardPage() {
 
     const activeId = active.id as string;
     const overId = over.id as string;
-
     const isColumn = active.data.current?.type === "column";
 
-    if (!currentBoard) return console.log("No se puede mover el card, no hay el board actual");
+    if (!currentBoard) return;
 
     if (isColumn) {
-      if (activeId !== overId && currentBoard.id) {
+      if (activeId !== overId) {
         const oldIndex = lists.findIndex((l) => l.id === activeId);
         let newIndex = lists.findIndex((l) => l.id === overId);
 
         if (newIndex === -1) {
           const parentList = lists.find((l) => l.cards.some((c) => c.id === overId));
-          if (parentList) {
-            newIndex = lists.findIndex((l) => l.id === parentList.id);
-          }
+          if (parentList) newIndex = lists.findIndex((l) => l.id === parentList.id);
         }
 
-        if (oldIndex !== -1 && newIndex !== -1) {
+        if (oldIndex !== -1 && newIndex !== -1 && currentBoard.id) {
           dispatch(moveList({ oldIndex, newIndex }));
-          dispatch(
-            updateListOrderSupabase({
-              listId: activeId,
-              newIndex,
-              boardId: currentBoard.id,
-            }),
-          );
+          dispatch(updateListOrderSupabase({ listId: activeId, newIndex, boardId: currentBoard.id }));
         }
       }
       return;
     }
 
-    const fromList = lists.find((list) => list.cards.some((card) => card.id === activeId));
-
-    const toList = lists.find((list) => list.id === overId || list.cards.some((card) => card.id === overId));
+    const fromList = lists.find((l) => l.cards.some((c) => c.id === activeId));
+    const toList = lists.find((l) => l.id === overId || l.cards.some((c) => c.id === overId));
 
     if (!fromList || !toList) return;
 
-    const isOverACard = toList.cards.some((card) => card.id === overId);
-    let newIndex = isOverACard ? toList.cards.findIndex((card) => card.id === overId) : toList.cards.length;
-    newIndex = Math.max(0, newIndex)
+    const isOverAList = lists.some((l) => l.id === overId);
+    const activeIndexInSource = fromList.cards.findIndex((c) => c.id === activeId);
 
-    dispatch(
-      moveCard({
-        cardId: activeId,
-        fromListId: fromList.id,
-        toListId: toList.id,
-        newIndex,
-      }),
-    );
+    let destinationIndex: number;
 
-    dispatch(
-      updateCardOrder({
-        cardId: activeId,
-        newListId: toList.id,
-        newIndex: newIndex,
-        oldListId: fromList.id,
-      }),
-    );
+    if (isOverAList) {
+      destinationIndex = toList.cards.length;
+    } else {
+      const overIndexInDest = toList.cards.findIndex((c) => c.id === overId);
+      if (fromList.id === toList.id) {
+        destinationIndex = overIndexInDest;
+      } else {
+        destinationIndex = overIndexInDest;
+      }
+    }
+
+    const newIndex = Math.max(0, destinationIndex);
+
+    if (fromList.id === toList.id && activeIndexInSource === newIndex) return;
+
+    dispatch(moveCard({ cardId: activeId, fromListId: fromList.id, toListId: toList.id, newIndex }));
+    dispatch(updateCardOrder({ cardId: activeId, newListId: toList.id, newIndex, oldListId: fromList.id }));
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -115,11 +106,8 @@ export default function BoardPage() {
     const overId = over.id as string;
 
     // Si es columna
-    if (active.data.current?.type === "column") {
-      const column = lists.find((l) => l.id === active.id);
-      if (column) setActiveColumn(column);
-      return;
-    }
+    if (active.data.current?.type === "column") return;
+
     const card = lists.flatMap((l) => l.cards).find((c) => c.id === active.id);
     if (card) setActiveCard(card);
     // Encontrar listas de origen y destino
@@ -128,29 +116,22 @@ export default function BoardPage() {
 
     if (!activeContainer || !overContainer || activeContainer.id === overContainer.id) return;
 
-    // Disparamos la misma acción de Redux para mover la tarjeta visualmente
-    dispatch(
-      moveCard({
-        cardId: activeId,
-        fromListId: activeContainer.id,
-        toListId: overContainer.id,
-        newIndex: 0, // O calcula el índice según la posición del 'overId'
-      }),
-    );
+    // dispatch(
+    //   moveCard({
+    //     cardId: activeId,
+    //     fromListId: activeContainer.id,
+    //     toListId: overContainer.id,
+    //     newIndex: 0, // O calcula el índice según la posición del 'overId'
+    //   }),
+    // );
   };
 
-  // const dropAnimation = {
-  //   sideEffects: defaultDropAnimationSideEffects({
-  //     styles: {
-  //       active: { opacity: "0.5" },
-  //     },
-  //   }),
-  // };
+  if(!currentBoard) return null;
 
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
@@ -165,6 +146,7 @@ export default function BoardPage() {
             </List>
           ))}
         </SortableContext>
+        <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />
       </div>
 
       {createPortal(

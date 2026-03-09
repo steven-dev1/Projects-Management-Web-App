@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Board, BoardResponse, BoardsState } from "./BoardsTypes";
 import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "./BoardsThunks";
 import { arrayMove } from "@dnd-kit/sortable";
+import { createCard } from "./CardsThunks";
+import { createList } from "./ListsThunks";
 
 const initialState: BoardsState = {
   boards: [],
@@ -16,23 +18,32 @@ const boardsSlice = createSlice({
   reducers: {
     moveCard: (state, action) => {
       const { cardId, fromListId, toListId, newIndex } = action.payload;
+      const board = state.currentBoard;
+      if (!board) return;
 
-      const fromList = state.currentBoard?.lists.find((l) => l.id === fromListId);
-      const toList = state.currentBoard?.lists.find((l) => l.id === toListId);
+      const fromList = board.lists.find((l) => l.id === fromListId);
+      const toList = board.lists.find((l) => l.id === toListId);
 
       if (!fromList || !toList) return;
 
-      const cardIndex = fromList.cards.findIndex((c) => c.id === cardId);
-      const [movedCard] = fromList.cards.splice(cardIndex, 1);
+      const cardIdx = fromList.cards.findIndex((c) => c.id === cardId);
+      if (cardIdx === -1) return;
 
-      toList.cards.splice(newIndex, 0, movedCard);
+      if (fromListId === toListId) {
+        fromList.cards = arrayMove(fromList.cards, cardIdx, newIndex);
+      } else {
+        const [movedCard] = fromList.cards.splice(cardIdx, 1);
+        toList.cards.splice(newIndex, 0, movedCard);
+      }
 
-      fromList.cards.forEach((card, idx) => {
-        card.position = idx;
+      fromList.cards.forEach((c, i) => {
+        c.position = i;
       });
-      toList.cards.forEach((card, idx) => {
-        card.position = idx;
-      });
+      if (fromListId !== toListId) {
+        toList.cards.forEach((c, i) => {
+          c.position = i;
+        });
+      }
     },
 
     moveList: (state, action: PayloadAction<{ oldIndex: number; newIndex: number }>) => {
@@ -40,7 +51,7 @@ const boardsSlice = createSlice({
         const reorderedLists = arrayMove(state.currentBoard.lists, action.payload.oldIndex, action.payload.newIndex);
         state.currentBoard.lists = reorderedLists.map((list, index) => ({
           ...list,
-          position: index, 
+          position: index,
         }));
       }
     },
@@ -104,6 +115,28 @@ const boardsSlice = createSlice({
       })
       .addCase(deleteBoard.rejected, (state, action) => {
         state.error = action.payload as string;
+      })
+
+      // CREATE CARD
+      .addCase(createCard.fulfilled, (state, action) => {
+        const newCard = action.payload.data;
+        const board = state.currentBoard;
+        if (board) {
+          const list = board.lists.find((l) => l.id === newCard.list_id);
+          if (list) {
+            list.cards.push(newCard);
+          }
+        }
+      })
+      // CREATE LIST
+      .addCase(createList.fulfilled, (state, action) => {
+        if (state.currentBoard && action.payload.data) {
+          const newList = {
+            ...action.payload.data,
+            cards: [],
+          };
+          state.currentBoard.lists.push(newList);
+        }
       });
   },
 });

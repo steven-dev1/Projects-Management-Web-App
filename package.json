@@ -19,6 +19,7 @@
     "@heroui/react": "^2.8.9",
     "@heroui/system": "^2.4.27",
     "@heroui/theme": "^2.4.26",
+    "@internationalized/date": "^3.10.1",
     "@reduxjs/toolkit": "^2.11.2",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.98.0",
@@ -41,5 +42,8 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@internationalized/date": "$@internationalized/date"
   }
 }

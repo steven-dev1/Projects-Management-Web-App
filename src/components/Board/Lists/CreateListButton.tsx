@@ -1,31 +1,44 @@
-import { Board } from "@/store/features/boards/BoardsTypes";
-import { createBoard,  } from "@/store/features/boards/BoardsThunks";
+import { createList } from "@/store/features/boards/ListsThunks";
 import { useAppDispatch } from "@/store/hooks";
-import {addToast,Button,Divider,Form,Input,Modal,ModalBody,ModalContent,ModalHeader,Spinner,useDisclosure} from "@heroui/react";
+import {
+    addToast,
+  Button,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Spinner,
+  useDisclosure,
+} from "@heroui/react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
-export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+export default function CreateListButton({ boardId, lastPosition }: { boardId: string; lastPosition: number }) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
+
   const handleSubmit = async (formData: FormData, e: React.SyntheticEvent) => {
     e.preventDefault();
-    const data = Object.fromEntries(formData) as unknown as Board;
-    const newName = data.name || "";
-    const newDescription = data.description;
+    const data = Object.fromEntries(formData) as unknown as { title: string; description: string };
+    const newTitle = data.title || "";
 
-    if (!data.name) {
+    if (!data.title) {
       console.error("Faltan campos requeridos");
       return;
     }
     setLoading(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const result = await dispatch(createBoard({ name: newName, description: newDescription })).unwrap();
-      // dispatch(fetchBoards());
+      const result = await dispatch(
+        createList({ title: newTitle, board_id: boardId, position: lastPosition }),
+      ).unwrap();
       addToast({
-        title: "Proyecto creado",
+        title: "Lista creada",
         color: "success",
         icon: "Check",
       });
@@ -39,14 +52,15 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
   };
   return (
     <>
-      <Button size={size} className="bg-morado min-w-fit whitespace-nowrap hidden sm:block text-white" onPress={onOpen}>
-        Crear
+      <Button className="min-w-fit" variant="flat" onPress={onOpen}>
+        <Plus size={18} />
+        Crear lista
       </Button>
       <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Crear tarea</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Crear nuevo proyecto</ModalHeader>
               <Divider className="my-2" />
               <ModalBody>
                 <Form
@@ -57,15 +71,10 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
                 >
                   <Input
                     autoFocus
-                    name="name"
-                    label="Nombre del proyecto"
-                    placeholder="Escribe el nombre del proyecto"
+                    name="title"
+                    label="Nombre de la tarea"
+                    placeholder="Escribe el nombre de la tarea"
                     isRequired
-                  />
-                  <Input
-                    name="description"
-                    label="Descripción (Opcional)"
-                    placeholder="Escribe una descripción del proyecto"
                   />
                   <div className="flex items-center gap-2 justify-end w-full mt-2">
                     <Button variant="flat" onPress={onClose}>

@@ -16,13 +16,14 @@ export default function CardView({ card, isOverlay }: CardViewProps) {
       `}
     >
       <h4 className="font-medium text-zinc-800 dark:text-zinc-100">
-        {card.title}
+        {card.title} 
       </h4>
       {card.description && (
         <p className="text-xs text-zinc-500 mt-1 truncate">
           {card.description}
         </p>
       )}
+      <p></p>
     </div>
   );
 }
