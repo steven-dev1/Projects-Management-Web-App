@@ -7,8 +7,9 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
 
   const { data, error } = await supabase
     .from("boards")
-    .select("*, lists (*, cards(*)), board_members (*, profiles!user_id (full_name,avatar_url))")
+    .select("*, lists!board_id (*, cards!list_id(*)), board_members (*, profiles!user_id (full_name, avatar_url))")
     .eq("id", id)
+    .eq("lists.cards.status", "active")
     .order("position", { referencedTable: "lists", ascending: true })
     .order("position", { referencedTable: "lists.cards", ascending: true })
     .single();

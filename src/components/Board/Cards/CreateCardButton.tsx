@@ -1,4 +1,4 @@
-import { Card } from "@/store/features/boards/BoardsTypes";
+import { CreateCardPayload } from "@/store/features/boards/BoardsTypes";
 import { createCard } from "@/store/features/boards/CardsThunks";
 import { useAppDispatch } from "@/store/hooks";
 import {
@@ -15,7 +15,7 @@ import {
   Spinner,
   useDisclosure,
 } from "@heroui/react";
-import { getLocalTimeZone, now } from "@internationalized/date";
+import { getLocalTimeZone, now, ZonedDateTime } from "@internationalized/date";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -28,6 +28,7 @@ type CreateCardButtonProps = {
 export default function CreateCardButton({ listId, lastPosition }: CreateCardButtonProps) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  const [dueDate, setDueDate] = useState<ZonedDateTime | null>(now(getLocalTimeZone()));
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const zonaHoraria = getLocalTimeZone();
@@ -35,7 +36,7 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
 
   const handleSubmit = async (formData: FormData, e: React.SyntheticEvent) => {
     e.preventDefault();
-    const data = Object.fromEntries(formData) as unknown as Card;
+    const data = Object.fromEntries(formData) as unknown as CreateCardPayload;
     const newTitle = data.title || "";
     const newDescription = data.description;
 
@@ -47,7 +48,13 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await dispatch(
-        createCard({ title: newTitle, description: newDescription, list_id: listId, due_date: data.due_date, position: lastPosition }),
+        createCard({
+          title: newTitle,
+          description: newDescription,
+          list_id: listId,
+          due_date: (dueDate ?? tiempoActual).toDate().toISOString(),
+          position: lastPosition,
+        }),
       ).unwrap();
       addToast({
         title: "Tarea creada",
@@ -93,7 +100,13 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
                     label="Descripción (Opcional)"
                     placeholder="Escribe una descripción de la tarea"
                   />
-                  <DateInput name="due_date" label="Date and time" defaultValue={tiempoActual} minValue={tiempoActual} />
+                  <DateInput
+                    name="due_date"
+                    label="Date and time"
+                    value={dueDate}
+                    onChange={setDueDate}
+                    minValue={tiempoActual}
+                  />
 
                   <div className="flex items-center gap-2 justify-end w-full mt-2">
                     <Button variant="flat" onPress={onClose}>

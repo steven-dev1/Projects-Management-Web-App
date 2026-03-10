@@ -12,13 +12,12 @@ export default function CardItem({ card }: { card: Card }) {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.3 : 1,
-    cursor: 'grab',
     touchAction: 'none',
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="bg-white shadow p-2 mb-2 rounded-lg">
-      <CardView card={card} />
+    <div ref={setNodeRef} style={style}  className={` transition-all duration-150 border-2  ${card.is_completed ? " border-emerald-300 bg-emerald-50 shadow-emerald-100 shadow-md" : "border-transparent bg-white shadow"}  p-2 mb-2 rounded-lg`}>
+      <CardView card={card} dragListeners={listeners} dragAttributes={attributes}/>
     </div>
   );
 }

@@ -30,7 +30,13 @@ export default function BoardPage() {
   const [activeCard, setActiveCard] = useState<Card | null>(null);
   const [activeColumn, setActiveColumn] = useState<BoardList | null>(null);
   const dispatch = useAppDispatch();
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -126,7 +132,7 @@ export default function BoardPage() {
     // );
   };
 
-  if(!currentBoard) return null;
+  if (!currentBoard) return null;
 
   return (
     <DndContext
@@ -136,7 +142,7 @@ export default function BoardPage() {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-4 p-8 items-start overflow-x-auto transition-all duration-300 ease-in-out">
+      <div className="h-full flex gap-4 p-8 items-start overflow-x-auto overflow-y-hidden transition-all duration-300 ease-in-out">
         <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
           {lists?.map((list) => (
             <List list={list} key={list.id}>
@@ -152,12 +158,10 @@ export default function BoardPage() {
       {createPortal(
         <DragOverlay dropAnimation={{ duration: 350, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
           {activeColumn ? (
-            // Representación estática de la columna
             <div className="bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg shadow-2xl border border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-90">
               <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
               <div className="flex flex-col gap-2">
                 {activeColumn.cards.map((card) => (
-                  // Usamos un div simple o un componente estático, NO el CardItem que tiene useSortable
                   <CardView key={card.id} card={card} isOverlay />
                 ))}
               </div>

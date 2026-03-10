@@ -29,7 +29,7 @@ export default function List({ list, children }: { list: BoardList; children: Re
 
   return (
     <div
-      className={`p-3 flex min-w-72 max-w-72 max-h-[80vh] flex-col ${list.position} gap-2 rounded-lg transition-colors duration-200 ${
+      className={`p-3 flex min-w-72 max-w-72 max-h-full flex-col ${list.position} gap-2 rounded-lg transition-colors duration-200 ${
         isOver ? "bg-zinc-200 dark:bg-zinc-700" : "bg-zinc-100 dark:bg-zinc-800"
       }`}
       ref={setSortableRef}

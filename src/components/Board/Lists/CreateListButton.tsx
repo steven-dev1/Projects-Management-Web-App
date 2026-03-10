@@ -52,7 +52,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
   };
   return (
     <>
-      <Button className="min-w-fit" variant="flat" onPress={onOpen}>
+      <Button className="min-w-fit w-72" variant="flat" onPress={onOpen}>
         <Plus size={18} />
         Crear lista
       </Button>

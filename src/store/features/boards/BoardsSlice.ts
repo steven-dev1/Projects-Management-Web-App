@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Board, BoardResponse, BoardsState } from "./BoardsTypes";
 import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "./BoardsThunks";
 import { arrayMove } from "@dnd-kit/sortable";
-import { createCard } from "./CardsThunks";
+import { archiveCard, createCard, deleteCard, toggleCardCompletion, updateCard } from "./CardsThunks";
 import { createList } from "./ListsThunks";
 
 const initialState: BoardsState = {
@@ -119,7 +119,7 @@ const boardsSlice = createSlice({
 
       // CREATE CARD
       .addCase(createCard.fulfilled, (state, action) => {
-        const newCard = action.payload.data;
+        const newCard = action.payload;
         const board = state.currentBoard;
         if (board) {
           const list = board.lists.find((l) => l.id === newCard.list_id);
@@ -136,6 +136,62 @@ const boardsSlice = createSlice({
             cards: [],
           };
           state.currentBoard.lists.push(newList);
+        }
+      })
+      // DELETE CARD
+      .addCase(deleteCard.fulfilled, (state, action) => {
+        if (!state.currentBoard) return;
+
+        for (const list of state.currentBoard.lists) {
+          const cardIndex = list.cards.findIndex((c) => c.id === action.payload);
+          if (cardIndex !== -1) {
+            list.cards.splice(cardIndex, 1);
+            list.cards.forEach((c, i) => {
+              c.position = i;
+            });
+            break;
+          }
+        }
+      })
+
+      // ARCHIVE CARD
+      .addCase(archiveCard.fulfilled, (state, action) => {
+        if (!state.currentBoard) return;
+
+        for (const list of state.currentBoard.lists) {
+          const cardIndex = list.cards.findIndex((c) => c.id === action.payload);
+          if (cardIndex !== -1) {
+            list.cards.splice(cardIndex, 1);
+            list.cards.forEach((c, i) => {
+              c.position = i;
+            });
+            break;
+          }
+        }
+      })
+
+      // UPDATE CARD
+      .addCase(updateCard.fulfilled, (state, action) => {
+        if (!state.currentBoard) return;
+
+        for (const list of state.currentBoard.lists) {
+          const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
+          if (cardIndex !== -1) {
+            list.cards[cardIndex] = action.payload;
+            break;
+          }
+        }
+      })
+
+      // TOGGLE CARD COMPLETION
+      .addCase(toggleCardCompletion.fulfilled, (state, action) => {
+        if (!state.currentBoard) return;
+        for (const list of state.currentBoard.lists) {
+          const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
+          if (cardIndex !== -1) {
+            list.cards[cardIndex] = action.payload;
+            break;
+          }
         }
       });
   },

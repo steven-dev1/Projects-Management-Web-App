@@ -13,12 +13,12 @@ const MainNavBar = dynamic(() => import('@/components/NavBar/MainNavBar'), { ssr
 export function ReduxProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  if(pathname.startsWith("/boards")) {
-    return <Provider store={store}>
-      <BoardNavBar />
-      {children}
-    </Provider>;
-  }
+  // if(pathname.startsWith("/boards")) {
+  //   return <Provider store={store}>
+      
+  //     {children}
+  //   </Provider>;
+  // }
 
   if (hideOn.some((route) => pathname.startsWith(route))) {
     return <Provider store={store}>

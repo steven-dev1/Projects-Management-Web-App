@@ -35,21 +35,32 @@ export interface ListPayload {
 }
 
 export interface Card {
-  id?: string;
+  id: string;
   title: string;
   description?: string;
   list_id: string;
   position: number;
   due_date?: string;
+  is_completed?: boolean;
+  status?: "active" | "archived";
   created_at?: string;
   updated_at?: string;
 }
+
+export type CreateCardPayload = Omit<Card, "id" | "created_at" | "updated_at">;
 
 export interface BoardForm {
   id?: string;
   name: string;
   description?: string;
 }
+
+export type UpdateCardPayload = {
+  cardId: string;
+  title: string;
+  description?: string;
+  due_date?: string | null;
+};
 
 export interface BoardsState {
   boards: Board[];

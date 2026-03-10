@@ -1,11 +1,10 @@
 "use client";
-import { Board } from "@/store/features/boards/BoardsTypes";
+import { BoardResponse } from "@/store/features/boards/BoardsTypes";
 import ShareButton from "./ShareButton";
 import ViewDropdown from "./ViewDropdown";
 import MembersGroup from "./MembersGroup";
-import { BoardMembersResponse } from "@/types";
 
-export default function BoardHeader({ board }: { board: Board }) {
+export default function BoardHeader({ board }: { board: BoardResponse }) {
   return (
     <div className="flex gap-4 items-center justify-between py-2 px-8 border-b border-zinc-200">
       <div className="flex gap-4 items-center">
@@ -14,7 +13,7 @@ export default function BoardHeader({ board }: { board: Board }) {
       </div>
       <div className="flex items-center gap-4">
         <ShareButton />
-        <MembersGroup members={board.board_members as BoardMembersResponse} />
+        <MembersGroup members={board.board_members} />
       </div>
     </div>
   );

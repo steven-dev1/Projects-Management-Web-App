@@ -13,6 +13,7 @@ export async function POST(request: Request) {
           {
             title: body.title,
             list_id: body.list_id,
+            due_date: body.due_date,
             description: body.description || null,
             position: body.position,
           },

@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Card } from "./BoardsTypes";
+import { Card, CreateCardPayload, UpdateCardPayload } from "./BoardsTypes";
+import { createClient } from "@/lib/supabaseClient";
+import { RootState } from "@/store/store";
+
+const supabase = createClient();
 
 export const updateCardOrder = createAsyncThunk(
   "boards/updateCardOrder",
-  async (
-    payload: { cardId: string; newListId: string; newIndex: number; oldListId: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: { cardId: string; newListId: string; newIndex: number; oldListId: string }, { rejectWithValue }) => {
     try {
       const response = await fetch("/api/boards/cards/reorder", {
         method: "POST",
@@ -18,18 +19,15 @@ export const updateCardOrder = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Error al actualizar el card";
-        return rejectWithValue(message);
+      const message = err instanceof Error ? err.message : "Error al actualizar el card";
+      return rejectWithValue(message);
     }
-  }
+  },
 );
 
-export const createCard = createAsyncThunk(
+export const createCard = createAsyncThunk<Card, CreateCardPayload, { rejectValue: string }>(
   "cards/createCard",
-  async (
-    payload: Card,
-    { rejectWithValue }
-  ) => {
+  async (payload, { rejectWithValue }) => {
     try {
       const response = await fetch("/api/boards/cards", {
         method: "POST",
@@ -38,9 +36,95 @@ export const createCard = createAsyncThunk(
       });
 
       if (!response.ok) throw new Error("Error al crear la tarjeta");
-      return await response.json();
+      const { data } = await response.json();
+      return data;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al crear la tarjeta";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+export const updateCard = createAsyncThunk<Card, UpdateCardPayload, { rejectValue: string }>(
+  "cards/updateCard",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("cards")
+        .update({
+          title: payload.title,
+          description: payload.description,
+          due_date: payload.due_date,
+        })
+        .eq("id", payload.cardId)
+        .select()
+        .single();
+
+      if (error) return rejectWithValue(error.message);
+      return data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al actualizar la tarjeta";
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteCard = createAsyncThunk<string, string, { rejectValue: string }>(
+  "cards/deleteCard",
+  async (cardId, { rejectWithValue }) => {
+    try {
+      const { error } = await supabase.from("cards").delete().eq("id", cardId);
+
+      if (error) return rejectWithValue(error.message);
+      return cardId;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al eliminar la tarjeta";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+export const archiveCard = createAsyncThunk<string, string, { rejectValue: string }>(
+  "cards/archiveCard",
+  async (cardId, { rejectWithValue }) => {
+    try {
+      const { error } = await supabase.rpc("archive_card", {
+        p_card_id: cardId,
+      });
+
+      if (error) return rejectWithValue(error.message);
+
+      return cardId;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al archivar la tarjeta";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+
+export const toggleCardCompletion = createAsyncThunk<Card, string, { rejectValue: string }>(
+  "cards/toggleCardCompletion",
+  async (cardId, { rejectWithValue, getState }) => {
+    try {
+      const state = getState() as RootState;
+      const card = state.boards.currentBoard?.lists
+        .flatMap((l) => l.cards)
+        .find((c) => c.id === cardId);
+
+      if (!card) return rejectWithValue("Card no encontrada");
+
+      const { data, error } = await supabase
+        .from("cards")
+        .update({ is_completed: !card.is_completed })
+        .eq("id", cardId)
+        .select()
+        .single();
+
+      if (error) return rejectWithValue(error.message);
+      return data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al actualizar la tarjeta";
       return rejectWithValue(message);
     }
   }

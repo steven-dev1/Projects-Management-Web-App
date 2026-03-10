@@ -1,11 +1,12 @@
-import { createServerClient } from "@supabase/ssr"
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next({
+  // Usamos una variable mutable porque setAll necesita poder reemplazarla
+  let response = NextResponse.next({
     request,
-  })
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,47 +14,46 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options)
-          })
+          // Paso 1: actualizamos las cookies en la request entrante
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          // Paso 2: creamos una nueva response que incluye la request actualizada
+          // y propagamos las cookies con sus opciones completas (expiración, httpOnly, etc.)
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
         },
       },
-    }
-  )
+    },
+  );
 
+  // getUser() verifica el token con los servidores de Supabase — más seguro que getSession()
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const user = session?.user
+  const { pathname } = request.nextUrl;
 
-  const { pathname } = request.nextUrl
+  const isAuthPage = pathname.startsWith("/signin") || pathname.startsWith("/signup");
 
-  const isAuthPage =
-    pathname.startsWith("/signin") ||
-    pathname.startsWith("/signup")
+  const isPublicRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/";
 
-  const isDashboard =
-    pathname.startsWith("/dashboard")
-
-  if (!user && isDashboard) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/signin"
-    return NextResponse.redirect(url)
+  if (!user && !isPublicRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signin";
+    return NextResponse.redirect(url);
   }
 
   if (user && isAuthPage) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/dashboard"
-    return NextResponse.redirect(url)
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
   }
 
-  return response
+  return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/signin", "/signup"],
-}
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)"],
+};
