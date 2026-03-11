@@ -71,7 +71,7 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
   };
   return (
     <>
-      <Button className="w-full min-w-fit" variant="flat" onPress={onOpen}>
+      <Button className="w-full min-w-fit hover:bg-black/5 data-[hover=true]:bg-black/5" variant="light" onPress={onOpen}>
         <Plus size={18} />
         <span className="hidden sm:inline">Añadir tarjeta</span>
       </Button>

@@ -23,6 +23,7 @@ export interface BoardList {
   cards: Card[];
   position: number;
   board_id: string;
+  status: "active" | "archived";
   background_color?: string;
   created_at: string;
   updated_at: string;
@@ -31,8 +32,15 @@ export interface BoardList {
 export interface ListPayload {
   title: string;
   position: number;
+  background_color?: string;
   board_id: string;
 }
+
+export type UpdateListPayload = {
+  listId: string;
+  title: string;
+  background_color: string;
+};
 
 export interface Card {
   id: string;

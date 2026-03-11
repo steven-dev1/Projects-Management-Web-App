@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
+import { BoardList, Card } from "@/store/features/boards/BoardsTypes";
 
 export async function GET(req: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -13,8 +14,18 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
     .order("position", { referencedTable: "lists", ascending: true })
     .order("position", { referencedTable: "lists.cards", ascending: true })
     .single();
+
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  if (data) {
+    data.lists = data.lists
+      .filter((list: BoardList) => list.status === "active") // ← filtrar listas archivadas
+      .map((list: BoardList) => ({
+        ...list,
+        cards: list.cards.filter((card: Card) => card.status === "active"),
+      }));
   }
 
   return NextResponse.json(data);

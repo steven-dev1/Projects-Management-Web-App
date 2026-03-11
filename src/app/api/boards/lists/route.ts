@@ -13,6 +13,7 @@ export async function POST(request: Request) {
           {
             title: body.title,
             board_id: body.board_id,
+            background_color: body.background_color,
             position: body.position,
           },
         ])

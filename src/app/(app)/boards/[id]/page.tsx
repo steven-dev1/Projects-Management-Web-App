@@ -167,10 +167,9 @@ export default function BoardPage() {
               </div>
             </div>
           ) : activeCard ? (
-            // Representación estática de la card
-            <div className="bg-white p-3 rounded shadow-2xl border-2 border-purple-500 w-72 rotate-2 cursor-grabbing opacity-95">
-              <h4 className="font-medium">{activeCard.title}</h4>
-              <p className="text-sm text-zinc-500">{activeCard.description}</p>
+            <div className="bg-white p-3 rounded-lg shadow-2xl border-2 border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-95">
+              <h4 className="font-medium text-sm">{activeCard.title}</h4>
+              <p className="text-xs font-medium text-zinc-500 truncate">{activeCard.description}</p>
             </div>
           ) : null}
         </DragOverlay>,

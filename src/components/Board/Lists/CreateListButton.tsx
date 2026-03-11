@@ -1,3 +1,4 @@
+import { LIST_COLORS } from "@/lib/consts";
 import { createList } from "@/store/features/boards/ListsThunks";
 import { useAppDispatch } from "@/store/hooks";
 import {
@@ -15,10 +16,12 @@ import {
 } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { ColorPicker } from "./ColorPicker";
 
 export default function CreateListButton({ boardId, lastPosition }: { boardId: string; lastPosition: number }) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>(LIST_COLORS[0].value);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
 
@@ -35,7 +38,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await dispatch(
-        createList({ title: newTitle, board_id: boardId, position: lastPosition }),
+        createList({ title: newTitle, board_id: boardId, background_color: selectedColor, position: lastPosition }),
       ).unwrap();
       addToast({
         title: "Lista creada",
@@ -75,6 +78,14 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
                     label="Nombre de la tarea"
                     placeholder="Escribe el nombre de la tarea"
                     isRequired
+                  />
+                  <div className="w-full">
+                    <p className="text-sm text-zinc-500 mb-2">Color de fondo</p>
+                    <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+                  </div>
+                  <div
+                    className="w-full h-8 rounded-lg transition-colors duration-200"
+                    style={{ backgroundColor: selectedColor }}
                   />
                   <div className="flex items-center gap-2 justify-end w-full mt-2">
                     <Button variant="flat" onPress={onClose}>

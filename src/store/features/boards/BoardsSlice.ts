@@ -3,7 +3,7 @@ import { Board, BoardResponse, BoardsState } from "./BoardsTypes";
 import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "./BoardsThunks";
 import { arrayMove } from "@dnd-kit/sortable";
 import { archiveCard, createCard, deleteCard, toggleCardCompletion, updateCard } from "./CardsThunks";
-import { createList } from "./ListsThunks";
+import { createList, updateList } from "./ListsThunks";
 
 const initialState: BoardsState = {
   boards: [],
@@ -192,6 +192,20 @@ const boardsSlice = createSlice({
             list.cards[cardIndex] = action.payload;
             break;
           }
+        }
+      })
+
+      // UPDATE LIST
+      .addCase(updateList.fulfilled, (state, action) => {
+        if (!state.currentBoard) return;
+        const listIndex = state.currentBoard.lists.findIndex((l) => l.id === action.payload.id);
+        if (listIndex !== -1) {
+          // Preservamos las cards porque el RPC no las devuelve
+          const existingCards = state.currentBoard.lists[listIndex].cards;
+          state.currentBoard.lists[listIndex] = {
+            ...action.payload,
+            cards: existingCards,
+          };
         }
       });
   },

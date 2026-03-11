@@ -1,6 +1,9 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ListPayload } from "./BoardsTypes";
+import { BoardList, ListPayload, UpdateListPayload } from "./BoardsTypes";
+import { createClient } from "@/lib/supabaseClient";
+
+const supabase = createClient();
 
 export const createList = createAsyncThunk(
   "boards/createList",
@@ -35,6 +38,44 @@ export const updateListOrderSupabase = createAsyncThunk(
       return await response.json();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al actualizar el lista";
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const archiveList = createAsyncThunk<string, string, { rejectValue: string }>(
+  "lists/archiveList",
+  async (listId, { rejectWithValue }) => {
+    try {
+
+      const { error } = await supabase.rpc("archive_list", {
+        p_list_id: listId,
+      });
+
+      if (error) return rejectWithValue(error.message);
+      return listId;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al archivar la lista";
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const updateList = createAsyncThunk<BoardList, UpdateListPayload, { rejectValue: string }>(
+  "lists/updateList",
+  async (payload, { rejectWithValue }) => {
+    try {
+
+      const { data, error } = await supabase.rpc("update_list", {
+        p_list_id: payload.listId,
+        p_title: payload.title,
+        p_background_color: payload.background_color,
+      });
+
+      if (error) return rejectWithValue(error.message);
+      return data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al actualizar la lista";
       return rejectWithValue(message);
     }
   }
