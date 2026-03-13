@@ -65,7 +65,7 @@ export default function ResetPasswordForm() {
           }
         />
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        <Button type="submit" color="secondary" className="flex items-center gap-2">
+        <Button type="submit" color="primary" className="flex items-center gap-2">
           {loading ? <Spinner color="default" size="sm" /> : <><Save size={18} /> Cambiar contraseña</>}
         </Button>
       </Form>

@@ -54,7 +54,7 @@ export default function AvatarForm() {
       )}
 
       <label className="cursor-pointer inline-block">
-        <div className="px-4 py-2 bg-morado hover:bg-morado-lighter transition-all duration-100 text-white rounded-xl flex items-center justify-center">
+        <div className="px-4 py-2 bg-primary-500 hover:bg-primary-400 text-white rounded-xl flex items-center justify-center">
           {uploading ? <Spinner color="default" size="sm" /> : "Cambiar avatar"}
         </div>
         <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />

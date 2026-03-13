@@ -85,7 +85,7 @@ export default function DataForm() {
         type="text"
       />
       <SelectsDataForm />
-      <Button type="submit" color="secondary" startContent={<Save size={18} />}>
+      <Button type="submit" color="primary" startContent={<Save size={18} />}>
         Guardar
       </Button>
     </Form>

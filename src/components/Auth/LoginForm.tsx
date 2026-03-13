@@ -28,6 +28,7 @@ export default function LoginForm() {
         }
 
         router.push("/dashboard")
+        router.refresh();
     }
     return (
         <div className="flex justify-center items-center min-h-screen">

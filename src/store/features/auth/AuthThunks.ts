@@ -7,6 +7,7 @@ const supabase = createClient();
 
 export const fetchUserAndProfile = createAsyncThunk("auth/fetchUserAndProfile", async (_, { rejectWithValue }) => {
   try {
+    console.trace("fetchUserAndProfile llamado desde:");
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -27,9 +28,14 @@ export const fetchUserAndProfile = createAsyncThunk("auth/fetchUserAndProfile", 
     let avatarUrl: string | null = null;
 
     if (profile?.avatar_url) {
-      const { data } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
+      const isFullUrl = profile.avatar_url.startsWith("http");
 
-      avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
+      if (isFullUrl) {
+        avatarUrl = profile.avatar_url.split("?")[0];
+      } else {
+        const { data } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
+        avatarUrl = data.publicUrl;
+      }
     }
 
     const { data: preferences, error: preferencesError } = await supabase
@@ -56,9 +62,7 @@ export const fetchUserAndProfile = createAsyncThunk("auth/fetchUserAndProfile", 
 });
 
 export const refreshAvatarUrl = createAsyncThunk<
-  {
-    avatar_url: string | null;
-  },
+  { avatar_url: string | null },
   void,
   { state: RootState; rejectValue: string }
 >("auth/refreshAvatarUrl", async (_, { getState, rejectWithValue }) => {
@@ -66,29 +70,20 @@ export const refreshAvatarUrl = createAsyncThunk<
     const { auth } = getState();
     const userId = auth.user?.id;
 
-    if (!userId) {
-      return rejectWithValue("No hay usuario autenticado");
-    }
+    if (!userId) return rejectWithValue("No hay usuario autenticado");
 
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("avatar_url")
-      .eq("id", userId)
-      .single();
+    const { data: profile, error } = await supabase.from("profiles").select("avatar_url").eq("id", userId).single();
 
-    if (profileError) throw profileError;
-    if (!profile?.avatar_url) {
-      return { avatar_url: null };
-    }
+    if (error) throw error;
 
-    const { data: storageData } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
+    // La URL ya viene completa desde la DB, solo agregamos el timestamp
+    const avatar_url = profile?.avatar_url
+      ? `${profile.avatar_url.split("?")[0]}?t=${Date.now()}` // ← split para evitar timestamps duplicados
+      : null;
 
-    const freshAvatarUrl = storageData.publicUrl ? `${storageData.publicUrl}?t=${Date.now()}` : null;
-
-    return { avatar_url: freshAvatarUrl };
+    return { avatar_url };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Error al refrescar avatar";
-    console.error("refreshAvatarUrl error:", err);
     return rejectWithValue(message);
   }
 });

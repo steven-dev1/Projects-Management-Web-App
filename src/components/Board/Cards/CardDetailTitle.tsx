@@ -18,7 +18,6 @@ export const CardDetailTitle = ({ card }: { card: Card }) => {
   if (editing) {
     return (
       <Input
-        autoFocus
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onBlur={handleSave}

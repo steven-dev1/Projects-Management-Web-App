@@ -7,21 +7,21 @@ import { ArrowRightFromLine, FolderOpenDot, Settings } from "lucide-react";
 import Link from "next/link";
 
 export default function ProfileDropdown() {
-  const { profile } = useAppSelector((state) => state.auth);
+  const { profile, isLoading } = useAppSelector((state) => state.auth);
   return (
     <Dropdown className="items-center gap-2 hidden sm:flex">
       <DropdownTrigger className="cursor-pointer hidden sm:flex">
-        {profile?.avatar_url ? (
+        {isLoading ? (
+          <Skeleton className="w-10 h-10 rounded-full" />
+        ) : (
           <Avatar
             isBordered
             radius="full"
             color="default"
             name={profile?.full_name}
-            src={profile?.avatar_url}
+            src={profile?.avatar_url ?? undefined}
             size="md"
           />
-        ) : (
-          <Skeleton className="w-10 h-10 rounded-full" />
         )}
       </DropdownTrigger>
       <DropdownMenu variant="flat">

@@ -2,19 +2,6 @@ import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 import { Board, BoardForm, BoardResponse } from "@/store/features/boards/BoardsTypes";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function GET(sreq: Request) {
-  const supabase = await createServerSupabaseClient();
-  // const { id } = await context.params;
-
-  const { data, error } = await supabase.from("boards").select("*, lists (*, cards(*))");
-  // .eq("id", id)
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
-  }
-
-  return NextResponse.json(data);
-}
 
 export async function POST(request: Request) {
   const supabase = await createServerSupabaseClient();

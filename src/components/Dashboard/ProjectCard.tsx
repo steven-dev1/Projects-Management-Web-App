@@ -1,31 +1,51 @@
-import { BoardResponse } from "@/store/features/boards/BoardsTypes";
-import { Divider } from "@heroui/react";
-import { ListCheck, Scroll } from "lucide-react";
+import { Board } from "@/store/features/boards/BoardsTypes";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@heroui/react";
+import { Ellipsis, PenBoxIcon } from "lucide-react";
 import Link from "next/link";
+import { EditBoardModal } from "./EditBoardModal";
 
-export default function ProjectCard({ board }: { board: BoardResponse }) {
-  const totalCards = board.lists?.reduce((acc, list) => acc + list.cards.length, 0) ?? 0;
+export function ProjectCard({ board }: { board: Board }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <Link
-      href={`/boards/${board.id}`}
-      className="flex flex-col border hover:shadow transition-all duration-150 bg-white border-zinc-200 rounded-lg py-2 px-3 md:p-4"
-    >
-      <h1 className="text-base md:text-lg font-semibold">{board.name}</h1>
-      <p className="text-xs md:text-sm text-zinc-500 truncate">{board.description}</p>
-      <Divider className="my-2 md:my-4" />
-      <div className="flex items-center justify-end">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 py-1 px-2 rounded-full bg-amber-100 ">
-            <Scroll size={16} color="#e17100" />
-            <span className="text-xs md:text-sm font-semibold text-amber-600">{board.lists?.length} listas</span>
-          </div>
-          <Divider orientation="vertical" />
-          <div className="flex items-center gap-2 py-1 px-2 rounded-full bg-emerald-100 ">
-            <ListCheck size={16} color="#009966" />
-            <span className="text-xs md:text-sm font-semibold text-emerald-600">{totalCards} tareas</span>
+    <>
+      <div className="group relative flex flex-col bg-white border border-zinc-200 rounded-xl overflow-hidden hover:shadow-md hover:border-zinc-300 transition-all duration-200">
+        <div className="h-1.5 w-full" style={{ backgroundColor: board.background_color ?? "#006fee" }} />
+
+        <div className="flex flex-col flex-1 p-4 gap-3">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2">
+            <Link href={`/boards/${board.id}`} className="min-w-0 flex-1">
+              <div className="min-w-0">
+                <h2 className="text-base font-semibold text-zinc-800 truncate hover:text-zinc-500 transition-colors">
+                  {board.name}
+                </h2>
+                {board.description && <p className="text-xs text-zinc-400 mt-0.5 truncate">{board.description}</p>}
+              </div>
+            </Link>
+            <div className="shrink-0" onClick={(e) => e.preventDefault()}>
+              <Dropdown className="cursor-pointer">
+                <DropdownTrigger>
+                  <button className="p-1 cursor-pointer rounded-lg hover:bg-zinc-200 text-zinc-400 hover:text-zinc-600 opacity-0 group-hover:opacity-100 transition-all">
+                    <Ellipsis size={15} />
+                  </button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  onAction={(key) => {
+                    if (key === "edit") onOpen();
+                  }}
+                >
+                  <DropdownItem key="edit" startContent={<PenBoxIcon size={14} />}>
+                    Editar
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
         </div>
       </div>
-    </Link>
+
+      <EditBoardModal boardId={board.id as string} isOpen={isOpen} onClose={onClose} />
+    </>
   );
 }

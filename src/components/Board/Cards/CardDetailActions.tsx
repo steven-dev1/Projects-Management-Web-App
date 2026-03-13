@@ -11,7 +11,7 @@ export const CardDetailActions = ({ card, onClose }: { card: Card; onClose: () =
     <>
       <Button
         size="sm"
-        variant="flat"
+        variant="light"
         className="justify-start"
         startContent={<CheckSquare size={14} />}
         onPress={() => dispatch(toggleCardCompletion(card.id!))}
@@ -20,7 +20,7 @@ export const CardDetailActions = ({ card, onClose }: { card: Card; onClose: () =
       </Button>
       <Button
         size="sm"
-        variant="flat"
+        variant="light"
         className="justify-start"
         startContent={<ArchiveIcon size={14} />}
         onPress={async () => {
@@ -33,7 +33,7 @@ export const CardDetailActions = ({ card, onClose }: { card: Card; onClose: () =
       <Divider className="my-1" />
       <Button
         size="sm"
-        variant="flat"
+        variant="light"
         color="danger"
         className="justify-start"
         startContent={<Trash2 size={14} />}

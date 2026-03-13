@@ -18,3 +18,7 @@
   --foreground: #171717;
 }
 
+.template-card:hover {
+  box-shadow: 0 2px 3px color-mix(in srgb, var(--card-color) 30%, transparent);
+}
+

@@ -1,3 +1,4 @@
+'use client'
 import { Board } from "@/store/features/boards/BoardsTypes";
 import { createBoard,  } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch } from "@/store/hooks";
@@ -39,7 +40,7 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
   };
   return (
     <>
-      <Button size={size} className="bg-morado min-w-fit whitespace-nowrap hidden sm:block text-white" onPress={onOpen}>
+      <Button color="primary" size={size} className="min-w-fit whitespace-nowrap hidden sm:block" onPress={onOpen}>
         Crear
       </Button>
       <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
@@ -56,7 +57,6 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
                   }}
                 >
                   <Input
-                    autoFocus
                     name="name"
                     label="Nombre del proyecto"
                     placeholder="Escribe el nombre del proyecto"
@@ -71,7 +71,7 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
                     <Button variant="flat" onPress={onClose}>
                       Cancelar
                     </Button>
-                    <Button className="bg-morado text-white" type="submit">
+                    <Button color="primary" type="submit">
                       {loading ? <Spinner color="default" size="sm" /> : "Crear"}
                     </Button>
                   </div>

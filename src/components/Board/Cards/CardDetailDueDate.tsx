@@ -1,0 +1,71 @@
+// CardDetailDueDate.tsx
+"use client";
+import { useState } from "react";
+import { DateInput, Button } from "@heroui/react";
+import { parseAbsoluteToLocal, now, getLocalTimeZone, type ZonedDateTime } from "@internationalized/date";
+import { CalendarIcon, Pencil } from "lucide-react";
+import { useAppDispatch } from "@/store/hooks";
+import { getCardDateStatus } from "@/lib/utils";
+import { Card } from "@/store/features/boards/BoardsTypes";
+import { updateCard } from "@/store/features/boards/CardsThunks";
+
+export const CardDetailDueDate = ({ card }: { card: Card }) => {
+  const dispatch = useAppDispatch();
+  const [isEditing, setIsEditing] = useState(false);
+  const [dueDate, setDueDate] = useState<ZonedDateTime | null>(
+    card.due_date ? parseAbsoluteToLocal(card.due_date) : now(getLocalTimeZone())
+  );
+
+  const dateStatus = getCardDateStatus(card.due_date, card.is_completed);
+  const isOverdue = dateStatus === "overdue";
+  const isDueSoon = dateStatus === "due-soon";
+
+  const handleSave = async () => {
+    if (!dueDate) return;
+    await dispatch(updateCard({
+      cardId: card.id!,
+      title: card.title,
+      description: card.description,
+      due_date: dueDate.toDate().toISOString(),
+    }));
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div className="flex flex-col gap-2">
+        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Fecha límite</p>
+        <DateInput value={dueDate} onChange={setDueDate} granularity="day" />
+        <div className="flex gap-2">
+          <Button size="sm" variant="flat" color="primary" onPress={handleSave}>Guardar</Button>
+          <Button size="sm" variant="flat" onPress={() => setIsEditing(false)}>Cancelar</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Fecha límite</p>
+      <div className="flex items-center gap-2">
+        <div className={`flex items-center gap-2 py-1 px-2 rounded-lg w-fit ${
+          isOverdue ? "bg-red-50 text-red-600" : isDueSoon ? "bg-amber-50 text-amber-600" : "text-zinc-600"
+        }`}>
+          <CalendarIcon size={14} />
+          <span className="text-sm">
+            {card.due_date
+              ? new Date(card.due_date).toLocaleDateString("es-ES", {
+                  weekday: "long", year: "numeric", month: "long", day: "numeric",
+                })
+              : "Sin fecha"}
+          </span>
+          {isOverdue && <span className="text-xs font-semibold">• Vencida</span>}
+          {isDueSoon && <span className="text-xs font-semibold">• Vence pronto</span>}
+        </div>
+        <button onClick={() => setIsEditing(true)} className="text-zinc-400 hover:text-zinc-600">
+          <Pencil size={13} />
+        </button>
+      </div>
+    </div>
+  );
+};

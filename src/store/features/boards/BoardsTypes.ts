@@ -1,13 +1,24 @@
-import { BoardMembersResponse } from "@/types";
+import { BoardMembersResponse, Checklist, Label } from "@/types";
 
-export interface BoardResponse extends Board { 
+export interface BoardResponse extends Board {
   lists: BoardList[];
+  labels: Label[]
   board_members: BoardMembersResponse;
   created_at: string;
   updated_at: string;
 }
-export interface Board{
+
+export interface UpdatedBoardPayload {
+  boardId: string;
+  name: string;
+  description?: string;
+  background_color?: string;
+}
+
+export interface Board {
   id: string;
+  owner_id: string;
+  lists: BoardList[];
   name: string;
   description?: string;
   background_color?: string;
@@ -50,6 +61,9 @@ export interface Card {
   position: number;
   due_date?: string;
   is_completed?: boolean;
+  labels?: Label[];
+  checklists?: Checklist[];
+  assigned_to?: string | null;
   status?: "active" | "archived";
   created_at?: string;
   updated_at?: string;
@@ -75,4 +89,5 @@ export interface BoardsState {
   currentBoard: BoardResponse | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  searchQuery: string,
 }

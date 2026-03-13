@@ -1,7 +1,9 @@
 "use client";
 import BoardHeader from "@/components/Board/BoardHeader";
 import SkeletonBoardHeader from "@/components/Board/SkeletonBoardHeader";
-import BoardNavBar from "@/components/NavBar/BoardNavBar";
+import BoardNavBar from "@/components/Board/BoardNavBar";
+import BoardNavbarSkeleton from "@/components/NavBar/BoardNavBarSkeleton";
+import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
 import { fetchBoardById } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
@@ -14,15 +16,24 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!id) return;
+    dispatch(clearCurrentBoard());
     dispatch(fetchBoardById(id));
+    return () => {
+      dispatch(clearCurrentBoard());
+    };
   }, [dispatch, id]);
 
-  if (!currentBoard) return <SkeletonBoardHeader />;
   return (
-    <div className="flex flex-col" style={{ height: '100dvh' }}>
+    <div className="flex flex-col" style={{ height: "100dvh" }}>
       <BoardNavBar />
-      <BoardHeader board={currentBoard} />
-      <main className="flex-1 overflow-hidden">{children}</main>
+      {!currentBoard ? (
+        <SkeletonBoardHeader />
+      ) : (
+        <>
+          <BoardHeader board={currentBoard} />
+          <main className="flex-1 overflow-hidden">{children}</main>
+        </>
+      )}
     </div>
   );
 }

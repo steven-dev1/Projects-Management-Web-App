@@ -28,11 +28,11 @@ type CreateCardButtonProps = {
 export default function CreateCardButton({ listId, lastPosition }: CreateCardButtonProps) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const [dueDate, setDueDate] = useState<ZonedDateTime | null>(now(getLocalTimeZone()));
+  const [dueDate, setDueDate] = useState<ZonedDateTime | null>(null);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const zonaHoraria = getLocalTimeZone();
-  const tiempoActual = now(zonaHoraria);
+  const zonaHoraria = getLocalTimeZone()
+  const tiempoActual = now(zonaHoraria)
 
   const handleSubmit = async (formData: FormData, e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -52,7 +52,7 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
           title: newTitle,
           description: newDescription,
           list_id: listId,
-          due_date: (dueDate ?? tiempoActual).toDate().toISOString(),
+          due_date: dueDate?.toDate().toISOString() ?? undefined,
           position: lastPosition,
         }),
       ).unwrap();
@@ -89,7 +89,6 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
                   }}
                 >
                   <Input
-                    autoFocus
                     name="title"
                     label="Nombre de la tarea"
                     placeholder="Escribe el nombre de la tarea"
@@ -102,7 +101,8 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
                   />
                   <DateInput
                     name="due_date"
-                    label="Date and time"
+                    label="Fecha límite"
+                    isRequired={false}
                     value={dueDate}
                     onChange={setDueDate}
                     minValue={tiempoActual}

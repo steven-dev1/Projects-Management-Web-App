@@ -1,12 +1,10 @@
 import { archiveCard } from "@/store/features/boards/CardsThunks";
 import { useAppDispatch } from "@/store/hooks";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@heroui/react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@heroui/react";
 import { Ellipsis, PenBoxIcon, Trash2 } from "lucide-react";
-import { EditCardModal } from "./EditCardModal";
 
-export const OptionsCard = ({ cardId }: { cardId: string }) => {
+export const OptionsCard = ({ cardId, onOpenDetail }: { cardId: string; onOpenDetail: () => void }) => {
   const dispatch = useAppDispatch();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
       <Dropdown>
@@ -18,7 +16,7 @@ export const OptionsCard = ({ cardId }: { cardId: string }) => {
         <DropdownMenu
           onAction={(key) => {
             if (key === "archive") dispatch(archiveCard(cardId));
-            if (key === "edit") onOpen();
+            if (key === "edit") onOpenDetail();
           }}
         >
           <DropdownItem startContent={<PenBoxIcon size={16} />} key={"edit"} className="flex items-center gap-2">
@@ -34,7 +32,6 @@ export const OptionsCard = ({ cardId }: { cardId: string }) => {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <EditCardModal cardId={cardId} isOpen={isOpen} onClose={onClose} />
     </>
   );
 };

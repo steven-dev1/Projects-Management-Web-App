@@ -1,21 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Board, BoardResponse, BoardsState } from "./BoardsTypes";
-import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "./BoardsThunks";
+import { BoardsState } from "./BoardsTypes";
 import { arrayMove } from "@dnd-kit/sortable";
-import { archiveCard, createCard, deleteCard, toggleCardCompletion, updateCard } from "./CardsThunks";
-import { createList, updateList } from "./ListsThunks";
+import { BoardReducers } from "./reducers/boardReducers";
+import { CardReducers } from "./reducers/cardReducers";
+import { ListReducers } from "./reducers/listReducers";
+import { LabelsReducers } from "./reducers/labelsReducers";
+import { ChecklistsReducers } from "./reducers/checklistsReducers";
 
 const initialState: BoardsState = {
   boards: [],
   currentBoard: null,
   status: "idle",
   error: null,
+  searchQuery: "",
 };
 
 const boardsSlice = createSlice({
   name: "boards",
   initialState,
   reducers: {
+    clearCurrentBoard: (state) => {
+      state.currentBoard = null;
+    },
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload;
+    },
     moveCard: (state, action) => {
       const { cardId, fromListId, toListId, newIndex } = action.payload;
       const board = state.currentBoard;
@@ -57,159 +66,13 @@ const boardsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-
-      // FETCH
-      .addCase(fetchBoards.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(fetchBoards.fulfilled, (state, action: PayloadAction<Board[]>) => {
-        state.status = "succeeded";
-        state.boards = action.payload;
-      })
-      .addCase(fetchBoards.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload as string;
-      })
-
-      // FETCH BY ID
-      .addCase(fetchBoardById.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(fetchBoardById.fulfilled, (state, action: PayloadAction<BoardResponse>) => {
-        state.status = "succeeded";
-        state.currentBoard = action.payload;
-      })
-      .addCase(fetchBoardById.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload as string;
-      })
-
-      // CREATE
-      .addCase(createBoard.fulfilled, (state, action: PayloadAction<BoardResponse>) => {
-        state.boards.unshift(action.payload);
-      })
-      .addCase(createBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-      })
-
-      // UPDATE
-      .addCase(updateBoard.fulfilled, (state, action: PayloadAction<Board[]>) => {
-        if (action.payload?.length) {
-          const updatedBoard = action.payload[0];
-          const index = state.boards.findIndex((b) => b.id === updatedBoard.id);
-          if (index !== -1) {
-            state.boards[index] = updatedBoard;
-          }
-        }
-      })
-      .addCase(updateBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-      })
-
-      // DELETE
-      .addCase(deleteBoard.fulfilled, (state, action: PayloadAction<string>) => {
-        state.boards = state.boards.filter((b) => b.id !== action.payload);
-      })
-      .addCase(deleteBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-      })
-
-      // CREATE CARD
-      .addCase(createCard.fulfilled, (state, action) => {
-        const newCard = action.payload;
-        const board = state.currentBoard;
-        if (board) {
-          const list = board.lists.find((l) => l.id === newCard.list_id);
-          if (list) {
-            list.cards.push(newCard);
-          }
-        }
-      })
-      // CREATE LIST
-      .addCase(createList.fulfilled, (state, action) => {
-        if (state.currentBoard && action.payload.data) {
-          const newList = {
-            ...action.payload.data,
-            cards: [],
-          };
-          state.currentBoard.lists.push(newList);
-        }
-      })
-      // DELETE CARD
-      .addCase(deleteCard.fulfilled, (state, action) => {
-        if (!state.currentBoard) return;
-
-        for (const list of state.currentBoard.lists) {
-          const cardIndex = list.cards.findIndex((c) => c.id === action.payload);
-          if (cardIndex !== -1) {
-            list.cards.splice(cardIndex, 1);
-            list.cards.forEach((c, i) => {
-              c.position = i;
-            });
-            break;
-          }
-        }
-      })
-
-      // ARCHIVE CARD
-      .addCase(archiveCard.fulfilled, (state, action) => {
-        if (!state.currentBoard) return;
-
-        for (const list of state.currentBoard.lists) {
-          const cardIndex = list.cards.findIndex((c) => c.id === action.payload);
-          if (cardIndex !== -1) {
-            list.cards.splice(cardIndex, 1);
-            list.cards.forEach((c, i) => {
-              c.position = i;
-            });
-            break;
-          }
-        }
-      })
-
-      // UPDATE CARD
-      .addCase(updateCard.fulfilled, (state, action) => {
-        if (!state.currentBoard) return;
-
-        for (const list of state.currentBoard.lists) {
-          const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
-          if (cardIndex !== -1) {
-            list.cards[cardIndex] = action.payload;
-            break;
-          }
-        }
-      })
-
-      // TOGGLE CARD COMPLETION
-      .addCase(toggleCardCompletion.fulfilled, (state, action) => {
-        if (!state.currentBoard) return;
-        for (const list of state.currentBoard.lists) {
-          const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
-          if (cardIndex !== -1) {
-            list.cards[cardIndex] = action.payload;
-            break;
-          }
-        }
-      })
-
-      // UPDATE LIST
-      .addCase(updateList.fulfilled, (state, action) => {
-        if (!state.currentBoard) return;
-        const listIndex = state.currentBoard.lists.findIndex((l) => l.id === action.payload.id);
-        if (listIndex !== -1) {
-          // Preservamos las cards porque el RPC no las devuelve
-          const existingCards = state.currentBoard.lists[listIndex].cards;
-          state.currentBoard.lists[listIndex] = {
-            ...action.payload,
-            cards: existingCards,
-          };
-        }
-      });
+    BoardReducers(builder);
+    CardReducers(builder);
+    ListReducers(builder);
+    LabelsReducers(builder);
+    ChecklistsReducers(builder);
   },
 });
 
-export const { moveCard, moveList } = boardsSlice.actions;
+export const { moveCard, moveList, clearCurrentBoard, setSearchQuery } = boardsSlice.actions;
 export default boardsSlice.reducer;

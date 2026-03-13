@@ -38,7 +38,12 @@ export const EditCardForm = ({ card, onClose }: { card: Card; onClose: () => voi
   return (
     <Form onSubmit={(e) => handleSubmit(new FormData(e.currentTarget), e)}>
       <Input name="title" defaultValue={card.title} label="Título" placeholder="Escribe el título de la tarjeta" />
-      <Input name="description" defaultValue={card.description} label="Descripción" placeholder="Escribe la descripción de la tarjeta" />
+      <Input
+        name="description"
+        defaultValue={card.description}
+        label="Descripción"
+        placeholder="Escribe la descripción de la tarjeta"
+      />
       <DateInput label="Fecha límite" defaultValue={dueDate} onChange={setDueDate} />
       <div className="flex items-center gap-2">
         <Button variant="flat" onPress={onClose}>

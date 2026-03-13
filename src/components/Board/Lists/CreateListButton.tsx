@@ -73,7 +73,6 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
                   }}
                 >
                   <Input
-                    autoFocus
                     name="title"
                     label="Nombre de la tarea"
                     placeholder="Escribe el nombre de la tarea"

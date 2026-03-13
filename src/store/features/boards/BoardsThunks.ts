@@ -1,18 +1,43 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Board, BoardForm, BoardResponse } from "./BoardsTypes";
+import { BoardForm, BoardResponse, UpdatedBoardPayload } from "./BoardsTypes";
+import { createClient } from "@/lib/supabaseClient";
+
+const supabase = createClient();
 
 export const fetchBoards = createAsyncThunk("boards/fetchBoards", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch("/api/boards");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return rejectWithValue("No autenticado");
 
-    if (!response.ok) {
-      throw new Error("Error obteniendo la lista de boards");
-    }
+    const { data, error } = await supabase
+      .from("boards")
+      .select(
+        `
+    *,
+    board_members!inner(user_id),
+    lists(
+      id,
+      cards(
+        id,
+        title,
+        assigned_to,
+        due_date,
+        is_completed,
+        status
+      )
+    )
+  `,
+      )
+      .eq("board_members.user_id", user.id)
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
 
-    const data = await response.json();
+    if (error) return rejectWithValue(error.message);
     return data;
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Ha ocurrido un error desconocido";
+    const message = err instanceof Error ? err.message : "Error obteniendo boards";
     return rejectWithValue(message);
   }
 });
@@ -62,21 +87,25 @@ export const createBoard = createAsyncThunk<BoardResponse, BoardForm, { rejectVa
   },
 );
 
-export const updateBoard = createAsyncThunk<Board[], Board, { rejectValue: string }>(
+export const updateBoard = createAsyncThunk<BoardResponse, UpdatedBoardPayload, { rejectValue: string }>(
   "boards/updateBoard",
-  async ({ id, name, description }: Board, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/boards", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, name, description }),
-      });
-      const data = await response.json();
+      const { data, error } = await supabase
+        .from("boards")
+        .update({
+          name: payload.name,
+          description: payload.description,
+          background_color: payload.background_color,
+        })
+        .eq("id", payload.boardId)
+        .select()
+        .single();
+
+      if (error) return rejectWithValue(error.message);
       return data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al actualizar el tablero";
+      const message = err instanceof Error ? err.message : "Error al actualizar el proyecto";
       return rejectWithValue(message);
     }
   },
@@ -101,4 +130,3 @@ export const deleteBoard = createAsyncThunk<string, string, { rejectValue: strin
     }
   },
 );
-

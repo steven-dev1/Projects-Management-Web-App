@@ -109,7 +109,6 @@ export const validateCurrentPassword = async (
   email: string,
 ) => {
   try {
-    console.log("Email:", email);
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: email,
       password: currentPassword,
