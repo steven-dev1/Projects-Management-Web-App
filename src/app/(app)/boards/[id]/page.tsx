@@ -1,5 +1,4 @@
 "use client";
-
 import CardItem from "@/components/Board/Cards/CardItem";
 import CardView from "@/components/Board/Cards/CardView";
 import CreateListButton from "@/components/Board/Lists/CreateListButton";
@@ -22,7 +21,6 @@ import {
 } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { useState } from "react";
-import { createPortal } from "react-dom";
 
 export default function BoardPage() {
   const currentBoard = useAppSelector((state) => state.boards.currentBoard);
@@ -154,26 +152,23 @@ export default function BoardPage() {
         </SortableContext>
         <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />
       </div>
-
-      {createPortal(
-        <DragOverlay dropAnimation={{ duration: 350, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
-          {activeColumn ? (
-            <div className="bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg shadow-2xl border border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-90">
-              <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
-              <div className="flex flex-col gap-2">
-                {activeColumn.cards.map((card) => (
-                  <CardView key={card.id} card={card} isOverlay />
-                ))}
-              </div>
+      <DragOverlay dropAnimation={{ duration: 350, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
+        {activeColumn ? (
+          <div className="bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg shadow-2xl border border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-90">
+            <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
+            <div className="flex flex-col gap-2">
+              {activeColumn.cards.map((card) => (
+                <CardView key={card.id} card={card} isOverlay />
+              ))}
             </div>
-          ) : activeCard ? (
-            <div className="bg-white p-3 rounded-lg shadow-2xl border-2 border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-95">
-              <h4 className="font-medium text-sm">{activeCard.title}</h4>
-            </div>
-          ) : null}
-        </DragOverlay>,
-        document.body,
-      )}
+          </div>
+        ) : activeCard ? (
+          <div className="bg-white p-3 rounded-lg shadow-2xl border-2 border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-95">
+            <h4 className="font-medium text-sm">{activeCard.title}</h4>
+          </div>
+        ) : null}
+      </DragOverlay>
+      ,
     </DndContext>
   );
 }

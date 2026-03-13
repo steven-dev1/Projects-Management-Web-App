@@ -1,14 +1,14 @@
 "use client";
 import BoardHeader from "@/components/Board/BoardHeader";
 import SkeletonBoardHeader from "@/components/Board/SkeletonBoardHeader";
-import BoardNavBar from "@/components/Board/BoardNavBar";
-import BoardNavbarSkeleton from "@/components/NavBar/BoardNavBarSkeleton";
 import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
 import { fetchBoardById } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 
+const BoardNavBar = dynamic(() => import("@/components/Board/BoardNavBar"), { ssr: false });
 export default function BoardLayout({ children }: { children: React.ReactNode }) {
   const { id } = useParams<{ id: string }>();
   const { currentBoard } = useAppSelector((state) => state.boards);

@@ -1,10 +1,12 @@
 import { CalendarIcon, CheckCircle2, Circle, Search, SearchX } from "lucide-react";
 import { CardDetailModal } from "./Cards/CardDetailModal";
 import { Card } from "@/store/features/boards/BoardsTypes";
-import { Input, useDisclosure } from "@heroui/react";
+import { useDisclosure } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAppSelector } from "@/store/hooks";
 import { HighlightedText } from "./HighlightedText";
+import { format } from "date-fns";
+import { es } from "date-fns/locale/es";
 
 export const BoardSearch = () => {
   const [query, setQuery] = useState("");
@@ -16,19 +18,22 @@ export const BoardSearch = () => {
   const lists = useAppSelector((state) => state.boards.currentBoard?.lists);
 
   const results = useMemo(() => {
-  if (!query.trim() || !lists) return [];
-  const q = query.toLowerCase();
-  return lists
-    .map((list) => ({
-      list,
-      cards: list.cards.filter(
-        (card) =>
-          card.title.toLowerCase().includes(q) ||
-          card.description?.replace(/<[^>]*>/g, "").toLowerCase().includes(q)
-      ),
-    }))
-    .filter((group) => group.cards.length > 0);
-}, [query, lists]);
+    if (!query.trim() || !lists) return [];
+    const q = query.toLowerCase();
+    return lists
+      .map((list) => ({
+        list,
+        cards: list.cards.filter(
+          (card) =>
+            card.title.toLowerCase().includes(q) ||
+            card.description
+              ?.replace(/<[^>]*>/g, "")
+              .toLowerCase()
+              .includes(q),
+        ),
+      }))
+      .filter((group) => group.cards.length > 0);
+  }, [query, lists]);
 
   const totalResults = results.reduce((acc, g) => acc + g.cards.length, 0);
 
@@ -52,25 +57,25 @@ export const BoardSearch = () => {
   return (
     <>
       <div ref={containerRef} className="relative w-full max-w-4xl">
-        <Input
-          ref={inputRef}
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(e.target.value.trim().length > 0);
-          }}
-          onFocus={() => {
-            if (query.trim()) setIsOpen(true);
-          }}
-          onClear={() => {
-            setQuery("");
-            setIsOpen(false);
-          }}
-          placeholder="Buscar tarjetas..."
-          size="md"
-          startContent={<Search size={16} className="text-zinc-400" />}
-          isClearable
-        />
+        <div className="relative w-full">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+          <input
+            id="board-search"
+            aria-label="Buscar en el tablero"
+            ref={inputRef}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setIsOpen(e.target.value.trim().length > 0);
+            }}
+            onFocus={() => {
+              if (query.trim()) setIsOpen(true);
+            }}
+            placeholder="Buscar tarjetas..."
+            type="search"
+            className="w-full pl-9 outline-none rounded-xl text-sm border p-2 border-zinc-500"
+          />
+        </div>
 
         {isOpen && (
           <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-zinc-200 rounded-xl shadow-xl z-50 max-h-125 overflow-y-auto">
@@ -111,7 +116,9 @@ export const BoardSearch = () => {
                           <Circle size={14} className="text-zinc-300 shrink-0 mt-0.5" />
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className={`text-sm font-medium truncate ${card.is_completed ? "line-through text-zinc-400" : "text-zinc-700"}`}>
+                          <p
+                            className={`text-sm font-medium truncate ${card.is_completed ? "line-through text-zinc-400" : "text-zinc-700"}`}
+                          >
                             <HighlightedText text={card.title} query={query} />
                           </p>
                           {card.description && (
@@ -123,9 +130,7 @@ export const BoardSearch = () => {
                             <div className="flex items-center gap-1 mt-1">
                               <CalendarIcon size={11} className="text-zinc-300" />
                               <span className="text-xs text-zinc-400">
-                                {new Date(card.due_date).toLocaleDateString("es-ES", {
-                                  day: "numeric", month: "short"
-                                })}
+                                {format(new Date(card.due_date), "d MMM", { locale: es })}
                               </span>
                             </div>
                           )}

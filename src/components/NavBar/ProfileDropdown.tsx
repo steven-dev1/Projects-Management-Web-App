@@ -1,3 +1,4 @@
+'use client';
 import { signOutAction } from "@/lib/SignOutAction";
 import { useAppSelector } from "@/store/hooks";
 import { Avatar } from "@heroui/avatar";
@@ -9,12 +10,13 @@ import Link from "next/link";
 export default function ProfileDropdown() {
   const { profile, isLoading } = useAppSelector((state) => state.auth);
   return (
-    <Dropdown className="items-center gap-2 hidden sm:flex">
+    <Dropdown suppressHydrationWarning className="items-center gap-2 hidden sm:flex">
       <DropdownTrigger className="cursor-pointer hidden sm:flex">
         {isLoading ? (
           <Skeleton className="w-10 h-10 rounded-full" />
         ) : (
           <Avatar
+            id="profile-avatar-btn"
             isBordered
             radius="full"
             color="default"

@@ -25,9 +25,9 @@ export default function NotificationsBell() {
   };
 
   return (
-    <Dropdown placement="bottom-end">
+    <Dropdown suppressHydrationWarning placement="bottom-end">
       <DropdownTrigger>
-        <Button isIconOnly variant="light" className="relative">
+        <Button id="notifications-bell-btn" isIconOnly variant="light" className="relative">
           <Badge
             content={unreadCount > 0 ? unreadCount : null}
             color="danger"
