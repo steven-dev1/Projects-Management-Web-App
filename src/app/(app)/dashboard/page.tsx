@@ -7,6 +7,7 @@ import DashboardStats from "@/components/Dashboard/DashboardStats";
 import MyAssignedCards from "@/components/Dashboard/MyAssignedCards";
 import UpcomingDueDates from "@/components/Dashboard/UpcomingDueDates";
 import ProjectsList from "@/components/Dashboard/ProjectsList";
+import MaxWidth from "@/components/UI/MaxWidth";
 
 export default function DashboardPage() {
   const { boards, status } = useAppSelector((state) => state.boards);
@@ -42,7 +43,7 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="flex flex-col gap-16 p-6">
+    <MaxWidth className="flex flex-col gap-16 p-6">
       {/* Estadísticas */}
       <DashboardStats boards={boards} allCards={allCards} />
 
@@ -71,6 +72,6 @@ export default function DashboardPage() {
           <UpcomingDueDates cards={upcomingCards} boards={boards} />
         </section>
       </div>
-    </div>
+    </MaxWidth>
   );
 }

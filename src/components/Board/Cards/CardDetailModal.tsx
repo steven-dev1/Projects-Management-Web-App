@@ -44,10 +44,9 @@ export const CardDetailModal = ({
       type: "card_assigned",
       title: "Te asignaron a una tarjeta",
       message: `Fuiste asignado a "${card!.title}" en "${currentBoard?.name}"`,
-      url: `/board/${currentBoard?.id}`,
+      url: `/boards/${currentBoard?.id}`,
     });
   }
-
   onClose();
 };
 
