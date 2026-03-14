@@ -29,7 +29,6 @@ export default function NotificationsListener() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log("Notificación recibida:", payload);
           const notification = payload.new as AppNotification;
           dispatch(addNotification(notification));
           addToast({
@@ -39,9 +38,7 @@ export default function NotificationsListener() {
           });
         },
       )
-      .subscribe((status) => {
-        console.log("Estado del canal:", status); // <- y esto
-      });
+      .subscribe();
 
     return () => {
       supabase.removeChannel(channel);

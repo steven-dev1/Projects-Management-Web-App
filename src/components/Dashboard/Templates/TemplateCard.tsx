@@ -6,7 +6,6 @@ import TemplateModal from "./TemplateModal";
 
 export default function TemplateCard({ template }: { template: BoardTemplate }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log(template.color);
   return (
     <>
       <div
