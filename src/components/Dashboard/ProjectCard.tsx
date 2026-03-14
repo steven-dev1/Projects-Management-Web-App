@@ -1,0 +1,51 @@
+import { Board } from "@/store/features/boards/BoardsTypes";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@heroui/react";
+import { Ellipsis, PenBoxIcon } from "lucide-react";
+import Link from "next/link";
+import { EditBoardModal } from "./EditBoardModal";
+
+export function ProjectCard({ board }: { board: Board }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <div className="group relative flex flex-col bg-white border border-zinc-200 rounded-xl overflow-hidden hover:shadow-md hover:border-zinc-300 transition-all duration-200">
+        <div className="h-1.5 w-full" style={{ backgroundColor: board.background_color ?? "#006fee" }} />
+
+        <div className="flex flex-col flex-1 p-4 gap-3">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2">
+            <Link href={`/boards/${board.id}`} className="min-w-0 flex-1">
+              <div className="min-w-0">
+                <h2 className="text-base font-semibold text-zinc-800 truncate hover:text-zinc-500 transition-colors">
+                  {board.name}
+                </h2>
+                {board.description && <p className="text-xs text-zinc-400 mt-0.5 truncate">{board.description}</p>}
+              </div>
+            </Link>
+            <div className="shrink-0" onClick={(e) => e.preventDefault()}>
+              <Dropdown className="cursor-pointer">
+                <DropdownTrigger>
+                  <button className="p-1 cursor-pointer rounded-lg hover:bg-zinc-200 text-zinc-400 hover:text-zinc-600 opacity-0 group-hover:opacity-100 transition-all">
+                    <Ellipsis size={15} />
+                  </button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  onAction={(key) => {
+                    if (key === "edit") onOpen();
+                  }}
+                >
+                  <DropdownItem key="edit" startContent={<PenBoxIcon size={14} />}>
+                    Editar
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <EditBoardModal boardId={board.id as string} isOpen={isOpen} onClose={onClose} />
+    </>
+  );
+}

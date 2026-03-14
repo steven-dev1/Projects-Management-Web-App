@@ -1,0 +1,60 @@
+import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
+import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "../BoardsThunks";
+import { BoardsState } from "../BoardsTypes";
+
+export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
+  builder
+    .addCase(fetchBoards.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    })
+    .addCase(fetchBoards.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.boards = action.payload;
+    })
+    .addCase(fetchBoards.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload as string;
+    })
+    .addCase(fetchBoardById.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    })
+    .addCase(fetchBoardById.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.currentBoard = action.payload;
+    })
+    .addCase(fetchBoardById.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload as string;
+    })
+    .addCase(createBoard.fulfilled, (state, action) => {
+      state.boards.unshift(action.payload);
+    })
+    .addCase(createBoard.rejected, (state, action) => {
+      state.error = action.payload as string;
+    })
+    .addCase(updateBoard.fulfilled, (state, action) => {
+      const index = state.boards.findIndex((b) => b.id === action.payload.id);
+      if (index !== -1) {
+        state.boards[index] = { ...state.boards[index], ...action.payload };
+      }
+      if (state.currentBoard?.id === action.payload.id) {
+        state.currentBoard = {
+          ...state.currentBoard,
+          name: action.payload.name,
+          description: action.payload.description,
+          background_color: action.payload.background_color,
+        };
+      }
+    })
+    .addCase(updateBoard.rejected, (state, action) => {
+      state.error = action.payload as string;
+    })
+    .addCase(deleteBoard.fulfilled, (state, action) => {
+      state.boards = state.boards.filter((b) => b.id !== action.payload);
+    })
+    .addCase(deleteBoard.rejected, (state, action) => {
+      state.error = action.payload as string;
+    });
+};
