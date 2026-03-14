@@ -14,6 +14,7 @@ const KANBAN_LISTS = [
         chip: "Frontend",
         chipColor: "bg-blue-100 text-blue-700",
         avatar: "bg-zinc-200",
+        done: true,
       },
       {
         title: "Setup base de datos",
@@ -21,6 +22,7 @@ const KANBAN_LISTS = [
         chip: "Backend",
         chipColor: "bg-blue-100 text-blue-700",
         avatar: "bg-blue-200",
+        done: true,
       },
     ],
   },
@@ -34,6 +36,7 @@ const KANBAN_LISTS = [
         chip: "Urgente",
         chipColor: "bg-red-100 text-red-700",
         avatar: "bg-yellow-200",
+        done: false,
       },
     ],
   },
@@ -47,6 +50,7 @@ const KANBAN_LISTS = [
         chip: "Review",
         chipColor: "bg-green-100 text-green-700",
         avatar: "bg-zinc-200",
+        done: false,
       },
     ],
   },
@@ -401,7 +405,7 @@ export default function LandingPage() {
                         >
                           <div className={`h-1 w-7 rounded-full ${card.label} mb-2`} />
                           <p
-                            className={`text-xs mb-2 leading-tight ${card.is_completed ? "line-through text-zinc-400" : "text-zinc-800"}`}
+                            className={`text-xs mb-2 leading-tight ${card.done ? "line-through text-zinc-400" : "text-zinc-800"}`}
                           >
                             {card.title}
                           </p>
