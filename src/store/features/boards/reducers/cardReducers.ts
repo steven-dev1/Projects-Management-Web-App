@@ -24,7 +24,12 @@ export const CardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
       for (const list of state.currentBoard.lists) {
         const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
         if (cardIndex !== -1) {
-          list.cards[cardIndex] = action.payload;
+          list.cards[cardIndex] = {
+            ...list.cards[cardIndex],
+            title: action.payload.title,
+            description: action.payload.description,
+            due_date: action.payload.due_date,
+          };
           break;
         }
       }
@@ -78,7 +83,12 @@ export const CardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
       for (const list of state.currentBoard.lists) {
         const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
         if (cardIndex !== -1) {
-          list.cards[cardIndex] = action.payload;
+          console.log("ANTES:", JSON.stringify(list.cards[cardIndex].labels));
+          list.cards[cardIndex] = {
+            ...list.cards[cardIndex],
+            assigned_to: action.payload.assigned_to,
+          };
+          console.log("DESPUÉS:", JSON.stringify(list.cards[cardIndex].labels));
           break;
         }
       }

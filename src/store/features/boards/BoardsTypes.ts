@@ -50,7 +50,7 @@ export interface ListPayload {
 export type UpdateListPayload = {
   listId: string;
   title: string;
-  background_color: string;
+  background_color?: string;
 };
 
 export interface Card {

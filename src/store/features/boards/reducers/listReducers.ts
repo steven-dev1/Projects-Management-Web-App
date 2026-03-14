@@ -5,8 +5,8 @@ import { archiveList, createList, restoreList, updateList } from "../ListsThunks
 export const ListReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
   builder
     .addCase(createList.fulfilled, (state, action) => {
-      if (state.currentBoard && action.payload.data) {
-        state.currentBoard.lists.push({ ...action.payload.data, cards: [] });
+      if (state.currentBoard && action.payload) {
+        state.currentBoard.lists.push({ ...action.payload, cards: [] });
       }
     })
     .addCase(updateList.fulfilled, (state, action) => {
@@ -22,12 +22,16 @@ export const ListReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
       const listIndex = state.currentBoard.lists.findIndex((l) => l.id === action.payload);
       if (listIndex !== -1) {
         state.currentBoard.lists.splice(listIndex, 1);
-        state.currentBoard.lists.forEach((l, i) => { l.position = i; });
+        state.currentBoard.lists.forEach((l, i) => {
+          l.position = i;
+        });
       }
     })
     .addCase(restoreList.fulfilled, (state, action) => {
       if (!state.currentBoard) return;
-      state.currentBoard.lists.push(action.payload);
-      state.currentBoard.lists.forEach((l, i) => { l.position = i; });
+      state.currentBoard.lists.push({ ...action.payload });
+      state.currentBoard.lists.forEach((l, i) => {
+        l.position = i;
+      });
     });
 };

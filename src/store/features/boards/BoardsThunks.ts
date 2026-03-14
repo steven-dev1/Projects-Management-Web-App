@@ -47,15 +47,13 @@ export const fetchBoardById = createAsyncThunk<BoardResponse, string, { rejectVa
   async (id, { rejectWithValue }) => {
     try {
       const response = await fetch(`/api/boards/${id}`);
-
-      if (!response.ok) {
-        throw new Error("Error fetching board");
-      }
-
       const data = await response.json();
+
+      if (!response.ok) return rejectWithValue(data.error || "Error obteniendo el board");
+
       return data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "An unknown error occurred";
+      const message = err instanceof Error ? err.message : "Error obteniendo el board";
       return rejectWithValue(message);
     }
   },
@@ -63,23 +61,20 @@ export const fetchBoardById = createAsyncThunk<BoardResponse, string, { rejectVa
 
 export const createBoard = createAsyncThunk<BoardResponse, BoardForm, { rejectValue: string }>(
   "boards/createBoard",
-  async (boardForm: BoardForm, { rejectWithValue }) => {
+  async (boardForm, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/boards", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(boardForm),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error ${response.status}`);
+      if (!boardForm.name?.trim()) {
+        return rejectWithValue("El nombre del tablero es obligatorio");
       }
 
-      const newBoard = (await response.json()) as BoardResponse;
-      return newBoard;
+      const { data, error } = await supabase.rpc("create_board_with_owner", {
+        board_name: boardForm.name,
+        board_description: boardForm.description ?? null,
+      });
+
+      if (error) return rejectWithValue(error.message || "No se pudo crear el tablero");
+
+      return data as BoardResponse;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al crear el tablero";
       return rejectWithValue(message);
@@ -115,17 +110,15 @@ export const deleteBoard = createAsyncThunk<string, string, { rejectValue: strin
   "boards/deleteBoard",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/boards", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-      const data = await response.json();
-      return data;
+      const { error } = await supabase
+        .from("boards")
+        .delete()
+        .eq("id", id);
+
+      if (error) return rejectWithValue(error.message);
+      return id;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "An unknown error occurred";
+      const message = err instanceof Error ? err.message : "Error al eliminar el tablero";
       return rejectWithValue(message);
     }
   },

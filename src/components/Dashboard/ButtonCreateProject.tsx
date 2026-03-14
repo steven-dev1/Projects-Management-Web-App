@@ -4,9 +4,11 @@ import { createBoard,  } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch } from "@/store/hooks";
 import {addToast,Button,Divider,Form,Input,Modal,ModalBody,ModalContent,ModalHeader,Spinner,useDisclosure} from "@heroui/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -22,9 +24,8 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
     }
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await dispatch(createBoard({ name: newName, description: newDescription })).unwrap();
-      // dispatch(fetchBoards());
+      router.push(`/boards/${result.id}`);
       addToast({
         title: "Proyecto creado",
         color: "success",

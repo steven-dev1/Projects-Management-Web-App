@@ -17,7 +17,8 @@ import {
   type DragEndEvent,
   DragStartEvent,
   DragOverEvent,
-  closestCorners,
+  // closestCorners,
+  closestCenter,
 } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { useState } from "react";
@@ -78,25 +79,42 @@ export default function BoardPage() {
 
     if (!fromList || !toList) return;
 
-    const isOverAList = lists.some((l) => l.id === overId);
-    const activeIndexInSource = fromList.cards.findIndex((c) => c.id === activeId);
-
-    let destinationIndex: number;
-
-    if (isOverAList) {
-      destinationIndex = toList.cards.length;
-    } else {
+    // ── Misma lista: reordenar ──────────────────────────────────────────
+    if (fromList.id === toList.id) {
+      const activeIndexInSource = fromList.cards.findIndex((c) => c.id === activeId);
       const overIndexInDest = toList.cards.findIndex((c) => c.id === overId);
-      if (fromList.id === toList.id) {
-        destinationIndex = overIndexInDest;
-      } else {
-        destinationIndex = overIndexInDest;
-      }
+
+      if (activeIndexInSource === overIndexInDest || overIndexInDest === -1) return;
+
+      // Redux usa el índice real
+      // RPC ajusta -1 cuando mueve hacia abajo porque excluye la card del OFFSET
+      const rpcIndex = activeIndexInSource < overIndexInDest ? overIndexInDest - 1 : overIndexInDest;
+
+      dispatch(
+        moveCard({
+          cardId: activeId,
+          fromListId: fromList.id,
+          toListId: toList.id,
+          newIndex: overIndexInDest,
+        }),
+      );
+
+      dispatch(
+        updateCardOrder({
+          cardId: activeId,
+          newListId: toList.id,
+          newIndex: rpcIndex,
+          oldListId: fromList.id,
+        }),
+      );
+      return;
     }
 
-    const newIndex = Math.max(0, destinationIndex);
+    // ── Entre listas distintas ──────────────────────────────────────────
+    const isOverAList = lists.some((l) => l.id === overId);
+    const destinationIndex = isOverAList ? toList.cards.length : toList.cards.findIndex((c) => c.id === overId);
 
-    if (fromList.id === toList.id && activeIndexInSource === newIndex) return;
+    const newIndex = Math.max(0, destinationIndex);
 
     dispatch(moveCard({ cardId: activeId, fromListId: fromList.id, toListId: toList.id, newIndex }));
     dispatch(updateCardOrder({ cardId: activeId, newListId: toList.id, newIndex, oldListId: fromList.id }));
@@ -119,15 +137,6 @@ export default function BoardPage() {
     const overContainer = lists.find((l) => l.id === overId || l.cards.some((c) => c.id === overId));
 
     if (!activeContainer || !overContainer || activeContainer.id === overContainer.id) return;
-
-    // dispatch(
-    //   moveCard({
-    //     cardId: activeId,
-    //     fromListId: activeContainer.id,
-    //     toListId: overContainer.id,
-    //     newIndex: 0, // O calcula el índice según la posición del 'overId'
-    //   }),
-    // );
   };
 
   if (!currentBoard) return null;
@@ -135,7 +144,7 @@ export default function BoardPage() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}

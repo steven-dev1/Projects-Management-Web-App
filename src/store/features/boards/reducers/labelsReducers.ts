@@ -9,8 +9,10 @@ export const LabelsReducers = (builder: ActionReducerMapBuilder<BoardsState>) =>
       for (const list of state.currentBoard.lists) {
         const card = list.cards.find((c) => c.id === action.payload.cardId);
         if (card) {
-          if (!card.labels) card.labels = [];
-          card.labels.push(action.payload.label);
+          const alreadyExists = card.labels?.some((l) => l.id === action.payload.label.id);
+          if (!alreadyExists) {
+            card.labels = [...(card.labels ?? []), action.payload.label];
+          }
           break;
         }
       }

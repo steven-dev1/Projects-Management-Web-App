@@ -9,15 +9,16 @@ export const updateCardOrder = createAsyncThunk(
   "boards/updateCardOrder",
   async (payload: { cardId: string; newListId: string; newIndex: number; oldListId: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/boards/cards/reorder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+      const { data, error } = await supabase.rpc("update_card_positions", {
+        p_card_id: payload.cardId,
+        p_new_list_id: payload.newListId,
+        p_new_position: payload.newIndex,
+        p_old_list_id: payload.oldListId,
       });
-      const data = await response.json();
-      return data;
+
+      if (error) return rejectWithValue(error.message || "No se pudo actualizar el card");
+
+      return { success: true, data };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al actualizar el card";
       return rejectWithValue(message);
@@ -29,14 +30,21 @@ export const createCard = createAsyncThunk<Card, CreateCardPayload, { rejectValu
   "cards/createCard",
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/boards/cards", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const { data, error } = await supabase
+        .from("cards")
+        .insert([
+          {
+            title: payload.title,
+            list_id: payload.list_id,
+            due_date: payload.due_date ?? null,
+            description: payload.description ?? null,
+            position: payload.position,
+          },
+        ])
+        .select()
+        .single();
 
-      if (!response.ok) throw new Error("Error al crear la tarjeta");
-      const { data } = await response.json();
+      if (error) return rejectWithValue(error.message);
       return data;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al crear la tarjeta";
@@ -142,23 +150,24 @@ export const toggleCardCompletion = createAsyncThunk<
   }
 });
 
-export const assignCard = createAsyncThunk<Card, { cardId: string; userId: string | null, boardId?: string, boardName?: string, cardTitle?: string }, { rejectValue: string }>(
-  "cards/assignCard",
-  async ({ cardId, userId }, { rejectWithValue }) => {
-    try {
-      const { data, error } = await supabase
-        .from("cards")
-        .update({ assigned_to: userId })
-        .eq("id", cardId)
-        .select()
-        .single();
+export const assignCard = createAsyncThunk<
+  Card,
+  { cardId: string; userId: string | null; boardId?: string; boardName?: string; cardTitle?: string },
+  { rejectValue: string }
+>("cards/assignCard", async ({ cardId, userId }, { rejectWithValue }) => {
+  try {
+    const { data, error } = await supabase
+      .from("cards")
+      .update({ assigned_to: userId })
+      .eq("id", cardId)
+      .select()
+      .single();
 
-      if (error) return rejectWithValue(error.message);
+    if (error) return rejectWithValue(error.message);
 
-      return data;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al asignar la tarjeta";
-      return rejectWithValue(message);
-    }
-  },
-);
+    return data;
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Error al asignar la tarjeta";
+    return rejectWithValue(message);
+  }
+});

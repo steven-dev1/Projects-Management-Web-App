@@ -37,6 +37,7 @@ export default function List({ list, children }: { list: BoardList; children: Re
       }`}
       ref={setSortableRef}
       style={style}
+      data-type="column"
     >
       <div className="font-semibold flex items-center justify-between gap-2 my-1">
         <div className="flex items-center flex-1 min-w-0 gap-2">

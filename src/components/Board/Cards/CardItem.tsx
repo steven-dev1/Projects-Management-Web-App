@@ -7,6 +7,7 @@ import { useDisclosure } from "@heroui/react";
 export default function CardItem({ card }: { card: Card }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id as string,
+    data: { type: "card" },
   });
   const { onOpen} = useDisclosure();
 
@@ -18,7 +19,7 @@ export default function CardItem({ card }: { card: Card }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style}  className={` transition-all duration-150 shadow bg-white p-2 mb-2 rounded-lg`}>
+    <div data-type="card"  ref={setNodeRef} style={style}  className={` transition-all duration-150 shadow bg-white p-2 mb-2 rounded-lg`}>
       <CardView card={card} dragListeners={listeners} dragAttributes={attributes} onOpenDetail={onOpen}/>
     </div>
   );

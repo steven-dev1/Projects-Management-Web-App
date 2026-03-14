@@ -1,6 +1,5 @@
 import { User } from "@supabase/supabase-js";
 import { Preferences, Profile } from "./db";
-import { Board } from "@/store/features/boards/BoardsTypes";
 
 export interface ProfileUpdate {
   full_name?: string
@@ -11,12 +10,6 @@ export interface PreferencesUpdate {
   timezone?: string
 }
 
-export interface BoardsState {
-  boards: Board[];
-  currentBoard: Board | null;
-  loading: boolean;
-  error: string | null;
-}
 
 export interface AuthState {
   user: User | null;
