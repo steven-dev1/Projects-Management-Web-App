@@ -18,10 +18,10 @@ export default function Projects({ boards }: { boards: Board[] }) {
         return [...boards].sort((a, b) => b.name.localeCompare(a.name));
 
       case "recent":
-        return [...boards].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+        return [...boards].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
       case "oldest":
-        return [...boards].sort((a, b) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime());
+        return [...boards].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
       default:
         return boards;
