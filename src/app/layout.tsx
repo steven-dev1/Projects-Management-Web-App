@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavBarWrapper } from "@/components/Providers/NavBarWrapper";
 import Providers from "@/components/Providers/Providers";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased h-full`}>
+        <SpeedInsights />
         <Providers>
           <NavBarWrapper>{children}</NavBarWrapper>
         </Providers>
