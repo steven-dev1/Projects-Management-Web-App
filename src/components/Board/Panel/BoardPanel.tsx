@@ -42,7 +42,7 @@ export default function BoardPanel({ board }: { board: BoardResponse }) {
 
   return (
     <div className="h-full overflow-y-auto p-6">
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Progreso general */}
         <GeneralProgress completed={completed} total={total} overdue={overdue} dueSoon={dueSoon} rate={rate} />
 
@@ -63,6 +63,8 @@ export default function BoardPanel({ board }: { board: BoardResponse }) {
           onOpen={onOpen}
           labelStats={labelStats}
         />
+
+
       </div>
 
       {selectedCard && <CardDetailModal cardId={selectedCard} isOpen={isOpen} onClose={onClose} />}

@@ -24,6 +24,7 @@ export interface BoardMember {
   updated_at: string;
   profiles: Profile;
 }
+export type BoardMembersResponse = BoardMember[]
 
 export type Profile = {
   full_name?: string;
@@ -70,7 +71,6 @@ export interface Checklist {
   updated_at?: string;
 }
 
-export type BoardMembersResponse = BoardMember[]
 
 export type NotificationType = 'card_assigned' | 'board_invited' | 'card_commented' | 'card_due';
 

@@ -7,7 +7,7 @@ import { es } from "date-fns/locale/es";
 export default function UpcomingCards({ upcomingCards, board, setSelectedCard, onOpen, labelStats }: { upcomingCards: Card[], board: BoardResponse, setSelectedCard: (cardId: string) => void, onOpen: () => void, labelStats: { label: Label; count: number }[] }) {
   return (
     <div
-      className={`bg-content1 rounded-2xl p-5 shadow-small flex flex-col gap-2 ${labelStats.length === 0 ? "lg:col-span-2" : ""}`}
+      className={`bg-content1 col-span-3 rounded-2xl p-5 shadow-small flex flex-col gap-2 ${labelStats.length === 0 ? "lg:col-span-2" : ""}`}
     >
       <p className="text-sm font-semibold mb-1">Fechas límite</p>
       {upcomingCards.length === 0 ? (

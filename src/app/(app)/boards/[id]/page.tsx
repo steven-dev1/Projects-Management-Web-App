@@ -19,9 +19,13 @@ import {
   DragOverEvent,
   // closestCorners,
   closestCenter,
+  DragMoveEvent,
+  CollisionDetection,
+  rectIntersection,
+  pointerWithin,
 } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function BoardPage() {
   const currentBoard = useAppSelector((state) => state.boards.currentBoard);
@@ -29,6 +33,9 @@ export default function BoardPage() {
   const [activeCard, setActiveCard] = useState<Card | null>(null);
   const [activeColumn, setActiveColumn] = useState<BoardList | null>(null);
   const dispatch = useAppDispatch();
+  const dragSnapshot = useRef<{ lists: BoardList[] } | null>(null);
+  const dragStartY = useRef<number>(0);
+  const pointerY = useRef<number>(0);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -37,106 +44,146 @@ export default function BoardPage() {
     }),
   );
 
+  const collisionDetection: CollisionDetection = (args) => {
+    const isColumn = args.active?.data?.current?.type === "column";
+
+    if (isColumn) {
+      return rectIntersection(args);
+    }
+
+    const pointerCollisions = pointerWithin(args);
+    if (pointerCollisions.length > 0) return pointerCollisions;
+
+    return closestCenter(args);
+  };
+
   const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    // Encontrar la data de la card que estamos moviendo
-    const card = lists.flatMap((l) => l.cards).find((c) => c.id === active.id);
-    if (card) setActiveCard(card);
+    const activatorEvent = event.activatorEvent as PointerEvent | MouseEvent;
+    dragStartY.current = activatorEvent.clientY ?? 0;
+    pointerY.current = dragStartY.current;
+
+    if (event.active.data.current?.type === "column") {
+      const column = lists.find((l) => l.id === event.active.id);
+      if (column) setActiveColumn(column);
+      return;
+    }
+    const card = lists.flatMap((l) => l.cards).find((c) => c.id === event.active.id);
+    if (card) {
+      setActiveCard(card);
+      dragSnapshot.current = { lists: JSON.parse(JSON.stringify(lists)) };
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveColumn(null);
     setActiveCard(null);
+
     const { active, over } = event;
-    if (!over) return;
+    if (!over || !currentBoard) return;
 
     const activeId = active.id as string;
     const overId = over.id as string;
     const isColumn = active.data.current?.type === "column";
 
-    if (!currentBoard) return;
-
+    // ── Mover lista ──────────────────────────────────────────────────
     if (isColumn) {
-      if (activeId !== overId) {
-        const oldIndex = lists.findIndex((l) => l.id === activeId);
-        let newIndex = lists.findIndex((l) => l.id === overId);
-
-        if (newIndex === -1) {
-          const parentList = lists.find((l) => l.cards.some((c) => c.id === overId));
-          if (parentList) newIndex = lists.findIndex((l) => l.id === parentList.id);
-        }
-
-        if (oldIndex !== -1 && newIndex !== -1 && currentBoard.id) {
-          dispatch(moveList({ oldIndex, newIndex }));
-          dispatch(updateListOrderSupabase({ listId: activeId, newIndex, boardId: currentBoard.id }));
-        }
+      const oldIndex = lists.findIndex((l) => l.id === activeId);
+      const newIndex = lists.findIndex((l) => l.id === overId);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        dispatch(moveList({ oldIndex, newIndex }));
+        dispatch(updateListOrderSupabase({ listId: activeId, newIndex, boardId: currentBoard.id }));
       }
+      dragSnapshot.current = null;
       return;
     }
 
-    const fromList = lists.find((l) => l.cards.some((c) => c.id === activeId));
+    // Usar el snapshot para calcular índices originales para el RPC
+    const snapshotLists = dragSnapshot.current?.lists ?? lists;
+    const fromList = snapshotLists.find((l) => l.cards.some((c) => c.id === activeId));
     const toList = lists.find((l) => l.id === overId || l.cards.some((c) => c.id === overId));
 
-    if (!fromList || !toList) return;
+    if (!fromList || !toList) {
+      dragSnapshot.current = null;
+      return;
+    }
 
-    // ── Misma lista: reordenar ──────────────────────────────────────────
+    // ── Misma lista ──────────────────────────────────────────────────
     if (fromList.id === toList.id) {
       const activeIndexInSource = fromList.cards.findIndex((c) => c.id === activeId);
       const overIndexInDest = toList.cards.findIndex((c) => c.id === overId);
 
-      if (activeIndexInSource === overIndexInDest || overIndexInDest === -1) return;
+      if (activeIndexInSource === overIndexInDest || overIndexInDest === -1) {
+        dragSnapshot.current = null;
+        return;
+      }
 
-      // Redux usa el índice real
-      // RPC ajusta -1 cuando mueve hacia abajo porque excluye la card del OFFSET
       const rpcIndex = activeIndexInSource < overIndexInDest ? overIndexInDest - 1 : overIndexInDest;
 
-      dispatch(
-        moveCard({
-          cardId: activeId,
-          fromListId: fromList.id,
-          toListId: toList.id,
-          newIndex: overIndexInDest,
-        }),
-      );
-
-      dispatch(
-        updateCardOrder({
-          cardId: activeId,
-          newListId: toList.id,
-          newIndex: rpcIndex,
-          oldListId: fromList.id,
-        }),
-      );
+      dispatch(moveCard({ cardId: activeId, fromListId: fromList.id, toListId: toList.id, newIndex: overIndexInDest }));
+      dispatch(updateCardOrder({ cardId: activeId, newListId: toList.id, newIndex: rpcIndex, oldListId: fromList.id }));
+      dragSnapshot.current = null;
       return;
     }
 
-    // ── Entre listas distintas ──────────────────────────────────────────
-    const isOverAList = lists.some((l) => l.id === overId);
-    const destinationIndex = isOverAList ? toList.cards.length : toList.cards.findIndex((c) => c.id === overId);
+    // ── Entre listas distintas ────────────────────────────────────────
+    // handleDragOver ya movió en Redux, solo calculamos índice para RPC
+    // usando el estado ACTUAL (ya movido) para saber dónde quedó
+    const currentToList = lists.find((l) => l.id === toList.id);
+    const newIndex = currentToList?.cards.findIndex((c) => c.id === activeId) ?? 0;
 
-    const newIndex = Math.max(0, destinationIndex);
+    dispatch(
+      updateCardOrder({
+        cardId: activeId,
+        newListId: toList.id,
+        newIndex: Math.max(0, newIndex),
+        oldListId: fromList.id,
+      }),
+    );
 
-    dispatch(moveCard({ cardId: activeId, fromListId: fromList.id, toListId: toList.id, newIndex }));
-    dispatch(updateCardOrder({ cardId: activeId, newListId: toList.id, newIndex, oldListId: fromList.id }));
+    dragSnapshot.current = null;
   };
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
-
     const activeId = active.id as string;
     const overId = over.id as string;
-
-    // Si es columna
     if (active.data.current?.type === "column") return;
 
-    const card = lists.flatMap((l) => l.cards).find((c) => c.id === active.id);
-    if (card) setActiveCard(card);
-    // Encontrar listas de origen y destino
     const activeContainer = lists.find((l) => l.cards.some((c) => c.id === activeId));
     const overContainer = lists.find((l) => l.id === overId || l.cards.some((c) => c.id === overId));
 
     if (!activeContainer || !overContainer || activeContainer.id === overContainer.id) return;
+
+    const overListElement = document.querySelector(`[data-list-id="${overContainer.id}"]`);
+    if (!overListElement) return;
+
+    const cardElements = Array.from(overListElement.querySelectorAll('[data-type="card"]'));
+
+    let destinationIndex = overContainer.cards.length;
+
+    for (let i = 0; i < cardElements.length; i++) {
+      const cardRect = cardElements[i].getBoundingClientRect();
+      const cardMiddleY = cardRect.top + cardRect.height / 2;
+
+      if (pointerY.current < cardMiddleY) {
+        destinationIndex = i;
+        break;
+      }
+    }
+
+    dispatch(
+      moveCard({
+        cardId: activeId,
+        fromListId: activeContainer.id,
+        toListId: overContainer.id,
+        newIndex: destinationIndex,
+      }),
+    );
+  };
+
+  const handleDragMove = (event: DragMoveEvent) => {
+    pointerY.current = dragStartY.current + event.delta.y;
   };
 
   if (!currentBoard) return null;
@@ -144,8 +191,9 @@ export default function BoardPage() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={collisionDetection}
       onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
@@ -153,8 +201,8 @@ export default function BoardPage() {
         <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
           {lists?.map((list) => (
             <List list={list} key={list.id}>
-              {list.cards.map((card) => (
-                <CardItem key={card.id} card={card} />
+              {list.cards.map((card, index) => (
+                <CardItem key={card.id} card={card} index={index} />
               ))}
             </List>
           ))}
@@ -177,7 +225,6 @@ export default function BoardPage() {
           </div>
         ) : null}
       </DragOverlay>
-      ,
     </DndContext>
   );
 }

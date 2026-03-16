@@ -2,7 +2,12 @@ import { test, expect, Locator, Page } from "@playwright/test";
 import { login } from "../helpers/auth";
 import { resetTestBoard } from "../helpers/board";
 
-async function dragTo(page: Page, source: Locator, target: Locator, position: "center" | "after" | "before" = "center") {
+async function dragTo(
+  page: Page,
+  source: Locator,
+  target: Locator,
+  position: "center" | "after" | "before" = "center",
+) {
   const grip = source.locator(".cursor-grab").first();
   const gripCount = await grip.count();
   const dragSource = gripCount > 0 ? grip : source;
@@ -16,9 +21,11 @@ async function dragTo(page: Page, source: Locator, target: Locator, position: "c
 
   const targetX = targetBox.x + targetBox.width / 2;
   const targetY =
-    position === "after"  ? targetBox.y + targetBox.height - 2 :
-    position === "before" ? targetBox.y + 2 :
-                            targetBox.y + targetBox.height / 2;
+    position === "after"
+      ? targetBox.y + targetBox.height - 2
+      : position === "before"
+        ? targetBox.y + 2
+        : targetBox.y + targetBox.height / 2;
 
   await page.mouse.move(startX, startY);
   await page.mouse.down();
@@ -114,8 +121,35 @@ test.describe("Drag and Drop", () => {
     const firstListTitle = (await firstList.locator("h3").first().textContent())?.trim();
     const secondListTitle = (await secondList.locator("h3").first().textContent())?.trim();
 
+    // Hacer drag directamente desde el grip de la primera lista a la segunda
     const gripHandle = firstList.locator(".cursor-grab").first();
-    await dragTo(page, gripHandle, secondList, "after");
+    const gripBox = await gripHandle.boundingBox();
+    const targetBox = await secondList.boundingBox();
+    if (!gripBox || !targetBox) return;
+
+    await page.mouse.move(gripBox.x + gripBox.width / 2, gripBox.y + gripBox.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(500); // más tiempo presionado
+    // Movimiento inicial más pronunciado para activar el drag
+    await page.mouse.move(gripBox.x + gripBox.width / 2 + 10, gripBox.y + gripBox.height / 2, { steps: 10 });
+    await page.waitForTimeout(200);
+    // Luego al destino
+    await page.mouse.move(
+      targetBox.x + targetBox.width / 2,
+      targetBox.y + targetBox.height / 2,
+      { steps: 50 }, // más steps para movimiento más suave
+    );
+    await page.waitForTimeout(800);
+    await page.mouse.up();
+    await page.waitForTimeout(2000);
+
+    const beforeReloadFirst = (
+      await page.locator("[data-type='column']").nth(0).locator("h3").first().textContent()
+    )?.trim();
+    const beforeReloadSecond = (
+      await page.locator("[data-type='column']").nth(1).locator("h3").first().textContent()
+    )?.trim();
+    console.log("Antes de recargar:", beforeReloadFirst, beforeReloadSecond);
 
     await page.reload();
     await page.waitForLoadState("networkidle");
