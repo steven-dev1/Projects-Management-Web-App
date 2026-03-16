@@ -8,7 +8,7 @@ import CreateCardButton from "../Cards/CreateCardButton";
 import { Divider } from "@heroui/react";
 import { OptionsList } from "./OptionsList";
 
-export default function List({ list, children }: { list: BoardList; children: React.ReactNode; }) {
+export default function List({ list, children }: { list: BoardList; children: React.ReactNode }) {
   const {
     attributes,
     listeners,
@@ -23,6 +23,11 @@ export default function List({ list, children }: { list: BoardList; children: Re
     data: { type: "column" },
   });
 
+  const combinedRef = (node: HTMLDivElement | null) => {
+    setSortableRef(node);
+    setNodeRef(node);
+  };
+
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
@@ -30,13 +35,12 @@ export default function List({ list, children }: { list: BoardList; children: Re
     backgroundColor: list.background_color,
   };
 
-
   return (
     <div
       className={`p-3 flex relative min-w-72 max-w-72 max-h-full flex-col gap-2 rounded-lg transition-colors duration-200 ${
         isOver ? "bg-zinc-200 dark:bg-zinc-700" : "bg-zinc-100 dark:bg-zinc-800"
       }`}
-      ref={setSortableRef}
+      ref={combinedRef}
       style={style}
       data-type="column"
     >
@@ -55,11 +59,15 @@ export default function List({ list, children }: { list: BoardList; children: Re
           <OptionsList listId={list.id} />
         </div>
       </div>
-      <div data-list-id={list.id} className="flex flex-col w-full min-h-25 gap-2 overflow-y-auto custom-scrollbar" ref={setNodeRef}>
+      <div
+        data-list-id={list.id}
+        className="flex flex-col w-full min-h-25 gap-2 overflow-y-auto custom-scrollbar"
+      >
         <SortableContext items={list.cards.map((c) => c.id as string)} strategy={verticalListSortingStrategy}>
           {children}
         </SortableContext>
-        {isOver && list.cards.length === 0 && <div className="h-16 bg-zinc-300/50 rounded " />}
+        {list.cards.length === 0 && <div className="h-24 rounded-lg border-2 border-dashed border-zinc-300/50"></div>}
+        {isOver && list.cards.length === 0 && <div className="h-24 bg-zinc-300/50 rounded" />}
       </div>
       <Divider />
       <div className="rounded-xl">

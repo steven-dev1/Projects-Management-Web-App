@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import { BoardsState } from "../BoardsTypes";
-import { archiveList, createList, restoreList, updateList } from "../ListsThunks";
+import { archiveList, createList, deleteList, restoreList, updateList } from "../ListsThunks";
 
 export const ListReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
   builder
@@ -27,11 +27,29 @@ export const ListReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
         });
       }
     })
+    .addCase(deleteList.fulfilled, (state, action) => {
+      if (!state.currentBoard) return;
+      const listIndex = state.currentBoard.lists.findIndex((l) => l.id === action.payload);
+      if (listIndex !== -1) {
+        state.currentBoard.lists.splice(listIndex, 1);
+        state.currentBoard.lists.forEach((l, i) => {
+          l.position = i;
+        });
+      }
+    })
     .addCase(restoreList.fulfilled, (state, action) => {
       if (!state.currentBoard) return;
-      state.currentBoard.lists.push({ ...action.payload });
-      state.currentBoard.lists.forEach((l, i) => {
-        l.position = i;
-      });
+      const restoredList = {
+        ...action.payload,
+        cards: [...(action.payload.cards ?? [])].sort((a, b) => a.position - b.position),
+      };
+
+      const insertIndex = state.currentBoard.lists.findIndex((l) => l.position >= restoredList.position);
+
+      if (insertIndex === -1) {
+        state.currentBoard.lists.push(restoredList);
+      } else {
+        state.currentBoard.lists.splice(insertIndex, 0, restoredList);
+      }
     });
 };

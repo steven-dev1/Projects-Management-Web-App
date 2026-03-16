@@ -70,8 +70,7 @@ export const restoreList = createAsyncThunk<BoardList, string, { rejectValue: st
   "lists/restoreList",
   async (listId, { rejectWithValue }) => {
     try {
-      const { error } = await supabase.from("lists").update({ status: "active" }).eq("id", listId);
-
+      const { error } = await supabase.rpc("restore_list", { p_list_id: listId });
       if (error) return rejectWithValue(error.message);
 
       const { data, error: fetchError } = await supabase
@@ -85,6 +84,20 @@ export const restoreList = createAsyncThunk<BoardList, string, { rejectValue: st
       return data;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al restaurar la lista";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+export const deleteList = createAsyncThunk<string, string, { rejectValue: string }>(
+  "lists/deleteList",
+  async (listId, { rejectWithValue }) => {
+    try {
+      const { error } = await supabase.from("lists").delete().eq("id", listId);
+      if(error) return rejectWithValue(error.message);
+      return listId;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al eliminar la lista";
       return rejectWithValue(message);
     }
   },

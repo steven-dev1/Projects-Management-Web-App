@@ -1,24 +1,31 @@
 import { createClient } from "@/lib/supabaseClient";
 import { BoardList, Card } from "@/store/features/boards/BoardsTypes";
 import { deleteCard, restoreCard } from "@/store/features/boards/CardsThunks";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Drawer, DrawerBody, DrawerContent, DrawerHeader, Spinner, Tab, Tabs } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { ArchivedCardItem } from "./ArchivedCardItem";
 import { ArchivedListItem } from "./ArchivedListItem";
-import { restoreList } from "@/store/features/boards/ListsThunks";
+import { deleteList, restoreList } from "@/store/features/boards/ListsThunks";
 
-export const ArchivedDrawer = ({ boardId, isOpen, onClose }: {
+export const ArchivedDrawer = ({
+  boardId,
+  isOpen,
+  onClose,
+}: {
   boardId: string;
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const supabase = createClient();
   const dispatch = useAppDispatch();
   const [selected, setSelected] = useState<"cards" | "lists">("cards");
   const [archivedCards, setArchivedCards] = useState<Card[]>([]);
   const [archivedLists, setArchivedLists] = useState<BoardList[]>([]);
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const boardMembers = useAppSelector((state) => state.boards.currentBoard?.board_members ?? []);
+  const isAdmin = boardMembers.find((m) => m.user_id === currentUser?.id)?.role === "admin";
 
   useEffect(() => {
     if (!isOpen) return;
@@ -70,10 +77,11 @@ export const ArchivedDrawer = ({ boardId, isOpen, onClose }: {
             </div>
           ) : (
             <div className="flex flex-col gap-2 p-4">
-              {selected === "cards" && (
-                archivedCards.length === 0
-                  ? <p className="text-sm text-zinc-400 text-center py-8">No hay tarjetas archivadas</p>
-                  : archivedCards.map((card) => (
+              {selected === "cards" &&
+                (archivedCards.length === 0 ? (
+                  <p className="text-sm text-zinc-400 text-center py-8">No hay tarjetas archivadas</p>
+                ) : (
+                  archivedCards.map((card) => (
                     <ArchivedCardItem
                       key={card.id}
                       card={card}
@@ -87,21 +95,27 @@ export const ArchivedDrawer = ({ boardId, isOpen, onClose }: {
                       }}
                     />
                   ))
-              )}
-              {selected === "lists" && (
-                archivedLists.length === 0
-                  ? <p className="text-sm text-zinc-400 text-center py-8">No hay listas archivadas</p>
-                  : archivedLists.map((list) => (
+                ))}
+              {selected === "lists" &&
+                (archivedLists.length === 0 ? (
+                  <p className="text-sm text-zinc-400 text-center py-8">No hay listas archivadas</p>
+                ) : (
+                  archivedLists.map((list) => (
                     <ArchivedListItem
                       key={list.id}
                       list={list}
+                      isAdmin={isAdmin}
                       onRestore={() => {
                         dispatch(restoreList(list.id));
                         setArchivedLists((prev) => prev.filter((l) => l.id !== list.id));
                       }}
+                      onDelete={() => {
+                        dispatch(deleteList(list.id));
+                        setArchivedLists((prev) => prev.filter((l) => l.id !== list.id));
+                      }}
                     />
                   ))
-              )}
+                ))}
             </div>
           )}
         </DrawerBody>
