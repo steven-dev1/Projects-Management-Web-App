@@ -4,7 +4,7 @@ import ShareButton from "./Invite/ShareButton";
 import ViewDropdown from "./ViewDropdown";
 import MembersGroup from "./MembersGroup";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@heroui/dropdown";
-import { Button, Divider, useDisclosure } from "@heroui/react";
+import { Button, useDisclosure } from "@heroui/react";
 import { Archive, Ellipsis, Trash2, X } from "lucide-react";
 import { ArchivedDrawer } from "./ArchivedDrawer";
 import { useAppSelector } from "@/store/hooks";

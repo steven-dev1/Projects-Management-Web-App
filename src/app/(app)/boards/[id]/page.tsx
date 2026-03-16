@@ -21,7 +21,6 @@ import {
   closestCenter,
   DragMoveEvent,
   CollisionDetection,
-  rectIntersection,
   pointerWithin,
 } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
@@ -44,16 +43,43 @@ export default function BoardPage() {
     }),
   );
 
+  const horizontalClosestCenter: CollisionDetection = (args) => {
+    const { droppableRects, droppableContainers, pointerCoordinates } = args;
+
+    if (!pointerCoordinates) return closestCenter(args);
+
+    const centerX = pointerCoordinates.x;
+
+    let closest = null;
+    let minDistance = Infinity;
+
+    for (const container of droppableContainers) {
+      if (container.data?.current?.type !== "column") continue;
+
+      const rect = droppableRects.get(container.id);
+      if (!rect) continue;
+
+      const containerCenterX = rect.left + rect.width / 2;
+      const distance = Math.abs(centerX - containerCenterX);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closest = container;
+      }
+    }
+
+    return closest ? [{ id: closest.id }] : closestCenter(args);
+  };
+
   const collisionDetection: CollisionDetection = (args) => {
     const isColumn = args.active?.data?.current?.type === "column";
 
     if (isColumn) {
-      return rectIntersection(args);
+      return horizontalClosestCenter(args);
     }
 
     const pointerCollisions = pointerWithin(args);
     if (pointerCollisions.length > 0) return pointerCollisions;
-
     return closestCenter(args);
   };
 
