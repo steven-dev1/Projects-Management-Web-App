@@ -8,7 +8,15 @@ import CreateCardButton from "../Cards/CreateCardButton";
 import { Divider } from "@heroui/react";
 import { OptionsList } from "./OptionsList";
 
-export default function List({ list, children }: { list: BoardList; children: React.ReactNode }) {
+export default function List({
+  list,
+  children,
+  isClosed,
+}: {
+  list: BoardList;
+  children: React.ReactNode;
+  isClosed: boolean;
+}) {
   const {
     attributes,
     listeners,
@@ -46,33 +54,38 @@ export default function List({ list, children }: { list: BoardList; children: Re
     >
       <div className="font-semibold flex items-center justify-between gap-2 my-1">
         <div className="flex items-center flex-1 min-w-0 gap-2">
-          <div
-            {...attributes}
-            {...listeners}
-            className="cursor-grab active:cursor-grabbing p-1 hover:bg-zinc-300/50 rounded shrink-0"
-          >
-            <GripVertical size={18} />
-          </div>
+          {!isClosed && (
+            <div
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing p-1 hover:bg-zinc-300/50 rounded shrink-0"
+            >
+              <GripVertical size={18} />
+            </div>
+          )}
           <h3 className="truncate">{list.title}</h3>
         </div>
-        <div className="shrink-0" onPointerDown={(e) => e.stopPropagation()}>
-          <OptionsList listId={list.id} />
-        </div>
+        {!isClosed && (
+          <div className="shrink-0" onPointerDown={(e) => e.stopPropagation()}>
+            <OptionsList listId={list.id} />
+          </div>
+        )}
       </div>
-      <div
-        data-list-id={list.id}
-        className="flex flex-col w-full min-h-25 gap-2 overflow-y-auto custom-scrollbar"
-      >
+      <div data-list-id={list.id} className="flex flex-col w-full min-h-25 gap-2 overflow-y-auto custom-scrollbar">
         <SortableContext items={list.cards.map((c) => c.id as string)} strategy={verticalListSortingStrategy}>
           {children}
         </SortableContext>
         {list.cards.length === 0 && <div className="h-24 rounded-lg border-2 border-dashed border-zinc-300/50"></div>}
         {isOver && list.cards.length === 0 && <div className="h-24 bg-zinc-300/50 rounded" />}
       </div>
-      <Divider />
-      <div className="rounded-xl">
-        <CreateCardButton listId={list.id} boardId={list.board_id} lastPosition={list.cards.length} />
-      </div>
+      {!isClosed && (
+        <>
+          <Divider />
+          <div className="rounded-xl">
+            <CreateCardButton listId={list.id} boardId={list.board_id} lastPosition={list.cards.length} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

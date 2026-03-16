@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import CardView from "./CardView";
 import { useDisclosure } from "@heroui/react";
 
-export default function CardItem({ card, index }: { card: Card, index: number }) {
+export default function CardItem({ card, index, isClosed }: { card: Card; index: number; isClosed: boolean }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id as string,
     data: { type: "card", index },
@@ -20,7 +20,7 @@ export default function CardItem({ card, index }: { card: Card, index: number })
 
   return (
     <div data-type="card"  ref={setNodeRef} style={style}  className={` transition-all duration-150 shadow bg-white p-2 mb-2 rounded-lg`}>
-      <CardView card={card} dragListeners={listeners} dragAttributes={attributes} onOpenDetail={onOpen}/>
+      <CardView isClosed={isClosed} card={card} dragListeners={listeners} dragAttributes={attributes} onOpenDetail={onOpen} />
     </div>
   );
 }

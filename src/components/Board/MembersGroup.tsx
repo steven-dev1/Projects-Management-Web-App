@@ -19,7 +19,7 @@ export default function MembersGroup({
     <>
       <AvatarGroup
         renderCount={(count) => (
-          <p className="text-small text-foreground font-medium ms-2">+{count} others</p>
+          <p className="text-small text-foreground font-medium ms-2">+{count} más</p>
         )}
         size="sm"
         max={3}

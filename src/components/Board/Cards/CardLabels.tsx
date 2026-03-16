@@ -5,7 +5,7 @@ import { Label } from "@/types";
 import { Check, Pencil } from "lucide-react";
 import { useState } from "react";
 
-export const CardLabels = ({ card }: { card: Card }) => {
+export const CardLabels = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();
   const boardLabels = useAppSelector((state) => state.boards.currentBoard?.labels ?? []);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -14,6 +14,7 @@ export const CardLabels = ({ card }: { card: Card }) => {
   const cardLabelIds = card.labels?.map((l) => l.id) ?? [];
 
   const handleToggleLabel = (label: Label) => {
+    if (isBoardClosed) return;
     if (cardLabelIds.includes(label.id)) {
       dispatch(removeLabelFromCard({ cardId: card.id!, labelId: label.id }));
     } else {
@@ -58,26 +59,25 @@ export const CardLabels = ({ card }: { card: Card }) => {
                 className="w-20 cursor-pointer h-7 rounded-md flex items-center justify-center px-2 transition-all hover:opacity-80"
                 style={{ backgroundColor: label.color }}
               >
-                <span className="text-white text-xs font-medium truncate drop-shadow-sm">
-                  {label.name ?? ""}
-                </span>
+                <span className="text-white text-xs font-medium truncate drop-shadow-sm">{label.name ?? ""}</span>
                 {cardLabelIds.includes(label.id) && (
                   <Check size={12} className="text-white shrink-0 ml-auto drop-shadow" />
                 )}
               </button>
             )}
 
-            {/* Botón editar al hover */}
-            <button
-              type="button"
-              onClick={() => {
-                setEditingId(label.id);
-                setEditingName(label.name ?? "");
-              }}
-              className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-white border border-zinc-200 rounded-full items-center justify-center hidden group-hover/label:flex shadow-sm z-10"
-            >
-              <Pencil size={8} className="text-zinc-500" />
-            </button>
+            {!isBoardClosed && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingId(label.id);
+                  setEditingName(label.name ?? "");
+                }}
+                className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-white border border-zinc-200 rounded-full items-center justify-center hidden group-hover/label:flex shadow-sm z-10"
+              >
+                <Pencil size={8} className="text-zinc-500" />
+              </button>
+            )}
           </div>
         ))}
       </div>

@@ -43,6 +43,8 @@ export default function BoardPage() {
     }),
   );
 
+  const isClosed = currentBoard?.status === "archived";
+
   const horizontalClosestCenter: CollisionDetection = (args) => {
     const { droppableRects, droppableContainers, pointerCoordinates } = args;
 
@@ -226,9 +228,9 @@ export default function BoardPage() {
       <div className="h-full flex gap-4 p-8 items-start overflow-x-auto overflow-y-hidden transition-all duration-300 ease-in-out">
         <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
           {lists?.map((list) => (
-            <List list={list} key={list.id}>
+            <List list={list} key={list.id} isClosed={isClosed}>
               {list.cards.map((card, index) => (
-                <CardItem key={card.id} card={card} index={index} />
+                <CardItem key={card.id} card={card} index={index} isClosed={isClosed} />
               ))}
             </List>
           ))}
@@ -241,7 +243,7 @@ export default function BoardPage() {
             <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
             <div className="flex flex-col gap-2">
               {activeColumn.cards.map((card) => (
-                <CardView key={card.id} card={card} isOverlay />
+                <CardView isClosed={isClosed} key={card.id} card={card} isOverlay />
               ))}
             </div>
           </div>

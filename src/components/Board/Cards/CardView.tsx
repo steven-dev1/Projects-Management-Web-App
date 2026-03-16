@@ -16,10 +16,11 @@ interface CardViewProps {
   isOverlay?: boolean;
   dragListeners?: SyntheticListenerMap;
   dragAttributes?: DraggableAttributes;
+  isClosed: boolean;
   onOpenDetail?: () => void;
 }
 
-export default function CardView({ card, isOverlay, dragListeners, dragAttributes }: CardViewProps) {
+export default function CardView({ card, isOverlay, dragListeners, dragAttributes, isClosed }: CardViewProps) {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dateStatus = getCardDateStatus(card.due_date, card.is_completed);
@@ -36,7 +37,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
         ${isOverlay ? "border-2 border-zinc-300 shadow-2xl rotate-2" : " dark:bg-zinc-900"} 
     `}
       >
-        {dragListeners && (
+        {dragListeners && !isClosed && (
           <div
             {...dragAttributes}
             {...dragListeners}
@@ -46,20 +47,22 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
           </div>
         )}
         <div className="pl-2 min-w-0 flex gap-2 items-center pr-6">
-          <div onPointerDown={(e) => e.stopPropagation()} className="shrink-0">
-            <Checkbox
-              classNames={{
-                base: "m-0 p-0",
-                wrapper: "m-0",
-              }}
-              radius="full"
-              color="success"
-              size="sm"
-              isSelected={card.is_completed}
-              onValueChange={() => dispatch(toggleCardCompletion(card.id!))}
-            />
-          </div>
-          <div className={`w-full ${card.is_completed ? "opacity-50" : ""}`}>
+          {!isClosed && (
+            <div onPointerDown={(e) => e.stopPropagation()} className="shrink-0">
+              <Checkbox
+                classNames={{
+                  base: "m-0 p-0",
+                  wrapper: "m-0",
+                }}
+                radius="full"
+                color="success"
+                size="sm"
+                isSelected={card.is_completed}
+                onValueChange={() => dispatch(toggleCardCompletion(card.id!))}
+              />
+            </div>
+          )}
+          <div className={`w-full`}>
             {card.labels && card.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
                 {card.labels.slice(0, 3).map((label) => (
@@ -127,14 +130,16 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
           </div>
         </div>
 
-        <div
-          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-          onPointerDown={(e) => e.stopPropagation()}
-        >
-          <OptionsCard cardId={card.id} onOpenDetail={onOpen} />
-        </div>
+        {!isClosed && (
+          <div
+            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <OptionsCard cardId={card.id} onOpenDetail={onOpen} />
+          </div>
+        )}
       </div>
-      {!isOverlay && <CardDetailModal cardId={card.id!} isOpen={isOpen} onClose={onClose} />}
+      {!isOverlay && <CardDetailModal isBoardClosed={isClosed} cardId={card.id!} isOpen={isOpen} onClose={onClose} />}
     </>
   );
 }

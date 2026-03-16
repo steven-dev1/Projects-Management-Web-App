@@ -13,6 +13,7 @@ import UpcomingCards from "./UpcomingCards";
 export default function BoardPanel({ board }: { board: BoardResponse }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const isBoardClosed = board.status === "archived";
 
   const allCards = useMemo(() => board.lists.flatMap((l) => l.cards), [board.lists]);
 
@@ -67,7 +68,7 @@ export default function BoardPanel({ board }: { board: BoardResponse }) {
 
       </div>
 
-      {selectedCard && <CardDetailModal cardId={selectedCard} isOpen={isOpen} onClose={onClose} />}
+      {selectedCard && <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />}
     </div>
   );
 }
