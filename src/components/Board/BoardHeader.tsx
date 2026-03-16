@@ -3,9 +3,9 @@ import { BoardResponse } from "@/store/features/boards/BoardsTypes";
 import ShareButton from "./Invite/ShareButton";
 import ViewDropdown from "./ViewDropdown";
 import MembersGroup from "./MembersGroup";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
-import { Button, useDisclosure } from "@heroui/react";
-import { Archive, Ellipsis } from "lucide-react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@heroui/dropdown";
+import { Button, Divider, useDisclosure } from "@heroui/react";
+import { Archive, Ellipsis, Trash2, X } from "lucide-react";
 import { ArchivedDrawer } from "./ArchivedDrawer";
 import { useAppSelector } from "@/store/hooks";
 
@@ -34,9 +34,22 @@ export default function BoardHeader({ board }: { board: BoardResponse }) {
                 if (key === "archived") onOpen();
               }}
             >
-              <DropdownItem key="archived" startContent={<Archive size={14} />}>
-                Elementos archivados
-              </DropdownItem>
+              <DropdownSection showDivider>
+                <DropdownItem key="archived" startContent={<Archive size={14} />}>
+                  Elementos archivados
+                </DropdownItem>
+              </DropdownSection>
+              <DropdownSection>
+                {board.status === "active" ? (
+                  <DropdownItem key="close" startContent={<X size={14} />}>
+                    Cerrar tablero
+                  </DropdownItem>
+                ) : (
+                  <DropdownItem key="delete" startContent={<Trash2 size={14} />}>
+                    Eliminar tablero definitivamente
+                  </DropdownItem>
+                )}
+              </DropdownSection>
             </DropdownMenu>
           </Dropdown>
         </div>
