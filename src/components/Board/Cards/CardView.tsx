@@ -33,7 +33,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
         onClick={onOpen}
         className={`
         group relative cursor-pointer flex items-center justify-start w-full rounded-lg p-2 pl-0 select-none
-        ${isOverlay ? "border-2 border-purple-400 shadow-2xl rotate-2" : " dark:bg-zinc-900"}
+        ${isOverlay ? "border-2 border-zinc-300 shadow-2xl rotate-2" : " dark:bg-zinc-900"} 
     `}
       >
         {dragListeners && (
@@ -59,7 +59,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
               onValueChange={() => dispatch(toggleCardCompletion(card.id!))}
             />
           </div>
-          <div className="w-full">
+          <div className={`w-full ${card.is_completed ? "opacity-50" : ""}`}>
             {card.labels && card.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
                 {card.labels.slice(0, 3).map((label) => (
@@ -77,7 +77,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
               </div>
             )}
             <h4
-              className={`font-medium text-sm truncate dark:text-zinc-100 transition-all ${card.is_completed ? "line-through text-zinc-500 italic" : "text-zinc-800"}`}
+              className={`font-medium text-sm truncate dark:text-zinc-100 transition-all ${card.is_completed ? "line-through text-zinc-500" : "text-zinc-800"}`}
             >
               {card.title}
             </h4>

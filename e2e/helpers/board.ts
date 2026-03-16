@@ -12,7 +12,7 @@ const supabase = createClient(
 export async function resetTestBoard() {
   const boardId = process.env.TEST_BOARD_ID!;
 
-  // Borrar TODAS las listas del board (sin importar cuántas haya)
+  // Borrar todas las listas del board
   const { data: existingLists } = await supabase
     .from("lists")
     .select("id")

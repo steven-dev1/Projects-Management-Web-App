@@ -8,7 +8,7 @@ import CreateCardButton from "../Cards/CreateCardButton";
 import { Divider } from "@heroui/react";
 import { OptionsList } from "./OptionsList";
 
-export default function List({ list, children }: { list: BoardList; children: React.ReactNode }) {
+export default function List({ list, children }: { list: BoardList; children: React.ReactNode; }) {
   const {
     attributes,
     listeners,
@@ -29,6 +29,7 @@ export default function List({ list, children }: { list: BoardList; children: Re
     opacity: isDragging ? 0.5 : 1,
     backgroundColor: list.background_color,
   };
+
 
   return (
     <div
@@ -54,7 +55,7 @@ export default function List({ list, children }: { list: BoardList; children: Re
           <OptionsList listId={list.id} />
         </div>
       </div>
-      <div className="flex flex-col w-full min-h-25 gap-2 overflow-y-auto custom-scrollbar" ref={setNodeRef}>
+      <div data-list-id={list.id} className="flex flex-col w-full min-h-25 gap-2 overflow-y-auto custom-scrollbar" ref={setNodeRef}>
         <SortableContext items={list.cards.map((c) => c.id as string)} strategy={verticalListSortingStrategy}>
           {children}
         </SortableContext>

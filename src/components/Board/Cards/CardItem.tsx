@@ -4,10 +4,10 @@ import { CSS } from '@dnd-kit/utilities';
 import CardView from "./CardView";
 import { useDisclosure } from "@heroui/react";
 
-export default function CardItem({ card }: { card: Card }) {
+export default function CardItem({ card, index }: { card: Card, index: number }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id as string,
-    data: { type: "card" },
+    data: { type: "card", index },
   });
   const { onOpen} = useDisclosure();
 

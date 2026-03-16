@@ -11,8 +11,11 @@ export const TOP_TIMEZONES = [
 export const FILTER_OPTIONS_BOARDS = [
   { label: "A-Z", value: "a-z" },
   { label: "Z-A", value: "z-a" },
-  { label: "Más reciente", value: "recent" },
-  { label: "Más antiguo", value: "oldest" },
+  { label: "Creado recientemente", value: "recent" },
+  { label: "Creado más antiguo", value: "oldest" },
+  // { label: "Creado por mi", value: "mine" },
+  // { label: "Creado por otro", value: "others" },
+  // { label: "Vistos recientemente", value: "recent-view" },
 ]
 
 export const LIST_COLORS = [
