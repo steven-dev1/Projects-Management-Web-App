@@ -22,7 +22,7 @@ export default function BoardHeader({ board }: { board: BoardResponse }) {
         </div>
         <div className="flex items-center gap-4">
           {isOwner && <ShareButton boardId={board.id as string} />}
-          <MembersGroup members={board.board_members} />
+          <MembersGroup members={board.board_members} boardOwnerId={board.owner_id} />
           <Dropdown>
             <DropdownTrigger>
               <Button variant="flat" size="sm" isIconOnly>
