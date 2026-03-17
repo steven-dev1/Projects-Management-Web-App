@@ -235,7 +235,7 @@ export default function BoardPage() {
             </List>
           ))}
         </SortableContext>
-        <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />
+        {!isClosed && <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />}
       </div>
       <DragOverlay dropAnimation={{ duration: 350, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
         {activeColumn ? (

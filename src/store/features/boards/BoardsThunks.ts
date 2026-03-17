@@ -106,14 +106,40 @@ export const updateBoard = createAsyncThunk<BoardResponse, UpdatedBoardPayload, 
   },
 );
 
+export const archiveBoard = createAsyncThunk<string, string, { rejectValue: string }>(
+  "boards/archiveBoard",
+  async (boardId, { rejectWithValue }) => {
+    try {
+      const { error } = await supabase.from("boards").update({ status: "archived" }).eq("id", boardId);
+      if (error) return rejectWithValue(error.message);
+      return boardId;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al archivar el tablero";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+export const restoreBoard = createAsyncThunk<BoardResponse, string, { rejectValue: string }>(
+  "boards/restoreBoard",
+  async (boardId, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase.from("boards").update({ status: "active" }).eq("id", boardId).select().single();
+      console.log(data)
+      if (error) return rejectWithValue(error.message);
+      return data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error al restaurar el tablero";
+      return rejectWithValue(message);
+    }
+  },
+);
+
 export const deleteBoard = createAsyncThunk<string, string, { rejectValue: string }>(
   "boards/deleteBoard",
   async (id, { rejectWithValue }) => {
     try {
-      const { error } = await supabase
-        .from("boards")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("boards").delete().eq("id", id);
 
       if (error) return rejectWithValue(error.message);
       return id;

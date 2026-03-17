@@ -2,7 +2,7 @@
 import BoardHeader from "@/components/Board/BoardHeader";
 import SkeletonBoardHeader from "@/components/Board/SkeletonBoardHeader";
 import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
-import { fetchBoardById, fetchBoards } from "@/store/features/boards/BoardsThunks";
+import { fetchBoardById } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
@@ -18,11 +18,9 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
     if (!id) return;
     dispatch(clearCurrentBoard());
     dispatch(fetchBoardById(id));
-    dispatch(fetchBoards());
 
     return () => {
       dispatch(clearCurrentBoard());
-      dispatch(fetchBoards());
     };
   }, [dispatch, id]);
 
@@ -33,7 +31,7 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
         <SkeletonBoardHeader />
       ) : (
         <>
-          <BoardHeader board={currentBoard} />
+          <BoardHeader />
           <main className="flex-1 overflow-hidden">{children}</main>
         </>
       )}
