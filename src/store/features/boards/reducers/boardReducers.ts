@@ -1,5 +1,13 @@
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
-import { createBoard, deleteBoard, fetchBoardById, fetchBoards, updateBoard } from "../BoardsThunks";
+import {
+  archiveBoard,
+  createBoard,
+  deleteBoard,
+  fetchBoardById,
+  fetchBoards,
+  restoreBoard,
+  updateBoard,
+} from "../BoardsThunks";
 import { BoardsState } from "../BoardsTypes";
 
 export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
@@ -50,6 +58,21 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
     })
     .addCase(updateBoard.rejected, (state, action) => {
       state.error = action.payload as string;
+    })
+    .addCase(archiveBoard.fulfilled, (state, action) => {
+      const index = state.boards.findIndex((b) => b.id === action.payload);
+      if (index !== -1) state.boards[index].status = "archived";
+      if (state.currentBoard?.id === action.payload) {
+        state.currentBoard.status = "archived";
+      }
+    })
+
+    .addCase(restoreBoard.fulfilled, (state, action) => {
+      const index = state.boards.findIndex((b) => b.id === action.payload.id);
+      if (index !== -1) state.boards[index] = { ...action.payload, status: "active" };
+      if (state.currentBoard?.id === action.payload.id) {
+        state.currentBoard.status = "active";
+      }
     })
     .addCase(deleteBoard.fulfilled, (state, action) => {
       state.boards = state.boards.filter((b) => b.id !== action.payload);

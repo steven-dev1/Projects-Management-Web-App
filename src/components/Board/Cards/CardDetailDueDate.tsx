@@ -9,7 +9,7 @@ import { getCardDateStatus } from "@/lib/utils";
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { updateCard } from "@/store/features/boards/CardsThunks";
 
-export const CardDetailDueDate = ({ card }: { card: Card }) => {
+export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [dueDate, setDueDate] = useState<ZonedDateTime | null>(
@@ -19,6 +19,11 @@ export const CardDetailDueDate = ({ card }: { card: Card }) => {
   const dateStatus = getCardDateStatus(card.due_date, card.is_completed);
   const isOverdue = dateStatus === "overdue";
   const isDueSoon = dateStatus === "due-soon";
+
+  const handleEdit = () => {
+    if (isBoardClosed) return;
+    setIsEditing(true);
+  };
 
   const handleSave = async () => {
     if (!dueDate) return;
@@ -31,7 +36,7 @@ export const CardDetailDueDate = ({ card }: { card: Card }) => {
     setIsEditing(false);
   };
 
-  if (isEditing) {
+  if (isEditing && !isBoardClosed) {
     return (
       <div className="flex flex-col gap-2">
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Fecha límite</p>
@@ -62,7 +67,7 @@ export const CardDetailDueDate = ({ card }: { card: Card }) => {
           {isOverdue && <span className="text-xs font-semibold">• Vencida</span>}
           {isDueSoon && <span className="text-xs font-semibold">• Vence pronto</span>}
         </div>
-        <button onClick={() => setIsEditing(true)} className="text-zinc-400 hover:text-zinc-600">
+        <button onClick={() => handleEdit()} className="text-zinc-400 hover:text-zinc-600">
           <Pencil size={13} />
         </button>
       </div>

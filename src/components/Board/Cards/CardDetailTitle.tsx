@@ -4,7 +4,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { Input } from "@heroui/react";
 import { useState } from "react";
 
-export const CardDetailTitle = ({ card }: { card: Card }) => {
+export const CardDetailTitle = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(card.title);
@@ -15,7 +15,12 @@ export const CardDetailTitle = ({ card }: { card: Card }) => {
     setEditing(false);
   };
 
-  if (editing) {
+  const handleEdit = () => {
+    if (isBoardClosed) return;
+    setEditing(true);
+  };
+
+  if (editing && !isBoardClosed) {
     return (
       <Input
         value={title}
@@ -33,7 +38,7 @@ export const CardDetailTitle = ({ card }: { card: Card }) => {
   return (
     <h2
       className="text-lg font-semibold text-zinc-800 cursor-pointer hover:bg-zinc-100 rounded px-1 -mx-1 transition-colors"
-      onClick={() => setEditing(true)}
+      onClick={() => handleEdit()}
     >
       {card.title}
     </h2>

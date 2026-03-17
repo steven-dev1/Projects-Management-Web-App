@@ -21,7 +21,6 @@ import {
   closestCenter,
   DragMoveEvent,
   CollisionDetection,
-  rectIntersection,
   pointerWithin,
 } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
@@ -44,16 +43,45 @@ export default function BoardPage() {
     }),
   );
 
+  const isClosed = currentBoard?.status === "archived";
+
+  const horizontalClosestCenter: CollisionDetection = (args) => {
+    const { droppableRects, droppableContainers, pointerCoordinates } = args;
+
+    if (!pointerCoordinates) return closestCenter(args);
+
+    const centerX = pointerCoordinates.x;
+
+    let closest = null;
+    let minDistance = Infinity;
+
+    for (const container of droppableContainers) {
+      if (container.data?.current?.type !== "column") continue;
+
+      const rect = droppableRects.get(container.id);
+      if (!rect) continue;
+
+      const containerCenterX = rect.left + rect.width / 2;
+      const distance = Math.abs(centerX - containerCenterX);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closest = container;
+      }
+    }
+
+    return closest ? [{ id: closest.id }] : closestCenter(args);
+  };
+
   const collisionDetection: CollisionDetection = (args) => {
     const isColumn = args.active?.data?.current?.type === "column";
 
     if (isColumn) {
-      return rectIntersection(args);
+      return horizontalClosestCenter(args);
     }
 
     const pointerCollisions = pointerWithin(args);
     if (pointerCollisions.length > 0) return pointerCollisions;
-
     return closestCenter(args);
   };
 
@@ -200,14 +228,14 @@ export default function BoardPage() {
       <div className="h-full flex gap-4 p-8 items-start overflow-x-auto overflow-y-hidden transition-all duration-300 ease-in-out">
         <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
           {lists?.map((list) => (
-            <List list={list} key={list.id}>
+            <List list={list} key={list.id} isClosed={isClosed}>
               {list.cards.map((card, index) => (
-                <CardItem key={card.id} card={card} index={index} />
+                <CardItem key={card.id} card={card} index={index} isClosed={isClosed} />
               ))}
             </List>
           ))}
         </SortableContext>
-        <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />
+        {!isClosed && <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />}
       </div>
       <DragOverlay dropAnimation={{ duration: 350, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
         {activeColumn ? (
@@ -215,7 +243,7 @@ export default function BoardPage() {
             <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
             <div className="flex flex-col gap-2">
               {activeColumn.cards.map((card) => (
-                <CardView key={card.id} card={card} isOverlay />
+                <CardView isClosed={isClosed} key={card.id} card={card} isOverlay />
               ))}
             </div>
           </div>

@@ -86,20 +86,12 @@ const authSlice = createSlice({
         state.error = action.payload ?? "Error al actualizar datos";
       })
 
-      // REFRESCAR AVATAR
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .addCase(refreshAvatarUrl.pending, (state) => {
-        // Opcional: podrías poner un mini-loading solo para avatar
-        // state.avatarLoading = true;
-      })
       .addCase(refreshAvatarUrl.fulfilled, (state, action) => {
         if (state.profile) {
           state.profile.avatar_url = action.payload.avatar_url;
         }
-        // state.avatarLoading = false; // si usaste loading específico
       })
       .addCase(refreshAvatarUrl.rejected, (state, action) => {
-        // state.avatarLoading = false;
         state.error = action.payload ?? "Error refrescando avatar";
         console.warn("Refresh avatar falló:", action.payload);
       });

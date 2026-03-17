@@ -7,7 +7,7 @@ import { Card } from "@/store/features/boards/BoardsTypes";
 import { createChecklist } from "@/store/features/boards/ChecklistThunks";
 import { CardChecklist } from "./CardCheckList";
 
-export const CardChecklists = ({ card }: { card: Card }) => {
+export const CardChecklists = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();
   const [isCreating, setIsCreating] = useState(false);
   const [title, setTitle] = useState("Checklist");
@@ -29,47 +29,48 @@ export const CardChecklists = ({ card }: { card: Card }) => {
           </div>
           {card.checklists.map((checklist) => (
             <div key={checklist.id} className="flex flex-col gap-2">
-              <CardChecklist checklist={checklist} cardId={card.id!} />
-              <Divider />
+              <CardChecklist isBoardClosed={isBoardClosed} checklist={checklist} cardId={card.id!} />
+              {!isBoardClosed && <Divider />}
             </div>
           ))}
         </>
       )}
 
-      {isCreating ? (
-        <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Nueva checklist</p>
-          <Input
-            size="sm"
-            autoFocus
-            label="Título"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleCreate();
-              if (e.key === "Escape") setIsCreating(false);
-            }}
-          />
-          <div className="flex gap-2">
-            <Button size="sm" variant="flat" color="primary" onPress={handleCreate}>
-              Crear
-            </Button>
-            <Button size="sm" variant="light" isIconOnly onPress={() => setIsCreating(false)}>
-              <X size={14} />
-            </Button>
+      {!isBoardClosed &&
+        (isCreating ? (
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Nueva checklist</p>
+            <Input
+              size="sm"
+              autoFocus
+              label="Título"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleCreate();
+                if (e.key === "Escape") setIsCreating(false);
+              }}
+            />
+            <div className="flex gap-2">
+              <Button size="sm" variant="flat" color="primary" onPress={handleCreate}>
+                Crear
+              </Button>
+              <Button size="sm" variant="light" isIconOnly onPress={() => setIsCreating(false)}>
+                <X size={14} />
+              </Button>
+            </div>
           </div>
-        </div>
-      ) : (
-        <Button
-          size="sm"
-          variant="flat"
-          startContent={<Plus size={14} />}
-          onPress={() => setIsCreating(true)}
-          className="w-fit"
-        >
-          Agregar checklist
-        </Button>
-      )}
+        ) : (
+          <Button
+            size="sm"
+            variant="flat"
+            startContent={<Plus size={14} />}
+            onPress={() => setIsCreating(true)}
+            className="w-fit"
+          >
+            Agregar checklist
+          </Button>
+        ))}
     </div>
   );
 };

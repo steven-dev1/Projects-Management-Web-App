@@ -5,7 +5,7 @@ import { useState } from "react";
 import { RichTextEditor } from "../RichTextEditor";
 import { RichTextViewer } from "../RichTextViewer";
 
-export const CardDetailDescription = ({ card }: { card: Card }) => {
+export const CardDetailDescription = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();
   const [editing, setEditing] = useState(false);
 
@@ -19,7 +19,7 @@ export const CardDetailDescription = ({ card }: { card: Card }) => {
     setEditing(false);
   };
 
-  if (editing) {
+  if (editing && !isBoardClosed) {
     return (
       <RichTextEditor
         content={card.description ?? ""}
@@ -29,5 +29,5 @@ export const CardDetailDescription = ({ card }: { card: Card }) => {
     );
   }
 
-  return <RichTextViewer content={card.description ?? ""} onClick={() => setEditing(true)} />;
+  return <RichTextViewer isBoardClosed={isBoardClosed} content={card.description ?? ""} onClick={() => setEditing(true)} />;
 };
