@@ -82,5 +82,6 @@ export interface AppNotification {
   message: string;
   url?: string;
   is_read: boolean;
+  role?: "admin" | "member";
   created_at: string;
 }

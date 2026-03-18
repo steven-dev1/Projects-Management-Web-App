@@ -38,7 +38,7 @@ export default function BoardHeader() {
           </p>
         </div>
       )}
-      <div className="flex gap-4 items-center justify-between py-2 px-8 border-y dark:border-zinc-900 border-zinc-200">
+      <div className="flex gap-4 items-center justify-between py-2 px-8 border-y dark:border-zinc-800 border-zinc-200">
         <div className="flex gap-4 items-center">
           <h1 className="text-lg font-semibold">{board.name}</h1>
           <ViewDropdown boardId={board.id as string} />

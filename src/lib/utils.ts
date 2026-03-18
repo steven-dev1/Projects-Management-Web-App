@@ -1,8 +1,4 @@
-import { NotificationType } from "@/types";
-import { createClient } from "./supabaseClient";
 import { LIST_COLORS } from "./consts";
-
-const supabase = createClient();
 
 export function capitalizeWords(str: string) {
   return str.toLowerCase().replace(/(^|\s)\w/g, (letra) => letra.toUpperCase());
@@ -24,26 +20,12 @@ export const getCardDateStatus = (dueDate: string | null | undefined, isComplete
   return "ok";
 };
 
-interface CreateNotificationParams {
-  userId: string;
-  type: NotificationType;
-  title: string;
-  message: string;
-  url?: string;
-}
-export async function createNotification({ userId, type, title, message, url }: CreateNotificationParams) {
-  await supabase.from("notifications").insert({
-    user_id: userId,
-    type,
-    title,
-    message,
-    url,
-  });
-}
 
-export function resolveListColor(colorId: string | undefined, isDark: boolean) {
+
+export function resolveListColor(colorId: string | undefined, isDark: boolean, isBoard?: boolean) {
   if (!colorId) return undefined;
   const found = LIST_COLORS.find((c) => c.id === colorId);
   if (!found) return undefined;
+  if (isBoard) return found.board;
   return isDark ? found.dark : found.light;
 }

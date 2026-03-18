@@ -31,9 +31,9 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  const isAuthPage = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/";
+  const isAuthPage = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/" || pathname.startsWith("/invite");
 
-  const isPublicRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/";
+  const isPublicRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/" || pathname.startsWith("/invite");
 
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
