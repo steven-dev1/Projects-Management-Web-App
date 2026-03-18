@@ -8,12 +8,12 @@ import NotificationsBell from "../Notifications/NotificationsBell";
 
 export default function BoardNavBar() {
   return (
-    <Navbar maxWidth="full" position="sticky" isBordered isBlurred className="p-1">
+    <Navbar maxWidth="full" position="sticky"  isBlurred className="p-1 dark:bg-zinc-950">
       <NavbarContent justify="start">
         <NavbarBrand>
           <Link href="/dashboard" className="flex items-center gap-2">
             <Unlink color="#006fee" size="32" />
-            <h1 className="text-xl hidden sm:block font-semibold">Projects M.</h1>
+            <h1 className="text-xl dark:text-white hidden sm:block font-semibold">Projects M.</h1>
           </Link>
         </NavbarBrand>
       </NavbarContent>

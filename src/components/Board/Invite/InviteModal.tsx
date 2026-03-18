@@ -30,7 +30,7 @@ export const InviteModal = ({ boardId, isOpen, onClose }: {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} placement="top-center">
+    <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} placement="top-center">
       <ModalContent>
         <ModalHeader>Invitar miembro</ModalHeader>
         <Divider />

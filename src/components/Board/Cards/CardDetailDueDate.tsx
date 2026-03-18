@@ -51,10 +51,10 @@ export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoard
 
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Fecha límite</p>
+      <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Fecha límite</p>
       <div className="flex items-center gap-2">
         <div className={`flex items-center gap-2 py-1 px-2 rounded-lg w-fit ${
-          isOverdue ? "bg-red-50 text-red-600" : isDueSoon ? "bg-amber-50 text-amber-600" : "text-zinc-600"
+          isOverdue ? "bg-red-50 dark:bg-red-900/30 text-red-600" : isDueSoon ? "bg-amber-50 dark:bg-amber-900/40 text-amber-600" : "text-zinc-600 dark:text-zinc-200"
         }`}>
           <CalendarIcon size={14} />
           <span className="text-sm">
@@ -64,10 +64,10 @@ export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoard
                 })
               : "Sin fecha"}
           </span>
-          {isOverdue && <span className="text-xs font-semibold">• Vencida</span>}
-          {isDueSoon && <span className="text-xs font-semibold">• Vence pronto</span>}
+          {isOverdue && <span className="text-xs font-bold">• Vencida</span>}
+          {isDueSoon && <span className="text-xs font-bold">• Vence pronto</span>}
         </div>
-        <button onClick={() => handleEdit()} className="text-zinc-400 hover:text-zinc-600">
+        <button onClick={() => handleEdit()} className="text-zinc-400 dark:text-zinc-200 dark:hover:text-zinc-400 cursor-pointer hover:text-zinc-600">
           <Pencil size={13} />
         </button>
       </div>

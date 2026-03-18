@@ -15,7 +15,7 @@ export const EditListModal = ({ listId, isOpen, onClose }: EditListModalProps) =
 
   if (!list) return null;
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <ModalHeader>Editar lista</ModalHeader>
         <ModalBody>

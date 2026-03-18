@@ -19,7 +19,7 @@ import {
   DragOverEvent,
   // closestCorners,
   closestCenter,
-  DragMoveEvent,
+  // DragMoveEvent,
   CollisionDetection,
   pointerWithin,
 } from "@dnd-kit/core";
@@ -188,13 +188,17 @@ export default function BoardPage() {
 
     const cardElements = Array.from(overListElement.querySelectorAll('[data-type="card"]'));
 
+    // 👇 leer la posición directamente del evento
+    const activatorEvent = event.activatorEvent as PointerEvent;
+    const currentY = activatorEvent.clientY + event.delta.y;
+
     let destinationIndex = overContainer.cards.length;
 
     for (let i = 0; i < cardElements.length; i++) {
       const cardRect = cardElements[i].getBoundingClientRect();
       const cardMiddleY = cardRect.top + cardRect.height / 2;
 
-      if (pointerY.current < cardMiddleY) {
+      if (currentY < cardMiddleY) {
         destinationIndex = i;
         break;
       }
@@ -210,10 +214,6 @@ export default function BoardPage() {
     );
   };
 
-  const handleDragMove = (event: DragMoveEvent) => {
-    pointerY.current = dragStartY.current + event.delta.y;
-  };
-
   if (!currentBoard) return null;
 
   return (
@@ -221,7 +221,7 @@ export default function BoardPage() {
       sensors={sensors}
       collisionDetection={collisionDetection}
       onDragStart={handleDragStart}
-      onDragMove={handleDragMove}
+      // onDragMove={handleDragMove}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
@@ -237,9 +237,12 @@ export default function BoardPage() {
         </SortableContext>
         {!isClosed && <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />}
       </div>
-      <DragOverlay dropAnimation={{ duration: 350, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
+      <DragOverlay
+        dropAnimation={{ duration: 150, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}
+        className="absolute top-0 left-0 right-0 bottom-0"
+      >
         {activeColumn ? (
-          <div className="bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg shadow-2xl border border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-90">
+          <div className="bg-zinc-100 dark:bg-zinc-950 p-3 rounded-lg shadow-2xl border border-zinc-300 dark:border-zinc-700 w-72 rotate-2 cursor-grabbing opacity-90">
             <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
             <div className="flex flex-col gap-2">
               {activeColumn.cards.map((card) => (
@@ -248,9 +251,7 @@ export default function BoardPage() {
             </div>
           </div>
         ) : activeCard ? (
-          <div className="bg-white p-3 rounded-lg shadow-2xl border-2 border-zinc-300 w-72 rotate-2 cursor-grabbing opacity-95">
-            <h4 className="font-medium text-sm">{activeCard.title}</h4>
-          </div>
+          <CardView isClosed={isClosed} card={activeCard} isOverlay />
         ) : null}
       </DragOverlay>
     </DndContext>

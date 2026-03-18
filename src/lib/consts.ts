@@ -19,14 +19,14 @@ export const FILTER_OPTIONS_BOARDS = [
 ]
 
 export const LIST_COLORS = [
-  { label: "Zinc",    value: "#f4f4f5", text: "#3f3f46" },
-  { label: "Rojo",    value: "#fee2e2", text: "#991b1b" },
-  { label: "Naranja", value: "#ffedd5", text: "#9a3412" },
-  { label: "Amarillo",value: "#fef9c3", text: "#854d0e" },
-  { label: "Verde",   value: "#dcfce7", text: "#166534" },
-  { label: "Cyan",    value: "#cffafe", text: "#155e75" },
-  { label: "Azul",    value: "#dbeafe", text: "#1e40af" },
-  { label: "Violeta", value: "#ede9fe", text: "#5b21b6" },
-  { label: "Rosa",    value: "#fce7f3", text: "#9d174d" },
-  { label: "Piedra",  value: "#f5f5f4", text: "#44403c" },
+  { id: "zinc",     label: "Zinc",     light: "#f4f4f5", dark: "color-mix(in oklab, #71717a 15%, transparent)" },
+  { id: "rojo",     label: "Rojo",     light: "#fee2e2", dark: "color-mix(in oklab, #f87171 15%, transparent)" },
+  { id: "naranja",  label: "Naranja",  light: "#ffedd5", dark: "color-mix(in oklab, #fb923c 15%, transparent)" },
+  { id: "amarillo", label: "Amarillo", light: "#fef9c3", dark: "color-mix(in oklab, #facc15 15%, transparent)" },
+  { id: "verde",    label: "Verde",    light: "#dcfce7", dark: "color-mix(in oklab, #4ade80 15%, transparent)" },
+  { id: "cyan",     label: "Cyan",     light: "#cffafe", dark: "color-mix(in oklab, #22d3ee 15%, transparent)" },
+  { id: "azul",     label: "Azul",     light: "#dbeafe", dark: "color-mix(in oklab, #60a5fa 15%, transparent)" },
+  { id: "violeta",  label: "Violeta",  light: "#ede9fe", dark: "color-mix(in oklab, #a78bfa 15%, transparent)" },
+  { id: "rosa",     label: "Rosa",     light: "#fce7f3", dark: "color-mix(in oklab, #f472b6 15%, transparent)" },
+  { id: "piedra",   label: "Piedra",   light: "#f5f5f4", dark: "color-mix(in oklab, #a8a29e 15%, transparent)" },
 ] as const;

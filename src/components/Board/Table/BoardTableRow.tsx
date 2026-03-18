@@ -1,7 +1,7 @@
 "use client";
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { BoardMember } from "@/types";
-import { Avatar, Chip } from "@heroui/react";
+import { Avatar, Chip, Tooltip } from "@heroui/react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import { CheckSquare } from "lucide-react";
@@ -21,17 +21,17 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
 
   return (
     <tr
-      className="border-b border-zinc-100 hover:bg-zinc-50 cursor-pointer transition-colors"
+      className="border-b border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900 hover:bg-zinc-50 cursor-pointer transition-colors"
       onClick={onOpen}
     >
       {/* Título */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className={`font-medium text-zinc-800 ${card.is_completed ? "line-through text-zinc-400" : ""}`}>
+          <span className={`font-medium text-zinc-800 dark:text-zinc-300 ${card.is_completed ? "text-zinc-400" : ""}`}>
             {card.title}
           </span>
           {totalItems > 0 && (
-            <span className="flex items-center gap-1 text-xs text-zinc-400">
+            <span className="flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-200">
               <CheckSquare size={12} />
               {completedItems}/{totalItems}
             </span>
@@ -41,7 +41,7 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
 
       {/* Lista */}
       <td className="px-4 py-3">
-        <span className="text-xs bg-zinc-100 text-zinc-600 px-2 py-1 rounded-full">
+        <span className="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 px-2 py-1 rounded-full">
           {listName}
         </span>
       </td>
@@ -56,7 +56,7 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
               size="sm"
               className="w-6 h-6"
             />
-            <span className="text-xs text-zinc-600">{assignedMember.profiles?.full_name}</span>
+            <span className="text-xs text-zinc-600 dark:text-zinc-300">{assignedMember.profiles?.full_name}</span>
           </div>
         ) : (
           <span className="text-xs text-zinc-400">—</span>
@@ -66,7 +66,9 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
       {/* Fecha límite */}
       <td className="px-4 py-3">
         {card.due_date ? (
-          <span className={`text-xs ${new Date(card.due_date) < new Date() && !card.is_completed ? "text-red-500 font-medium" : "text-zinc-600"}`}>
+          <span
+            className={`text-xs ${new Date(card.due_date) < new Date() && !card.is_completed ? "text-red-500 font-medium" : "text-zinc-600 dark:text-zinc-300"}`}
+          >
             {format(new Date(card.due_date), "dd MMM yyyy", { locale: es })}
           </span>
         ) : (
@@ -78,13 +80,10 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
       <td className="px-4 py-3">
         <div className="flex flex-wrap gap-1">
           {card.labels?.map((label) => (
-            <span
-              key={label.id}
-              className="text-xs px-2 py-0.5 rounded-full text-white"
-              style={{ backgroundColor: label.color }}
-            >
-              {label.name}
-            </span>
+            <Tooltip key={label.id} content={label.name} showArrow placement="top">
+              <div className="text-xs px-2 py-0.5 h-1.5 rounded-full text-white" style={{ backgroundColor: label.color }}>
+              </div>
+            </Tooltip>
           ))}
           {!card.labels?.length && <span className="text-xs text-zinc-400">—</span>}
         </div>
@@ -92,11 +91,7 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
 
       {/* Estado */}
       <td className="px-4 py-3">
-        <Chip
-          size="sm"
-          variant="flat"
-          color={card.is_completed ? "success" : "default"}
-        >
+        <Chip size="sm" variant="flat" color={card.is_completed ? "success" : "default"}>
           {card.is_completed ? "Completada" : "Pendiente"}
         </Chip>
       </td>

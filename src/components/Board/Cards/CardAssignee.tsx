@@ -32,13 +32,13 @@ export const CardAssignee = ({ card, isBoardClosed }: { card: Card; isBoardClose
                     size="sm"
                     className="w-6 h-6 shrink-0"
                   />
-                  <span className="text-xs text-zinc-700">{assignedMember?.profiles?.full_name}</span>
+                  <span className="text-xs text-zinc-700 dark:text-zinc-200">{assignedMember?.profiles?.full_name}</span>
                 </>
               );
             })()
           ) : (
             <div className="flex min-w-0 w-full items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center shrink-0">
+              <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0">
                 <UserX size={12} className="text-zinc-400" />
               </div>
               <span className="text-xs w-full text-zinc-500 truncate">Sin asignar</span>
@@ -61,14 +61,14 @@ export const CardAssignee = ({ card, isBoardClosed }: { card: Card; isBoardClose
               type="button"
               variant="light"
               onPress={() => dispatch(assignCard({ cardId: card.id!, userId: null }))}
-              className={`flex justify-start items-center gap-2 p-1.5 rounded-lg hover:bg-zinc-100 transition-colors text-left ${
-                !card.assigned_to ? "bg-zinc-100" : ""
+              className={`flex justify-start items-center gap-2 p-1.5 rounded-lg dark:hover:bg-zinc-800 hover:bg-zinc-100 transition-colors text-left ${
+                !card.assigned_to ? "bg-zinc-100 dark:bg-zinc-800" : ""
               }`}
             >
-              <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center shrink-0">
+              <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0">
                 <UserX size={12} className="text-zinc-400" />
               </div>
-              <span className="text-xs text-zinc-500">Sin asignar</span>
+              <span className="text-xs text-zinc-500 dark:text-zinc-400">Sin asignar</span>
             </Button>
             {filteredMembers.length === 0 ? (
               <p className="text-xs text-zinc-400 text-center py-2">Sin resultados</p>
@@ -79,8 +79,8 @@ export const CardAssignee = ({ card, isBoardClosed }: { card: Card; isBoardClose
                   type="button"
                   variant="light"
                   onPress={() => dispatch(assignCard({ cardId: card.id!, userId: member.user_id }))}
-                  className={`flex outline-none items-center justify-start gap-2 p-1.5 rounded-lg hover:bg-zinc-100 transition-colors text-left ${
-                    card.assigned_to === member.user_id ? "bg-zinc-100" : ""
+                  className={`flex outline-none items-center justify-start gap-2 p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-left ${
+                    card.assigned_to === member.user_id ? "bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700" : ""
                   }`}
                 >
                   <Avatar
@@ -89,7 +89,7 @@ export const CardAssignee = ({ card, isBoardClosed }: { card: Card; isBoardClose
                     size="sm"
                     className="w-6 h-6 shrink-0"
                   />
-                  <span className="text-xs text-zinc-700 truncate">{member.profiles?.full_name}</span>
+                  <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{member.profiles?.full_name}</span>
                   {card.assigned_to === member.user_id && (
                     <Check size={14} className="text-emerald-500 ml-auto shrink-0" />
                   )}

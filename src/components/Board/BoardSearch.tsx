@@ -75,7 +75,7 @@ export const BoardSearch = () => {
             }}
             placeholder="Buscar tarjetas..."
             type="search"
-            className="w-full pl-9 outline-none rounded-xl text-sm border p-2 border-zinc-500"
+            className="w-full pl-9 outline-none rounded-xl text-sm border p-2.5 dark:border-zinc-800 border-zinc-500"
           />
         </div>
 

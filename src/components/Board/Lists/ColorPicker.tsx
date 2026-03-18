@@ -1,22 +1,31 @@
 import { LIST_COLORS } from "@/lib/consts";
 import { Tooltip } from "@heroui/react";
+import { useTheme } from "next-themes";
 
 export const ColorPicker = ({ value, onChange }: { value: string; onChange: (color: string) => void }) => {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div className="flex flex-wrap gap-2">
-      {LIST_COLORS.map((color) => (
-        <Tooltip key={color.value} content={color.label} showArrow placement="top">
-          <button
-            type="button" // importante: evita que submit el form
-            onClick={() => onChange(color.value)}
-            className={`
-              w-7 h-7 rounded-full cursor-pointer border-2 transition-all duration-150 hover:scale-110
-              ${value === color.value ? "border-zinc-800 scale-110 shadow-md" : "border-zinc-400"}
-            `}
-            style={{ backgroundColor: color.value }}
-          />
-        </Tooltip>
-      ))}
+      {LIST_COLORS.map((color) => {
+        const bg = isDark ? color.dark : color.light;
+        const isSelected = value === color.id
+
+        return (
+          <Tooltip key={color.light} content={color.label} showArrow placement="top">
+            <button
+              type="button"
+              onClick={() => onChange(color.id)}
+              className={`
+                w-7 h-7 rounded-full cursor-pointer border-2 transition-all duration-150 hover:scale-110
+                ${isSelected ? "border-zinc-800 dark:border-white scale-110 shadow-md" : "border-zinc-400"}
+              `}
+              style={{ backgroundColor: bg }}
+            />
+          </Tooltip>
+        );
+      })}
     </div>
   );
 };

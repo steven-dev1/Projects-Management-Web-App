@@ -37,7 +37,7 @@ export const CardDetailTitle = ({ card, isBoardClosed }: { card: Card; isBoardCl
 
   return (
     <h2
-      className="text-lg font-semibold text-zinc-800 cursor-pointer hover:bg-zinc-100 rounded px-1 -mx-1 transition-colors"
+      className="text-lg font-semibold dark:text-zinc-300 text-zinc-800 cursor-pointer dark:hover:bg-zinc-800 hover:bg-zinc-100 rounded-lg py-1.5 px-2 -mx-1"
       onClick={() => handleEdit()}
     >
       {card.title}

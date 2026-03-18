@@ -21,7 +21,7 @@ import { ColorPicker } from "./ColorPicker";
 export default function CreateListButton({ boardId, lastPosition }: { boardId: string; lastPosition: number }) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>(LIST_COLORS[0].value);
+  const [selectedColor, setSelectedColor] = useState<string>(LIST_COLORS[0].id);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
 
@@ -47,10 +47,9 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
       });
       setLoading(false);
       onClose();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (rejectedValueOrError) {
       setLoading(false);
-      addToast({ title: "Error al crear proyecto", color: "danger" });
+      addToast({ title: rejectedValueOrError instanceof Error ? rejectedValueOrError.message : "Error al crear lista", color: "danger" });
     }
   };
   return (
@@ -59,7 +58,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
         <Plus size={18} />
         Crear lista
       </Button>
-      <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>

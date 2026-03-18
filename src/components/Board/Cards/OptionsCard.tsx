@@ -9,7 +9,7 @@ export const OptionsCard = ({ cardId, onOpenDetail }: { cardId: string; onOpenDe
     <>
       <Dropdown>
         <DropdownTrigger>
-          <div className="bg-zinc-100 p-1 rounded-lg cursor-pointer flex">
+          <div className="dark:hover:bg-zinc-800 dark:hover:text-zinc-300 hover:bg-zinc-200 text-zinc-400 hover:text-zinc-600 p-1 rounded-lg cursor-pointer flex">
             <Ellipsis size={16} />
           </div>
         </DropdownTrigger>
