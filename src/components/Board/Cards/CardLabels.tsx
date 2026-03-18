@@ -29,7 +29,7 @@ export const CardLabels = ({ card, isBoardClosed }: { card: Card; isBoardClosed:
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Etiquetas</p>
+      <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Etiquetas</p>
 
       <div className="flex flex-wrap gap-2">
         {boardLabels.map((label) => (
@@ -56,7 +56,7 @@ export const CardLabels = ({ card, isBoardClosed }: { card: Card; isBoardClosed:
               <button
                 type="button"
                 onClick={() => handleToggleLabel(label)}
-                className="w-20 cursor-pointer h-7 rounded-md flex items-center justify-center px-2 transition-all hover:opacity-80"
+                className="w-18 cursor-pointer h-7 rounded-md flex items-center justify-center px-2 transition-all hover:opacity-80"
                 style={{ backgroundColor: label.color }}
               >
                 <span className="text-white text-xs font-medium truncate drop-shadow-sm">{label.name ?? ""}</span>

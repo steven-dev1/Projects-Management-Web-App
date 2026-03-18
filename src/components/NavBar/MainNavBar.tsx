@@ -1,7 +1,7 @@
 "use client";
 import { Menu, Unlink } from "lucide-react";
 import Link from "next/link";
-import { Button, useDisclosure } from "@heroui/react";
+import { Button, Navbar, useDisclosure } from "@heroui/react";
 import NavBarMobile from "./NavBarMobile";
 import ProfileDropdown from "./ProfileDropdown";
 import NotificationsBell from "../Notifications/NotificationsBell";
@@ -11,7 +11,7 @@ export default function MainNavBar() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <nav className="flex items-center border-b gap-2 p-4 bg-white border-b-zinc-200 w-full sticky top-0 z-10 backdrop-blur-lg">
+    <Navbar maxWidth="full" position="sticky" isBordered isBlurred className="flex items-center border-b gap-2 bg-white dark:bg-zinc-900 dark:border-b-zinc-800 border-b-zinc-200 w-full sticky top-0 z-100 backdrop-blur-lg">
       <div className="w-7xl mx-auto flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
           <Unlink color="#006fee" size="32" />
@@ -29,6 +29,6 @@ export default function MainNavBar() {
           <ProfileDropdown />
         </div>
       </div>
-    </nav>
+    </Navbar>
   );
 }

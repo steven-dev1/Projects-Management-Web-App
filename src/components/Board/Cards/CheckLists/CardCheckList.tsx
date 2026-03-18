@@ -61,7 +61,7 @@ export const CardChecklist = ({
     <div className="flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-zinc-700">{checklist.title}</p>
+        <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-400">{checklist.title}</p>
         {!isBoardClosed && (
           <Button
             size="sm"
@@ -78,7 +78,7 @@ export const CardChecklist = ({
       {/* Progress */}
       {total > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-400 w-8">{progress}%</span>
+          <span className="text-xs dark:text-zinc-400 text-zinc-400 w-8">{progress}%</span>
           <Progress value={progress} size="sm" color={progress === 100 ? "success" : "primary"} className="flex-1" />
         </div>
       )}
@@ -106,9 +106,7 @@ export const CardChecklist = ({
             />
             <div className="flex items-center justify-between flex-1">
               <span
-                className={`text-sm ${isBoardClosed ? "cursor-default" : "cursor-pointer"} ${
-                  item.is_completed ? "line-through text-zinc-400" : "text-zinc-700"
-                }`}
+                className={`text-sm text-zinc-700 dark:text-zinc-400 ${isBoardClosed ? "cursor-default" : "cursor-pointer"}`}
                 onClick={() => {
                   if (isBoardClosed) return;
                   setEditingItemId(item.id);

@@ -55,7 +55,9 @@ export const CardDetailModal = ({
       isOpen={isOpen}
       onClose={onClose}
       size="3xl"
+      backdrop="blur"
       scrollBehavior="inside"
+      classNames={{ wrapper: "custom-scrollbar-modal", closeButton: "right-60 top-2 cursor-pointer" }}
     >
       <ModalContent>
         <ModalBody className="p-0">
@@ -63,8 +65,8 @@ export const CardDetailModal = ({
             <div className="flex-1 p-6 flex flex-col gap-6">
               {/* Header */}
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-zinc-400">
-                  En la lista <span className="font-medium text-zinc-600">{list?.title}</span>
+                <p className="text-xs text-zinc-400 dark:text-zinc-300">
+                  En la lista: <span className="font-medium text-zinc-600 dark:text-white">{list?.title}</span>
                 </p>
                 <CardDetailTitle isBoardClosed={isBoardClosed} card={card} />
               </div>
@@ -72,12 +74,12 @@ export const CardDetailModal = ({
               <CardDetailDueDate isBoardClosed={isBoardClosed} card={card} />
               <CardLabels isBoardClosed={isBoardClosed} card={card} />
               <div className="flex flex-col gap-2">
-                <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Descripción</p>
+                <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Descripción</p>
                 <CardDetailDescription isBoardClosed={isBoardClosed} card={card} />
                 <CardChecklists isBoardClosed={isBoardClosed} card={card} />
               </div>
             </div>
-            <div className="md:w-56 bg-zinc-50 p-4 flex flex-col gap-2 border-l border-zinc-100 rounded-r-xl">
+            <div className="md:w-56 bg-zinc-50 dark:bg-zinc-900 dark:text-white p-4 flex flex-col gap-2 border-l dark:border-zinc-800 border-zinc-100 rounded-r-xl">
               <CardAssignee isBoardClosed={isBoardClosed} card={card} />
               {!isBoardClosed && (
                 <>

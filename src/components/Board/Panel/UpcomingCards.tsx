@@ -26,7 +26,7 @@ export default function UpcomingCards({ upcomingCards, board, setSelectedCard, o
               className="flex cursor-pointer items-center justify-between p-2 rounded-xl hover:bg-default-100 transition-colors text-left"
             >
               <div className="min-w-0">
-                <p className="text-sm truncate">{card.title}</p>
+                <p className="text-sm dark:text-white truncate">{card.title}</p>
                 {listName && <p className="text-xs text-default-400">{listName}</p>}
               </div>
               <Chip size="sm" color={isOver ? "danger" : "warning"} variant="flat" className="shrink-0 ml-2">

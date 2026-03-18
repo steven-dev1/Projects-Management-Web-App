@@ -45,9 +45,11 @@ export default function MembersModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
+    <Modal backdrop="blur" classNames={{
+      closeButton:"top-2 right-2 cursor-pointer"
+    }} isOpen={isOpen} onClose={onClose} size="md">
       <ModalContent>
-        <ModalHeader className="flex items-center justify-between">
+        <ModalHeader className="flex flex-col items-start justify-between">
           <span>Miembros del board</span>
           <span className="text-xs text-zinc-400 font-normal">{members.length} participantes</span>
         </ModalHeader>
@@ -66,7 +68,7 @@ export default function MembersModal({
                       size="sm"
                     />
                     <div>
-                      <p className="text-sm font-medium text-zinc-800">
+                      <p className="text-sm font-medium text-zinc-800 dark:text-zinc-300">
                         {member.profiles?.full_name}
                         {isCurrentUser && (
                           <span className="text-xs text-zinc-400 ml-1">(tú)</span>
@@ -123,7 +125,7 @@ export default function MembersModal({
             <>
               <Divider className="my-2" />
               <div className="flex items-center justify-between">
-                <p className="text-sm text-zinc-500">Invitar nuevo miembro</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-300">Invitar nuevo miembro</p>
                 <ShareButton boardId={boardId} />
               </div>
             </>

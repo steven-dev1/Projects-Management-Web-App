@@ -24,8 +24,8 @@ export const CardChecklists = ({ card, isBoardClosed }: { card: Card; isBoardClo
       {card.checklists && card.checklists.length > 0 && (
         <>
           <div className="flex items-center gap-2">
-            <CheckSquare size={15} className="text-zinc-500" />
-            <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Checklists</p>
+            <CheckSquare size={15} className="text-zinc-500 dark:text-zinc-300" />
+            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Checklists</p>
           </div>
           {card.checklists.map((checklist) => (
             <div key={checklist.id} className="flex flex-col gap-2">

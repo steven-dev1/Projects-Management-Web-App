@@ -37,17 +37,17 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-xl font-semibold tracking-tight text-zinc-900">
+          <Link href="/" className="inline-block text-xl font-semibold tracking-tight dark:text-zinc-300 text-zinc-900">
             Projects <span className="text-blue-600">M.</span>
           </Link>
-          <p className="text-sm text-zinc-400 font-light mt-1">Crea tu cuenta gratis</p>
+          <p className="text-sm dark:text-zinc-500 text-zinc-400 font-medium mt-1">Crea tu cuenta gratis</p>
         </div>
 
-        <div className="bg-white border border-zinc-200 rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
-          <h1 className="text-xl font-semibold tracking-tight text-zinc-900 mb-6">Crear cuenta</h1>
+        <div className="bg-white dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+          <h1 className="text-xl font-semibold tracking-tight dark:text-zinc-300 text-zinc-900 mb-6">Crear cuenta</h1>
 
           <Form onSubmit={handleRegister} className="flex flex-col gap-4">
             <Input
@@ -94,8 +94,9 @@ export default function RegisterForm() {
             <Button
               type="submit"
               isLoading={loading}
-              className="w-full bg-zinc-900 text-white font-medium mt-1"
+              className="w-full font-medium mt-1"
               radius="lg"
+              variant="flat"
             >
               Crear cuenta
             </Button>

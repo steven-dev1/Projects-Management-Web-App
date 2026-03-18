@@ -1,5 +1,6 @@
 import { NotificationType } from "@/types";
 import { createClient } from "./supabaseClient";
+import { LIST_COLORS } from "./consts";
 
 const supabase = createClient();
 
@@ -38,4 +39,11 @@ export async function createNotification({ userId, type, title, message, url }: 
     message,
     url,
   });
+}
+
+export function resolveListColor(colorId: string | undefined, isDark: boolean) {
+  if (!colorId) return undefined;
+  const found = LIST_COLORS.find((c) => c.id === colorId);
+  if (!found) return undefined;
+  return isDark ? found.dark : found.light;
 }

@@ -13,12 +13,50 @@
   --color-morado-lightest: #e9a9ff;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #e4e4e7;
-  --foreground: #171717;
+  --background: #fff;
+  --foreground: #070709;
+}
+
+html {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.dark {
+  --background: #070709;
+  --foreground: #fff;
 }
 
 .template-card:hover {
   box-shadow: 0 2px 3px color-mix(in srgb, var(--card-color) 30%, transparent);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #b3b3b8;
+  border-radius: 99px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #5a5a64;
+}
+
+.custom-scrollbar-modal [class*="overflow-y-auto"] {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d8 transparent;
+}
+
+.dark .custom-scrollbar-modal [class*="overflow-y-auto"] {
+  scrollbar-color: #52525b transparent;
 }
 

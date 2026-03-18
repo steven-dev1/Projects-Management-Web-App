@@ -45,7 +45,7 @@ export default function TemplateModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
+    <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} size="md">
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
           <span>{template.icon}</span>

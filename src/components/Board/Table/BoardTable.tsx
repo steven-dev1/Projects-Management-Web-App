@@ -75,10 +75,10 @@ export default function BoardTable({ board }: { board: BoardResponse }) {
     <div className="p-6 h-full flex flex-col overflow-hidden">
       <BoardTableFilters lists={board.lists} filterListId={filterListId} onFilterChange={setFilterListId} />
 
-      <div className="mt-4 rounded-lg border border-zinc-200 overflow-hidden flex-1 overflow-y-auto">
+      <div className="mt-4 rounded-lg border dark:border-zinc-800 border-zinc-200 overflow-hidden flex-1 overflow-y-auto">
         <table className="w-full text-sm">
           <thead className="sticky top-0 z-10">
-            <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 text-xs uppercase tracking-wide">
+            <tr className="bg-zinc-50 border-b dark:bg-zinc-900 dark:border-zinc-800 border-zinc-200 text-zinc-500 dark:text-zinc-200 text-xs uppercase tracking-wide">
               <SortableHeader
                 label="Tarjeta"
                 sortKeyValue="title"

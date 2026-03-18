@@ -44,7 +44,7 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
       <Button color="primary" size={size} className="min-w-fit whitespace-nowrap hidden sm:block" onPress={onOpen}>
         Crear
       </Button>
-      <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>

@@ -11,7 +11,7 @@ export const SortableHeader = ({ label, sortKeyValue, sortKey, sortDir, setSortK
   };
   return (
     <th
-      className="text-left px-4 py-3 font-medium cursor-pointer select-none hover:text-zinc-700 group"
+      className="text-left px-4 py-3 font-medium cursor-pointer select-none hover:text-zinc-700 dark:hover:text-zinc-400 group"
       onClick={() => handleSort(sortKeyValue)}
     >
       <div className="flex items-center gap-1">

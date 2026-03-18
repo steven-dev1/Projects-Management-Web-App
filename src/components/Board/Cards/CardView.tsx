@@ -2,12 +2,11 @@ import { Card } from "@/store/features/boards/BoardsTypes";
 import { OptionsCard } from "./OptionsCard";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { CalendarIcon, GripVertical, TextInitial } from "lucide-react";
+import { CalendarIcon, TextInitial } from "lucide-react";
 import { Checkbox, Tooltip, useDisclosure } from "@heroui/react";
 import { useAppDispatch } from "@/store/hooks";
 import { toggleCardCompletion } from "@/store/features/boards/CardsThunks";
 import { CardDetailModal } from "./CardDetailModal";
-import { AssignedAvatar } from "./AssignedAvatar";
 import { getCardDateStatus } from "@/lib/utils";
 import { ChecklistSummary } from "./CheckLists/CheckListSummary";
 
@@ -27,25 +26,30 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
   const isOverdue = dateStatus === "overdue";
   const isDueSoon = dateStatus === "due-soon";
 
+  const dragListenersOn = !isClosed ? dragListeners : undefined;
+  const dragAttributesOn = !isClosed ? dragAttributes : undefined;
+
   if (!card) return null;
   return (
     <>
       <div
         onClick={onOpen}
+        {...dragAttributesOn}
+        {...dragListenersOn}
         className={`
-        group relative cursor-pointer flex items-center justify-start w-full rounded-lg p-2 pl-0 select-none
-        ${isOverlay ? "border-2 border-zinc-300 shadow-2xl rotate-2" : " dark:bg-zinc-900"} 
+        group relative cursor-pointer flex items-center dark:hover:border-zinc-800 border border-transparent hover:border-zinc-200 justify-start w-full rounded-lg py-3 px-1 select-none
+        ${isOverlay ? "border-2 border-zinc-300 dark:border-zinc-800 shadow-2xl dark:shadow-zinc-950" : " dark:bg-zinc-950"} 
     `}
       >
-        {dragListeners && !isClosed && (
+        {/* {dragListeners && !isClosed && (
           <div
             {...dragAttributes}
             {...dragListeners}
-            className="cursor-grab active:cursor-grabbing  hover:text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="cursor-grab active:cursor-grabbing  hover:text-zinc-500 opacity-0 group-hover:opacity-100"
           >
             <GripVertical size={14} />
           </div>
-        )}
+        )} */}
         <div className="pl-2 min-w-0 flex gap-2 items-center pr-6">
           {!isClosed && (
             <div onPointerDown={(e) => e.stopPropagation()} className="shrink-0">
@@ -73,29 +77,21 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
                     showArrow
                     placement="top"
                   >
-                    <div className="h-1.5 w-8 rounded-full" style={{ backgroundColor: label.color }} />
+                    <div className="h-1.5 w-4 rounded-full" style={{ backgroundColor: label.color }} />
                   </Tooltip>
                 ))}
                 {card.labels.length > 3 && <span className="text-xs text-zinc-400">+{card.labels.length - 3}</span>}
               </div>
             )}
             <h4
-              className={`font-medium text-sm truncate dark:text-zinc-100 transition-all ${card.is_completed ? "line-through text-zinc-500" : "text-zinc-800"}`}
+              className={`font-medium my-1 text-sm truncate  ${card.is_completed ? "text-zinc-500 dark:text-zinc-500" : "text-zinc-800 dark:text-zinc-100"}`}
             >
               {card.title}
             </h4>
             <div className="flex items-center gap-2">
               {card.description && (
-                <Tooltip
-                  classNames={{
-                    base: "font-medium",
-                  }}
-                  closeDelay={0}
-                  size="sm"
-                  placement="bottom"
-                  content="Esta tarjeta tiene una descripción"
-                >
-                  <TextInitial size={14} className="text-zinc-500" />
+                <Tooltip closeDelay={0} size="sm" placement="bottom" content="Esta tarjeta tiene una descripción">
+                  <TextInitial size={14} className="text-zinc-500 dark:text-zinc-300" />
                 </Tooltip>
               )}
               {card.due_date && (
@@ -113,11 +109,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
                 >
                   <div
                     className={`flex items-center gap-1 rounded-full text-xs font-medium ${
-                      isOverdue
-                        ? "bg-red-100 text-red-600"
-                        : isDueSoon
-                          ? "bg-amber-100 text-amber-600"
-                          : "bg-zinc-100 text-zinc-500"
+                      isOverdue ? "text-red-600" : isDueSoon ? "text-amber-600" : "text-zinc-500 dark:text-zinc-300"
                     }`}
                   >
                     <CalendarIcon size={14} />
@@ -125,14 +117,13 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
                 </Tooltip>
               )}
               {card.checklists && card.checklists.length > 0 && <ChecklistSummary checklists={card.checklists} />}
-              {card.assigned_to && <AssignedAvatar userId={card.assigned_to} />}
             </div>
           </div>
         </div>
 
         {!isClosed && (
           <div
-            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-2 right-2 opacity-0 flex items-center gap-1 group-hover:opacity-100 transition-opacity"
             onPointerDown={(e) => e.stopPropagation()}
           >
             <OptionsCard cardId={card.id} onOpenDetail={onOpen} />

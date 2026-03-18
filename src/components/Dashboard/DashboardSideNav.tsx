@@ -3,7 +3,7 @@ import { Folders, Home, PanelsLeftBottom } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardSideNav() {
-    const LinkStyles = "p-2 rounded-lg hover:bg-zinc-200 flex items-center gap-2";
+    const LinkStyles = "p-2 dark:hover:bg-zinc-900 rounded-lg hover:bg-zinc-200 flex items-center gap-2";
   return (
     <div className="hidden md:flex flex-col items-center w-96 justify-center">
       <ul className="w-full flex flex-col gap-2 text-sm md:text-base">

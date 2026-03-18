@@ -29,7 +29,7 @@ export default function BoardHeader() {
   return (
     <>
       {isClosed && (
-        <div className="flex items-center justify-center py-3 bg-[#dbeafe]">
+        <div className="flex items-center justify-center py-3 dark:bg-primary-50 bg-[#dbeafe]">
           <p className="flex items-center justify-between gap-2 text-sm font-medium">
             <Info size={18} /> Este tablero está cerrado. Para modificarlo, debes abrirlo nuevamente.
             <button className="underline hover:text-zinc-600 cursor-pointer" onClick={() => dispatch(restoreBoard(board.id!)).unwrap()}>
@@ -38,7 +38,7 @@ export default function BoardHeader() {
           </p>
         </div>
       )}
-      <div className="flex gap-4 items-center justify-between py-2 px-8 border-b border-zinc-200">
+      <div className="flex gap-4 items-center justify-between py-2 px-8 border-y dark:border-zinc-900 border-zinc-200">
         <div className="flex gap-4 items-center">
           <h1 className="text-lg font-semibold">{board.name}</h1>
           <ViewDropdown boardId={board.id as string} />

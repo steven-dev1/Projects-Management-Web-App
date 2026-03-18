@@ -1,4 +1,5 @@
 "use client";
+import { ThemeToggle } from "@/components/UI/ThemeToggle";
 import { Unlink } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -176,9 +177,9 @@ function MockupCard({
   done?: boolean;
 }) {
   return (
-    <div className="bg-white border border-zinc-200 rounded-lg p-2.5 mb-2 last:mb-0">
+    <div className="bg-white dark:bg-zinc-900 dark:border-zinc-900 dark:text-zinc-200 border border-zinc-200 rounded-lg p-2.5 mb-2 last:mb-0">
       <div className={`h-1 w-7 rounded-full ${label} mb-2`} />
-      <p className={`text-[11px] mb-2 leading-tight ${done ? "line-through text-zinc-400" : "text-zinc-800"}`}>
+      <p className={`text-[11px] mb-2 leading-tight ${done ? "line-through" : ""}`}>
         {title}
       </p>
       <div className="flex items-center justify-between">
@@ -196,36 +197,48 @@ export default function LandingPage() {
     activeTab === "kanban" ? "boards/mi-proyecto" : activeTab === "table" ? "boards/mi-proyecto/table" : "dashboard";
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-200">
       {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 py-4 bg-white/90 backdrop-blur-md border-b border-zinc-200">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 py-4 bg-white/90 dark:bg-zinc-900 backdrop-blur-md border-b dark:border-zinc-800 border-zinc-200">
         <Link href="/" className="text-lg flex items-center gap-2 font-semibold tracking-tight">
           <Unlink color="#006fee" size="32" />
           Projects M.
         </Link>
         <ul className="flex items-center gap-8 list-none m-0">
           <li>
-            <a href="#features" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors no-underline">
+            <a
+              href="#features"
+              className="text-sm text-zinc-500 dark:text-zinc-200 dark:hover:text-zinc-400 hover:text-zinc-900 transition-colors no-underline"
+            >
               Features
             </a>
           </li>
           <li>
-            <a href="#vistas" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors no-underline">
+            <a
+              href="#vistas"
+              className="text-sm text-zinc-500 dark:text-zinc-200 dark:hover:text-zinc-400 hover:text-zinc-900 transition-colors no-underline"
+            >
               Vistas
             </a>
           </li>
           <li>
-            <Link href="/signin" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors no-underline">
+            <Link
+              href="/signin"
+              className="text-sm text-zinc-500 dark:text-zinc-200 dark:hover:text-zinc-400 hover:text-zinc-900 transition-colors no-underline"
+            >
               Iniciar sesión
             </Link>
           </li>
           <li>
             <Link
               href="/signup"
-              className="text-sm font-medium bg-zinc-900 text-white px-4 py-2 rounded-lg hover:opacity-80 transition-opacity no-underline"
+              className="text-sm font-medium bg-zinc-900 dark:bg-white dark:text-zinc-950 text-white dark:hover:text-zinc-700 px-4 py-2 rounded-lg transition-opacity no-underline"
             >
               Empezar gratis
             </Link>
+          </li>
+          <li>
+            <ThemeToggle iconOnly />
           </li>
         </ul>
       </nav>
@@ -233,14 +246,14 @@ export default function LandingPage() {
       {/* HERO */}
       <section className="max-w-6xl mx-auto pt-40 pb-24 px-10 grid grid-cols-2 gap-16 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-500 text-blue-600 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
             Gestión de proyectos simplificada
           </div>
           <h1 className="text-[3.5rem] font-semibold tracking-tight leading-[1.08] mb-5">
             Organiza tu trabajo, <em className="not-italic text-blue-600 font-light">sin el caos.</em>
           </h1>
-          <p className="text-lg text-zinc-500 font-light leading-relaxed mb-8 max-w-md">
+          <p className="text-lg text-zinc-500 leading-relaxed mb-8 max-w-md">
             Projects M. es un tablero kanban colaborativo donde tu equipo puede planificar, asignar y entregar trabajo —
             todo en un solo lugar.
           </p>
@@ -251,7 +264,7 @@ export default function LandingPage() {
             >
               Crear cuenta gratis
             </Link>
-            <a href="#features" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors no-underline">
+            <a href="#features" className="text-sm dark:text-zinc-200 dark:hover:text-zinc-400 text-zinc-500 hover:text-zinc-900 transition-colors no-underline">
               Ver features →
             </a>
           </div>
@@ -259,43 +272,43 @@ export default function LandingPage() {
 
         <div className="relative">
           <div
-            className="bg-zinc-50 border border-zinc-200 rounded-2xl p-5"
+            className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5"
             style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.08)" }}
           >
-            <div className="flex items-center gap-1.5 pb-3 mb-4 border-b border-zinc-200">
+            <div className="flex items-center gap-1.5 pb-3 mb-4 border-b border-zinc-200 dark:border-zinc-700">
               <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-              <span className="ml-2 text-xs text-zinc-400 font-medium">Desarrollo de software</span>
+              <span className="ml-2 text-xs text-zinc-400 dark:text-zinc-200 font-medium">Desarrollo de software</span>
             </div>
             <div className="grid grid-cols-3 gap-3">
               {(["To Do", "En progreso", "Done"] as const).map((list, i) => (
-                <div key={list} className="bg-white border border-zinc-200 rounded-xl p-3">
+                <div key={list} className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3">
                   <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mb-2">{list}</p>
                   {i === 0 && (
                     <>
-                      <MockupCard label="bg-blue-100" title="Diseñar arquitectura" date="12 mar" />
-                      <MockupCard label="bg-pink-100" title="Setup CI/CD" date="15 mar" avatarColor="bg-blue-200" />
+                      <MockupCard label="bg-blue-100 dark:bg-blue-600" title="Diseñar arquitectura" date="12 mar" />
+                      <MockupCard label="bg-pink-100 dark:bg-pink-600" title="Setup CI/CD" date="15 mar" avatarColor="bg-pink-200 dark:bg-pink-600" />
                     </>
                   )}
                   {i === 1 && (
                     <MockupCard
-                      label="bg-green-100"
+                      label="bg-green-100 dark:bg-emerald-600"
                       title="Auth con Supabase"
                       date="14 mar"
-                      avatarColor="bg-blue-200"
+                      avatarColor="bg-blue-200 dark:bg-blue-600"
                     />
                   )}
-                  {i === 2 && <MockupCard label="bg-zinc-100" title="Setup del proyecto" date="10 mar" done />}
+                  {i === 2 && <MockupCard label="bg-zinc-100 dark:bg-zinc-800" title="Setup del proyecto" date="10 mar" done />}
                 </div>
               ))}
             </div>
           </div>
           <div
-            className="absolute -bottom-5 -left-5 bg-white border border-zinc-200 rounded-xl px-4 py-3 flex items-center gap-3"
+            className="absolute -bottom-5 -left-5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 flex items-center gap-3"
             style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
           >
-            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-sm shrink-0">✓</div>
+            <div className="w-8 h-8 bg-green-100 dark:bg-emerald-600 rounded-lg flex items-center justify-center text-sm shrink-0">✓</div>
             <div>
               <p className="text-xs font-medium leading-none mb-1">3 tareas completadas</p>
               <p className="text-[10px] text-zinc-400 leading-none">hoy · equipo de 4</p>
@@ -305,7 +318,7 @@ export default function LandingPage() {
       </section>
 
       {/* STATS */}
-      <div className=" border-y border-zinc-200 py-10 px-10 w-full">
+      <div className=" border-y border-zinc-200 dark:border-zinc-900 py-10 px-10 w-full">
         <div className="max-w-6xl mx-auto flex justify-around flex-wrap gap-8">
           {[
             { num: "10k+", label: "Tareas organizadas" },
@@ -315,7 +328,7 @@ export default function LandingPage() {
           ].map((s) => (
             <div key={s.label} className="text-center">
               <p className="text-4xl font-semibold tracking-tight">{s.num}</p>
-              <p className="text-sm text-zinc-400 font-light mt-1">{s.label}</p>
+              <p className="text-sm text-zinc-400 dark:text-zinc-200 font-light mt-1">{s.label}</p>
             </div>
           ))}
         </div>
@@ -329,14 +342,14 @@ export default function LandingPage() {
           <br />
           para trabajar mejor.
         </h2>
-        <p className="text-base text-zinc-500 font-light max-w-lg mb-16 leading-relaxed">
+        <p className="text-base text-zinc-500 dark:text-zinc-400 max-w-lg mb-16 leading-relaxed">
           Desde tableros kanban hasta notificaciones en tiempo real — diseñado para equipos que quieren moverse rápido.
         </p>
         <div className="grid grid-cols-3 gap-5">
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="bg-zinc-50 border border-zinc-200 rounded-2xl p-8 hover:border-zinc-400 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
+              className="bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 rounded-2xl p-8 hover:border-zinc-400 dark:hover:border-zinc-700 transition-all duration-100 cursor-default"
             >
               <div className={`w-11 h-11 ${f.color} rounded-xl flex items-center justify-center text-xl mb-5`}>
                 {f.icon}
@@ -353,7 +366,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-3">Vistas</p>
           <h2 className="text-5xl font-semibold tracking-tight leading-tight mb-4">Tu trabajo, como quieras verlo.</h2>
-          <p className="text-base text-zinc-500 font-light max-w-lg mb-10 leading-relaxed">
+          <p className="text-base text-zinc-500 dark:text-zinc-400 max-w-lg mb-10 leading-relaxed">
             Cambia entre vistas sin perder nada. Kanban para el día a día, tabla para analizar, dashboard para el
             panorama completo.
           </p>
@@ -365,8 +378,8 @@ export default function LandingPage() {
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 rounded-lg border text-sm transition-all cursor-pointer ${
                   activeTab === tab
-                    ? "bg-zinc-900 text-white border-zinc-900 font-medium"
-                    : "bg-white text-zinc-500 border-zinc-200 hover:border-zinc-400"
+                    ? "bg-zinc-900 dark:bg-zinc-700 text-white border-zinc-900 font-medium"
+                    : "bg-white dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700 text-zinc-500 border-zinc-200 hover:border-zinc-400 dark:hover:border-zinc-500"
                 }`}
               >
                 {tab === "kanban" ? "Tablero kanban" : tab === "table" ? "Vista tabla" : "Dashboard"}
@@ -375,37 +388,37 @@ export default function LandingPage() {
           </div>
 
           <div
-            className="bg-white border border-zinc-200 rounded-2xl overflow-hidden"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden"
             style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.06)" }}
           >
-            <div className="bg-zinc-50 border-b border-zinc-200 px-4 py-3 flex items-center gap-1.5">
+            <div className=" border-b border-zinc-200 dark:border-zinc-800 px-4 py-3 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
               <span className="w-2 h-2 rounded-full bg-[#febc2e]" />
               <span className="w-2 h-2 rounded-full bg-[#28c840]" />
-              <span className="ml-2 bg-zinc-100 rounded px-3 py-1 text-xs text-zinc-400">projects-m.app/{tabUrl}</span>
+              <span className="ml-2 rounded px-3 py-1 text-xs text-zinc-400 dark:text-zinc-200">projects-m.app/{tabUrl}</span>
             </div>
 
             <div className="p-6">
               {activeTab === "kanban" && (
                 <div className="grid grid-cols-4 gap-4">
                   {KANBAN_LISTS.map((list) => (
-                    <div key={list.name} className="bg-zinc-50 border border-zinc-200 rounded-xl p-3">
+                    <div key={list.name} className="bg-zinc-50 dark:bg-zinc-800 dark:border-zinc-700 border border-zinc-200 rounded-xl p-3">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">
+                        <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-200 uppercase tracking-widest">
                           {list.name}
                         </span>
-                        <span className="bg-zinc-200 text-zinc-500 text-[10px] px-1.5 py-0.5 rounded">
+                        <span className="bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-200 text-zinc-500 text-[10px] px-1.5 py-0.5 rounded">
                           {list.count}
                         </span>
                       </div>
                       {list.cards.map((card) => (
                         <div
                           key={card.title}
-                          className="bg-white border border-zinc-200 rounded-lg p-2.5 mb-2 last:mb-0"
+                          className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 mb-2 last:mb-0"
                         >
                           <div className={`h-1 w-7 rounded-full ${card.label} mb-2`} />
                           <p
-                            className={`text-xs mb-2 leading-tight ${card.done ? "line-through text-zinc-400" : "text-zinc-800"}`}
+                            className={`text-xs mb-2 leading-tight ${card.done ? "line-through text-zinc-400 dark:text-zinc-200" : "text-zinc-800 dark:text-zinc-200"}`}
                           >
                             {card.title}
                           </p>
@@ -426,11 +439,11 @@ export default function LandingPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm border-collapse">
                     <thead>
-                      <tr className="bg-zinc-50 border-b border-zinc-200">
+                      <tr className="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                         {["Tarjeta ↕", "Lista ↕", "Asignado ↕", "Fecha límite ↕", "Estado ↕"].map((h) => (
                           <th
                             key={h}
-                            className="text-left px-4 py-3 text-[11px] font-semibold text-zinc-400 uppercase tracking-widest"
+                            className="text-left px-4 py-3 text-[11px] font-semibold text-zinc-400 dark:text-zinc-200 uppercase tracking-widest"
                           >
                             {h}
                           </th>
@@ -439,17 +452,17 @@ export default function LandingPage() {
                     </thead>
                     <tbody>
                       {TABLE_ROWS.map((row) => (
-                        <tr key={row.title} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
-                          <td className="px-4 py-3 text-sm font-medium text-zinc-800">{row.title}</td>
+                        <tr key={row.title} className="border-b dark:border-zinc-700 border-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+                          <td className="px-4 py-3 text-sm font-medium text-zinc-800 dark:text-zinc-200">{row.title}</td>
                           <td className="px-4 py-3">
-                            <span className="bg-zinc-100 text-zinc-600 text-xs px-2 py-0.5 rounded-full">
+                            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 text-xs px-2 py-0.5 rounded-full">
                               {row.list}
                             </span>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <div className={`w-5 h-5 rounded-full shrink-0 ${row.avatarColor}`} />
-                              <span className="text-xs text-zinc-600">{row.assignee}</span>
+                              <span className="text-xs text-zinc-600 dark:text-zinc-200">{row.assignee}</span>
                             </div>
                           </td>
                           <td className={`px-4 py-3 text-xs ${row.dateColor}`}>{row.date}</td>
@@ -472,54 +485,54 @@ export default function LandingPage() {
                 <div>
                   <div className="grid grid-cols-4 gap-3 mb-5">
                     {[
-                      { num: "4", label: "Boards", color: "text-blue-600" },
-                      { num: "16", label: "Tarjetas totales", color: "text-violet-600" },
-                      { num: "10", label: "Completadas", color: "text-emerald-600" },
-                      { num: "63%", label: "Tasa de completado", color: "text-amber-600" },
+                      { num: "4", label: "Boards", color: "text-blue-600 bg-white dark:bg-blue-600" },
+                      { num: "16", label: "Tarjetas totales", color: "text-violet-600 dark:bg-violet-600" },
+                      { num: "10", label: "Completadas", color: "text-emerald-600 dark:bg-emerald-600" },
+                      { num: "63%", label: "Tasa de completado", color: "text-amber-600 dark:bg-amber-600" },
                     ].map((s) => (
-                      <div key={s.label} className="bg-zinc-50 border border-zinc-200 rounded-xl p-4">
-                        <p className={`text-3xl font-semibold tracking-tight ${s.color}`}>{s.num}</p>
-                        <p className="text-xs text-zinc-400 font-light mt-1">{s.label}</p>
+                      <div key={s.label} className={`border border-zinc-200 dark:border-transparent rounded-xl p-4 ${s.color}`}>
+                        <p className={`text-3xl font-semibold dark:text-white tracking-tight ${s.color}`}>{s.num}</p>
+                        <p className="text-xs text-zinc-400 dark:text-zinc-100 dark:font-medium mt-1">{s.label}</p>
                       </div>
                     ))}
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4">
-                      <p className="text-xs font-medium text-zinc-500 mb-3">✓ Mis tarjetas</p>
+                    <div className="bg-zinc-50 border dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 rounded-xl p-4">
+                      <p className="text-xs font-medium text-zinc-500 dark:text-zinc-100 mb-3">✓ Mis tarjetas</p>
                       {[
                         { title: "Integración con IA", board: "Kanban Clone" },
                         { title: "Optimizar código", board: "Kanban Clone" },
                       ].map((c) => (
                         <div
                           key={c.title}
-                          className="flex items-center justify-between py-2.5 border-b border-zinc-100 last:border-0"
+                          className="flex items-center justify-between py-2.5 border-b border-zinc-100 dark:border-zinc-700 last:border-0"
                         >
                           <div>
-                            <p className="text-xs font-medium text-zinc-800">{c.title}</p>
+                            <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{c.title}</p>
                             <p className="text-[10px] text-zinc-400 mt-0.5">{c.board}</p>
                           </div>
-                          <span className="bg-zinc-100 text-zinc-500 text-[10px] px-2 py-0.5 rounded-full font-medium">
+                          <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-200 text-[10px] px-2 py-0.5 rounded-full font-medium">
                             Pendiente
                           </span>
                         </div>
                       ))}
                     </div>
-                    <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4">
-                      <p className="text-xs font-medium text-zinc-500 mb-3">📅 Próximas fechas</p>
+                    <div className="bg-zinc-50 border dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 rounded-xl p-4">
+                      <p className="text-xs font-medium text-zinc-500 dark:text-zinc-100 mb-3">📅 Próximas fechas</p>
                       {[
                         { title: "Integración con IA", board: "Kanban Clone", date: "15 mar", urgent: true },
                         { title: "Definir requerimientos", board: "Desarrollo", date: "20 mar", urgent: false },
                       ].map((c) => (
                         <div
                           key={c.title}
-                          className="flex items-center justify-between py-2.5 border-b border-zinc-100 last:border-0"
+                          className="flex items-center justify-between py-2.5 border-b border-zinc-100 dark:border-zinc-700 last:border-0"
                         >
                           <div>
-                            <p className="text-xs font-medium text-zinc-800">{c.title}</p>
+                            <p className="text-xs font-medium text-zinc-800 dark:text-zinc-100">{c.title}</p>
                             <p className="text-[10px] text-zinc-400 mt-0.5">{c.board}</p>
                           </div>
                           <div className="text-right">
-                            <p className={`text-xs font-medium ${c.urgent ? "text-red-500" : "text-zinc-600"}`}>
+                            <p className={`text-xs font-medium ${c.urgent ? "text-red-500" : "text-zinc-600 dark:text-zinc-300"}`}>
                               {c.date}
                             </p>
                             <p className={`text-[10px] ${c.urgent ? "text-red-400" : "text-zinc-400"}`}>
@@ -543,7 +556,7 @@ export default function LandingPage() {
           <h2 className="text-5xl font-semibold tracking-tight leading-tight mb-4">
             Listo para <em className="not-italic text-blue-600 font-light">organizarte de verdad?</em>
           </h2>
-          <p className="text-base text-zinc-500 font-light mb-10 leading-relaxed">
+          <p className="text-base text-zinc-500 font-light dark:font-medium mb-10 leading-relaxed">
             Crea tu primer board en menos de un minuto. Sin tarjeta de crédito, sin complicaciones.
           </p>
           <Link
@@ -556,9 +569,9 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="text-zinc-900 px-10 py-12">
+      <footer className="text-zinc-900 dark:text-zinc-200 px-10 py-12">
         <div className="w-full mx-auto flex items-center justify-between flex-wrap gap-6">
-          <Link href="/" className="text-lg font-semibold tracking-tight no-underline text-zinc-900">
+          <Link href="/" className="text-lg font-semibold tracking-tight no-underline">
             Projects <span className="text-blue-400">M.</span>
           </Link>
           <ul className="flex gap-8 list-none m-0 flex-wrap">
@@ -569,13 +582,16 @@ export default function LandingPage() {
               { label: "Registro", href: "/signup" },
             ].map((l) => (
               <li key={l.label}>
-                <Link href={l.href} className="text-sm text-zinc-700 hover:text-zinc-900 transition-colors no-underline">
+                <Link
+                  href={l.href}
+                  className="text-sm hover:text-zinc-400 transition-colors no-underline"
+                >
                   {l.label}
                 </Link>
               </li>
             ))}
           </ul>
-          <span className="text-sm text-zinc-600">© 2026 Projects M.</span>
+          <span className="text-sm ">© 2026 Projects M.</span>
         </div>
       </footer>
     </div>

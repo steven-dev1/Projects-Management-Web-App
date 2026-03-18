@@ -25,11 +25,11 @@ export default function MyAssignedCards({ cards, boards }: Props) {
         return (
           <div
             key={card.id}
-            className="flex items-center justify-between p-3 rounded-lg border border-zinc-100 hover:bg-zinc-50 cursor-pointer transition-colors"
+            className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700 cursor-pointer transition-colors"
             onClick={() => board && router.push(`/boards/${board.id}`)}
           >
             <div className="flex flex-col gap-0.5">
-              <span className={`text-sm font-medium ${card.is_completed ? "line-through text-zinc-400" : "text-zinc-700"}`}>
+              <span className={`text-sm font-medium text-zinc-800 dark:text-zinc-100 dark:hover:text-zinc-400 hover:text-zinc-500 ${card.is_completed ? "line-through" : ""}`}>
                 {card.title}
               </span>
               {board && <span className="text-xs text-zinc-400">{board.name}</span>}

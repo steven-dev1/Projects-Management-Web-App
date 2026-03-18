@@ -43,7 +43,7 @@ export const EditBoardModal = ({ boardId, isOpen, onClose }: {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} placement="top-center">
+    <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} placement="top-center">
       <ModalContent>
         <ModalHeader>Editar proyecto</ModalHeader>
         <Divider />
