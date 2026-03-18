@@ -72,7 +72,7 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
     });
 
     const data = await response.json();
-
+    console.log("Brevo response:", JSON.stringify(data));
     if (!response.ok) throw new Error(data.message);
   };
 

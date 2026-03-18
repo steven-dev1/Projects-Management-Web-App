@@ -3,14 +3,19 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } 
 import { Ellipsis, PenBoxIcon } from "lucide-react";
 import Link from "next/link";
 import { EditBoardModal } from "./EditBoardModal";
+import { useTheme } from "next-themes";
+import { resolveListColor } from "@/lib/utils";
 
 export function ProjectCard({ board }: { board: Board }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const bgColor = resolveListColor(board.background_color, isDark, true);
 
   return (
     <>
       <div className="group relative flex flex-col bg-white dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-xl overflow-hidden hover:shadow-md transition-all duration-200">
-        <div className="h-1.5 w-full" style={{ backgroundColor: board.background_color ?? "#006fee" }} />
+        <div className="h-1.5 w-full" style={bgColor ? { backgroundColor: bgColor } : undefined}/>
 
         <div className="flex flex-col flex-1 p-4 gap-3">
           {/* Header */}

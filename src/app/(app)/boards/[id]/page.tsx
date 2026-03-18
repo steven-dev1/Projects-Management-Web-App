@@ -35,6 +35,7 @@ export default function BoardPage() {
   const dragSnapshot = useRef<{ lists: BoardList[] } | null>(null);
   const dragStartY = useRef<number>(0);
   const pointerY = useRef<number>(0);
+  const lastOverContainer = useRef<string | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -87,6 +88,7 @@ export default function BoardPage() {
 
   const handleDragStart = (event: DragStartEvent) => {
     const activatorEvent = event.activatorEvent as PointerEvent | MouseEvent;
+    lastOverContainer.current = null;
     dragStartY.current = activatorEvent.clientY ?? 0;
     pointerY.current = dragStartY.current;
 
@@ -157,7 +159,22 @@ export default function BoardPage() {
     // handleDragOver ya movió en Redux, solo calculamos índice para RPC
     // usando el estado ACTUAL (ya movido) para saber dónde quedó
     const currentToList = lists.find((l) => l.id === toList.id);
-    const newIndex = currentToList?.cards.findIndex((c) => c.id === activeId) ?? 0;
+    if (!currentToList) {
+      dragSnapshot.current = null;
+      return;
+    }
+
+    const overCardIndex = currentToList.cards.findIndex((c) => c.id === overId);
+    const newIndex = overCardIndex === -1 ? currentToList.cards.length - 1 : overCardIndex;
+
+    dispatch(
+      moveCard({
+        cardId: activeId,
+        fromListId: toList.id, // ya está en toList gracias al dragOver
+        toListId: toList.id,
+        newIndex,
+      }),
+    );
 
     dispatch(
       updateCardOrder({
@@ -183,12 +200,14 @@ export default function BoardPage() {
 
     if (!activeContainer || !overContainer || activeContainer.id === overContainer.id) return;
 
+    // 👇 si ya la movimos a esta lista antes, no volver a mover
+    if (lastOverContainer.current === overContainer.id) return;
+    lastOverContainer.current = overContainer.id;
+
     const overListElement = document.querySelector(`[data-list-id="${overContainer.id}"]`);
     if (!overListElement) return;
 
     const cardElements = Array.from(overListElement.querySelectorAll('[data-type="card"]'));
-
-    // 👇 leer la posición directamente del evento
     const activatorEvent = event.activatorEvent as PointerEvent;
     const currentY = activatorEvent.clientY + event.delta.y;
 
@@ -197,7 +216,6 @@ export default function BoardPage() {
     for (let i = 0; i < cardElements.length; i++) {
       const cardRect = cardElements[i].getBoundingClientRect();
       const cardMiddleY = cardRect.top + cardRect.height / 2;
-
       if (currentY < cardMiddleY) {
         destinationIndex = i;
         break;
@@ -242,7 +260,7 @@ export default function BoardPage() {
         className="absolute top-0 left-0 right-0 bottom-0"
       >
         {activeColumn ? (
-          <div className="bg-zinc-100 dark:bg-zinc-950 p-3 rounded-lg shadow-2xl border border-zinc-300 dark:border-zinc-700 w-72 rotate-2 cursor-grabbing opacity-90">
+          <div className="bg-zinc-100 dark:bg-zinc-950 p-3 rounded-lg shadow-2xl border border-zinc-300 dark:border-zinc-800 w-72 rotate-1 cursor-grabbing opacity-10">
             <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
             <div className="flex flex-col gap-2">
               {activeColumn.cards.map((card) => (

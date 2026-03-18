@@ -6,6 +6,7 @@ import { CardReducers } from "./reducers/cardReducers";
 import { ListReducers } from "./reducers/listReducers";
 import { LabelsReducers } from "./reducers/labelsReducers";
 import { ChecklistsReducers } from "./reducers/checklistsReducers";
+import { MembersReducers } from "./reducers/membersReducers";
 
 const initialState: BoardsState = {
   boards: [],
@@ -71,6 +72,7 @@ const boardsSlice = createSlice({
     ListReducers(builder);
     LabelsReducers(builder);
     ChecklistsReducers(builder);
+    MembersReducers(builder);
   },
 });
 

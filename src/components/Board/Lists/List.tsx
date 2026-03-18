@@ -41,6 +41,7 @@ export default function List({
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const bgColor = resolveListColor(list.background_color, isDark);
+  const bgColor2 = resolveListColor(list.background_color, isDark, true);
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -64,7 +65,7 @@ export default function List({
               {...listeners}
               className="cursor-grab active:cursor-grabbing p-1 hover:bg-zinc-300/50 dark:hover:bg-zinc-700/50 rounded shrink-0 text-zinc-500 dark:text-zinc-400"
             >
-              <GripVertical size={18} />
+              <GripVertical size={18} color={bgColor2 ? bgColor2 : ""} />
             </div>
           )}
           <h3 className="truncate text-zinc-800 dark:text-zinc-100">{list.title}</h3>

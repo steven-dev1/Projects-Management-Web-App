@@ -8,7 +8,7 @@ import { CardLabels } from "./CardLabels";
 import { CardDetailDueDate } from "./CardDetailDueDate";
 import { CardChecklists } from "./CheckLists/CardCheckLists";
 import { useRef } from "react";
-import { createNotification } from "@/lib/utils";
+import { createNotification } from "@/lib/actions/createNotification";
 
 export const CardDetailModal = ({
   cardId,
@@ -36,13 +36,17 @@ export const CardDetailModal = ({
     const finalAssignedTo = card?.assigned_to ?? null;
 
     if (finalAssignedTo && finalAssignedTo !== initialAssignedTo.current && finalAssignedTo !== currentUserId) {
-      await createNotification({
-        userId: finalAssignedTo,
-        type: "card_assigned",
-        title: "Te asignaron a una tarjeta",
-        message: `Fuiste asignado a "${card!.title}" en "${currentBoard?.name}"`,
-        url: `/boards/${currentBoard?.id}`,
-      });
+      try {
+        await createNotification({
+          userId: finalAssignedTo,
+          type: "card_assigned",
+          title: "Te asignaron a una tarjeta",
+          message: `Fuiste asignado a "${card!.title}" en "${currentBoard?.name}"`,
+          url: `/boards/${currentBoard?.id}`,
+        });
+      } catch (err: unknown) {
+        console.error(err);
+      }
     }
     onClose();
   };
@@ -74,7 +78,9 @@ export const CardDetailModal = ({
               <CardDetailDueDate isBoardClosed={isBoardClosed} card={card} />
               <CardLabels isBoardClosed={isBoardClosed} card={card} />
               <div className="flex flex-col gap-2">
-                <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Descripción</p>
+                <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">
+                  Descripción
+                </p>
                 <CardDetailDescription isBoardClosed={isBoardClosed} card={card} />
                 <CardChecklists isBoardClosed={isBoardClosed} card={card} />
               </div>
