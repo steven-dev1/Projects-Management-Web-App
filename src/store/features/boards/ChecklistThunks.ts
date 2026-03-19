@@ -1,114 +1,87 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createClient } from "@/lib/supabaseClient";
 import { Checklist, ChecklistItem } from "@/types";
+import { checklistsService } from "@/services/checklistsService";
+import { handleThunkError } from "@/lib/handleThunkError";
 
-const supabase = createClient();
-
-// Crear checklist
 export const createChecklist = createAsyncThunk<Checklist, { card_id: string; title: string }, { rejectValue: string }>(
   "checklists/create",
   async ({ card_id, title }, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase
-        .from("checklists")
-        .insert({ card_id, title, position: 0 })
-        .select("*, items:checklist_items(*)")
-        .single();
-
+      const { data, error } = await checklistsService.create(card_id, title);
       if (error) return rejectWithValue(error.message);
       return { ...data, items: data.items ?? [] };
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al crear checklist";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al crear checklist"));
     }
   },
 );
 
-// Eliminar checklist
 export const deleteChecklist = createAsyncThunk<
   { checklistId: string; cardId: string },
   { checklistId: string; cardId: string },
   { rejectValue: string }
 >("checklists/delete", async ({ checklistId, cardId }, { rejectWithValue }) => {
   try {
-    const { error } = await supabase.from("checklists").delete().eq("id", checklistId);
-
+    const { error } = await checklistsService.delete(checklistId);
     if (error) return rejectWithValue(error.message);
     return { checklistId, cardId };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al eliminar checklist";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al eliminar checklist"));
   }
 });
 
-// Agregar item
 export const addChecklistItem = createAsyncThunk<
   { item: ChecklistItem; cardId: string },
   { checklist_id: string; title: string; cardId: string },
   { rejectValue: string }
 >("checklists/addItem", async ({ checklist_id, title, cardId }, { rejectWithValue }) => {
   try {
-    const { data, error } = await supabase
-      .from("checklist_items")
-      .insert({ checklist_id, title, position: 0 })
-      .select()
-      .single();
-
+    const { data, error } = await checklistsService.addItem(checklist_id, title);
     if (error) return rejectWithValue(error.message);
     return { item: data, cardId };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al agregar item";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al agregar item"));
   }
 });
 
-// Toggle item
 export const toggleChecklistItem = createAsyncThunk<
   { itemId: string; checklistId: string; cardId: string; is_completed: boolean },
   { itemId: string; checklistId: string; cardId: string; is_completed: boolean },
   { rejectValue: string }
 >("checklists/toggleItem", async ({ itemId, checklistId, cardId, is_completed }, { rejectWithValue }) => {
   try {
-    const { error } = await supabase.from("checklist_items").update({ is_completed }).eq("id", itemId);
-
+    const { error } = await checklistsService.toggleItem(itemId, is_completed);
     if (error) return rejectWithValue(error.message);
     return { itemId, checklistId, cardId, is_completed };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al actualizar item";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al actualizar item"));
   }
 });
 
-// Eliminar item
 export const deleteChecklistItem = createAsyncThunk<
   { itemId: string; checklistId: string; cardId: string },
   { itemId: string; checklistId: string; cardId: string },
   { rejectValue: string }
 >("checklists/deleteItem", async ({ itemId, checklistId, cardId }, { rejectWithValue }) => {
   try {
-    const { error } = await supabase.from("checklist_items").delete().eq("id", itemId);
-
+    const { error } = await checklistsService.deleteItem(itemId);
     if (error) return rejectWithValue(error.message);
     return { itemId, checklistId, cardId };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al eliminar item";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al eliminar item"));
   }
 });
 
-// Actualizar título de item
 export const updateChecklistItem = createAsyncThunk<
   { itemId: string; checklistId: string; cardId: string; title: string },
   { itemId: string; checklistId: string; cardId: string; title: string },
   { rejectValue: string }
 >("checklists/updateItem", async ({ itemId, checklistId, cardId, title }, { rejectWithValue }) => {
   try {
-    const { error } = await supabase.from("checklist_items").update({ title }).eq("id", itemId);
-
+    const { error } = await checklistsService.updateItem(itemId, title);
     if (error) return rejectWithValue(error.message);
     return { itemId, checklistId, cardId, title };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al actualizar item";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al actualizar item"));
   }
 });

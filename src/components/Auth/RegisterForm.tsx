@@ -1,12 +1,11 @@
 "use client";
-import { createClient } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Form, Input, Button } from "@heroui/react";
 
 export default function RegisterForm() {
-  const supabase = createClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

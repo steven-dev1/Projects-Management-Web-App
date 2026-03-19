@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BoardForm, BoardResponse, UpdatedBoardPayload } from "./BoardsTypes";
-import { createClient } from "@/lib/supabaseClient";
-
-const supabase = createClient();
+import { supabase } from "@/lib/supabase";
+import { boardsService } from "@/services/boardsService";
+import { handleThunkError } from "@/lib/handleThunkError";
 
 export const fetchBoards = createAsyncThunk("boards/fetchBoards", async (_, { rejectWithValue }) => {
   try {
@@ -10,35 +10,11 @@ export const fetchBoards = createAsyncThunk("boards/fetchBoards", async (_, { re
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return rejectWithValue("No autenticado");
-
-    const { data, error } = await supabase
-      .from("boards")
-      .select(
-        `
-    *,
-    board_members!inner(user_id),
-    lists(
-      id,
-      cards(
-        id,
-        title,
-        assigned_to,
-        due_date,
-        is_completed,
-        status
-      )
-    )
-  `,
-      )
-      .eq("board_members.user_id", user.id)
-      .eq("status", "active")
-      .order("created_at", { ascending: false });
-
+    const { data, error } = await boardsService.fetchAll(user.id);
     if (error) return rejectWithValue(error.message);
     return data;
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error obteniendo boards";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error obteniendo boards"));
   }
 });
 
@@ -53,8 +29,7 @@ export const fetchBoardById = createAsyncThunk<BoardResponse, string, { rejectVa
 
       return data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error obteniendo el board";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error obteniendo el board"));
     }
   },
 );
@@ -63,21 +38,12 @@ export const createBoard = createAsyncThunk<BoardResponse, BoardForm, { rejectVa
   "boards/createBoard",
   async (boardForm, { rejectWithValue }) => {
     try {
-      if (!boardForm.name?.trim()) {
-        return rejectWithValue("El nombre del tablero es obligatorio");
-      }
-
-      const { data, error } = await supabase.rpc("create_board_with_owner", {
-        board_name: boardForm.name,
-        board_description: boardForm.description ?? null,
-      });
-
-      if (error) return rejectWithValue(error.message || "No se pudo crear el tablero");
-
+      if (!boardForm.name?.trim()) return rejectWithValue("El nombre del tablero es obligatorio");
+      const { data, error } = await boardsService.create(boardForm);
+      if (error) return rejectWithValue(error.message);
       return data as BoardResponse;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al crear el tablero";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al crear el tablero"));
     }
   },
 );
@@ -86,22 +52,11 @@ export const updateBoard = createAsyncThunk<BoardResponse, UpdatedBoardPayload, 
   "boards/updateBoard",
   async (payload, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase
-        .from("boards")
-        .update({
-          name: payload.name,
-          description: payload.description,
-          background_color: payload.background_color,
-        })
-        .eq("id", payload.boardId)
-        .select()
-        .single();
-
+      const { data, error } = await boardsService.update(payload);
       if (error) return rejectWithValue(error.message);
       return data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al actualizar el proyecto";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al actualizar el proyecto"));
     }
   },
 );
@@ -110,12 +65,11 @@ export const archiveBoard = createAsyncThunk<string, string, { rejectValue: stri
   "boards/archiveBoard",
   async (boardId, { rejectWithValue }) => {
     try {
-      const { error } = await supabase.from("boards").update({ status: "archived" }).eq("id", boardId);
+      const { error } = await boardsService.archive(boardId);
       if (error) return rejectWithValue(error.message);
       return boardId;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al archivar el tablero";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al archivar el tablero"));
     }
   },
 );
@@ -124,17 +78,11 @@ export const restoreBoard = createAsyncThunk<BoardResponse, string, { rejectValu
   "boards/restoreBoard",
   async (boardId, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase
-        .from("boards")
-        .update({ status: "active" })
-        .eq("id", boardId)
-        .select()
-        .single();
+      const { data, error } = await boardsService.restore(boardId);
       if (error) return rejectWithValue(error.message);
       return data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al restaurar el tablero";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al restaurar el tablero"));
     }
   },
 );
@@ -143,13 +91,11 @@ export const deleteBoard = createAsyncThunk<string, string, { rejectValue: strin
   "boards/deleteBoard",
   async (id, { rejectWithValue }) => {
     try {
-      const { error } = await supabase.from("boards").delete().eq("id", id);
-
+      const { error } = await boardsService.delete(id);
       if (error) return rejectWithValue(error.message);
       return id;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al eliminar el tablero";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al eliminar el tablero"));
     }
   },
 );

@@ -1,31 +1,17 @@
-import { createClient } from "@/lib/supabaseClient";
 import { AppNotification } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { notificationsService } from "@/services/notificationsService";
 
-const supabase = createClient();
-
-export const fetchNotifications = createAsyncThunk(
-  "notifications/fetchAll",
-  async (_, { rejectWithValue }) => {
-    const { data, error } = await supabase
-      .from("notifications")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(20);
-
-    if (error) return rejectWithValue(error.message);
-    return data as AppNotification[];
-  }
-);
+export const fetchNotifications = createAsyncThunk("notifications/fetchAll", async (_, { rejectWithValue }) => {
+  const { data, error } = await notificationsService.fetchAll();
+  if (error) return rejectWithValue(error.message);
+  return data as AppNotification[];
+});
 
 export const markAsRead = createAsyncThunk<string, string>(
   "notifications/markAsRead",
   async (notificationId, { rejectWithValue }) => {
-    const { error } = await supabase
-      .from("notifications")
-      .update({ is_read: true })
-      .eq("id", notificationId);
-
+    const { error } = await notificationsService.markAsRead(notificationId);
     if (error) return rejectWithValue(error.message);
     return notificationId;
   }
@@ -34,11 +20,7 @@ export const markAsRead = createAsyncThunk<string, string>(
 export const markAllAsRead = createAsyncThunk<void, void>(
   "notifications/markAllAsRead",
   async (_, { rejectWithValue }) => {
-    const { error } = await supabase
-      .from("notifications")
-      .update({ is_read: true })
-      .eq("is_read", false);
-
+    const { error } = await notificationsService.markAllAsRead();
     if (error) return rejectWithValue(error.message);
   }
 );

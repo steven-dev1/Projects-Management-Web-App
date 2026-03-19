@@ -1,45 +1,21 @@
 "use client";
 import { BoardResponse } from "@/store/features/boards/BoardsTypes";
 import { useDisclosure } from "@heroui/react";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { CardDetailModal } from "../Cards/CardDetailModal";
-import { isPast, isWithinInterval, addDays } from "date-fns";
 import GeneralProgress from "./GeneralProgress";
 import CardsByList from "./CardsByList";
 import PanelMembers from "./PanelMembers";
 import LabelStats from "./LabelStats";
 import UpcomingCards from "./UpcomingCards";
+import { useBoardStats } from "@/hooks/useBoardStats";
 
 export default function BoardPanel({ board }: { board: BoardResponse }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const isBoardClosed = board.status === "archived";
 
-  const allCards = useMemo(() => board.lists.flatMap((l) => l.cards), [board.lists]);
-
-  const total = allCards.length;
-  const completed = allCards.filter((c) => c.is_completed).length;
-  const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-  const overdue = allCards.filter((c) => c.due_date && !c.is_completed && isPast(new Date(c.due_date)));
-  const dueSoon = allCards.filter(
-    (c) =>
-      c.due_date &&
-      !c.is_completed &&
-      isWithinInterval(new Date(c.due_date), { start: new Date(), end: addDays(new Date(), 7) }),
-  );
-
-  const memberStats = board.board_members.map((m) => {
-    const cards = allCards.filter((c) => c.assigned_to === m.user_id);
-    return { member: m, total: cards.length, completed: cards.filter((c) => c.is_completed).length };
-  });
-
-  const labelStats = (board.labels ?? [])
-    .map((label) => ({ label, count: allCards.filter((c) => c.labels?.some((l) => l.id === label.id)).length }))
-    .filter((l) => l.count > 0)
-    .sort((a, b) => b.count - a.count);
-
-  const upcomingCards = [...overdue, ...dueSoon].slice(0, 5);
+  const { total, completed, rate, overdue, dueSoon, memberStats, labelStats, upcomingCards } = useBoardStats(board);
 
   return (
     <div className="h-full overflow-y-auto p-4 md:p-6">

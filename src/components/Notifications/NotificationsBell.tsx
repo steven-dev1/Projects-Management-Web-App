@@ -1,51 +1,16 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Bell, Check, CheckCircle2 } from "lucide-react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Badge } from "@heroui/react";
-import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { AppDispatch, RootState } from "@/store/store";
-import { AppNotification } from "@/types";
-import { markAllAsRead, markAsRead } from "@/store/features/notifications/notificationsThunks";
-import { acceptBoardInvitation } from "@/lib/actions/acceptBoardInvitation";
+import { AppDispatch } from "@/store/store";
+import { markAllAsRead } from "@/store/features/notifications/notificationsThunks";
+import { useNotifications } from "@/hooks/useNotifications";
 
 export default function NotificationsBell() {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
-  const notifications = useSelector((state: RootState) => state.notifications.items);
-  const unreadCount = notifications.filter((n) => !n.is_read).length;
-
-  const handleClick = (notification: AppNotification) => {
-    if (!notification.is_read) {
-      dispatch(markAsRead(notification.id));
-    }
-    if (notification.url) {
-      router.push(notification.url);
-    }
-  };
-
-  const handleAcceptInvitation = async (notification: AppNotification) => {
-    const boardId = getBoardIdFromUrl(notification.url!);
-    console.log("BoardId", boardId);
-    if (notification.type !== "board_invited" || !boardId) return;
-    try {
-      await dispatch(markAsRead(notification.id));
-      await acceptBoardInvitation({
-        boardId,
-        userId: notification.user_id,
-        memberRole: notification.role,
-      });
-      router.push(`/boards/${boardId}`);
-    } catch (err: unknown) {
-      console.error(err);
-    }
-  };
-
-  const getBoardIdFromUrl = (url: string) => {
-    const match = url.match(/\/boards\/([a-zA-Z0-9-]+)/);
-    return match?.[1] ?? null;
-  };
+  const { notifications, unreadCount, handleClick, handleAcceptInvitation } = useNotifications();
 
   return (
     <Dropdown suppressHydrationWarning placement="bottom-end">

@@ -1,12 +1,12 @@
-import { createClient } from "@/lib/supabaseClient";
-import { BoardList, Card } from "@/store/features/boards/BoardsTypes";
 import { deleteCard, restoreCard } from "@/store/features/boards/CardsThunks";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { Drawer, DrawerBody, DrawerContent, DrawerHeader, Spinner, Tab, Tabs } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArchivedCardItem } from "./ArchivedCardItem";
 import { ArchivedListItem } from "./ArchivedListItem";
 import { deleteList, restoreList } from "@/store/features/boards/ListsThunks";
+import { useArchivedItems } from "@/hooks/useArchivedItems";
+import { useCurrentUserRole } from "@/hooks/useUserCurrentRole";
 
 export const ArchivedDrawer = ({
   boardId,
@@ -17,43 +17,10 @@ export const ArchivedDrawer = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const supabase = createClient();
   const dispatch = useAppDispatch();
   const [selected, setSelected] = useState<"cards" | "lists">("cards");
-  const [archivedCards, setArchivedCards] = useState<Card[]>([]);
-  const [archivedLists, setArchivedLists] = useState<BoardList[]>([]);
-  const [loading, setLoading] = useState(false);
-  const currentUser = useAppSelector((state) => state.auth.user);
-  const boardMembers = useAppSelector((state) => state.boards.currentBoard?.board_members ?? []);
-  const isAdmin = boardMembers.find((m) => m.user_id === currentUser?.id)?.role === "admin";
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const fetch = async () => {
-      setLoading(true);
-
-      const [cardsRes, listsRes] = await Promise.all([
-        supabase
-          .from("cards")
-          .select("*, lists!list_id(title)")
-          .eq("status", "archived")
-          .eq("lists.board_id", boardId)
-          .order("updated_at", { ascending: false }),
-        supabase
-          .from("lists")
-          .select("*")
-          .eq("status", "archived")
-          .eq("board_id", boardId)
-          .order("updated_at", { ascending: false }),
-      ]);
-
-      if (cardsRes.data) setArchivedCards(cardsRes.data);
-      if (listsRes.data) setArchivedLists(listsRes.data);
-      setLoading(false);
-    };
-
-    fetch();
-  }, [isOpen, boardId, supabase]);
+  const { archivedCards, archivedLists, loading, removeCard, removeList } = useArchivedItems(boardId, isOpen);
+  const { isAdmin } = useCurrentUserRole();
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} placement="right" size="sm">
@@ -87,11 +54,11 @@ export const ArchivedDrawer = ({
                       card={card}
                       onRestore={() => {
                         dispatch(restoreCard(card.id!));
-                        setArchivedCards((prev) => prev.filter((c) => c.id !== card.id));
+                        removeCard(card.id!);
                       }}
                       onDelete={() => {
                         dispatch(deleteCard(card.id!));
-                        setArchivedCards((prev) => prev.filter((c) => c.id !== card.id));
+                        removeCard(card.id!);
                       }}
                     />
                   ))
@@ -107,11 +74,11 @@ export const ArchivedDrawer = ({
                       isAdmin={isAdmin}
                       onRestore={() => {
                         dispatch(restoreList(list.id));
-                        setArchivedLists((prev) => prev.filter((l) => l.id !== list.id));
+                        removeList(list.id);
                       }}
                       onDelete={() => {
                         dispatch(deleteList(list.id));
-                        setArchivedLists((prev) => prev.filter((l) => l.id !== list.id));
+                        removeList(list.id);
                       }}
                     />
                   ))

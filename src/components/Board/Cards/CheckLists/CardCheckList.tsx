@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button, Checkbox, Input, Progress } from "@heroui/react";
+import { Button, Checkbox, Progress } from "@heroui/react";
 import { Trash2, Plus, X } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { Checklist } from "@/types";
@@ -11,6 +11,7 @@ import {
   toggleChecklistItem,
   updateChecklistItem,
 } from "@/store/features/boards/ChecklistThunks";
+import { ChecklistItemInput } from "./CheckListItemInput";
 
 export const CardChecklist = ({
   checklist,
@@ -114,24 +115,13 @@ export const CardChecklist = ({
                 }}
               >
                 {editingItemId === item.id && !isBoardClosed ? (
-                  <div className="flex items-center gap-1 flex-1">
-                    <Input
-                      size="sm"
-                      autoFocus
-                      value={editingTitle}
-                      onChange={(e) => setEditingTitle(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleUpdateItem(item.id);
-                        if (e.key === "Escape") setEditingItemId(null);
-                      }}
-                    />
-                    <Button size="sm" variant="flat" color="primary" onPress={() => handleUpdateItem(item.id)}>
-                      Guardar
-                    </Button>
-                    <Button size="sm" variant="light" isIconOnly onPress={() => setEditingItemId(null)}>
-                      <X size={14} />
-                    </Button>
-                  </div>
+                  <ChecklistItemInput
+                    value={editingTitle}
+                    onChange={(val) => setEditingTitle(val)}
+                    onConfirm={() => handleUpdateItem(item.id)}
+                    onCancel={() => setEditingItemId(null)}
+                    confirmLabel="Guardar"
+                  />
                 ) : (
                   item.title
                 )}
@@ -163,27 +153,13 @@ export const CardChecklist = ({
       {/* Agregar item */}
       {!isBoardClosed &&
         (isAddingItem ? (
-          <div className="flex flex-col gap-2">
-            <Input
-              size="sm"
-              autoFocus
-              placeholder="Escribe un item..."
-              value={newItemTitle}
-              onChange={(e) => setNewItemTitle(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleAddItem();
-                if (e.key === "Escape") setIsAddingItem(false);
-              }}
-            />
-            <div className="flex gap-2">
-              <Button size="sm" variant="flat" color="primary" onPress={handleAddItem}>
-                Agregar
-              </Button>
-              <Button size="sm" variant="light" onPress={() => setIsAddingItem(false)}>
-                Cancelar
-              </Button>
-            </div>
-          </div>
+          <ChecklistItemInput
+            value={newItemTitle}
+            onChange={(val) => setNewItemTitle(val)}
+            onConfirm={handleAddItem}
+            onCancel={() => setIsAddingItem(false)}
+            confirmLabel="Agregar"
+          />
         ) : (
           <Button
             size="sm"

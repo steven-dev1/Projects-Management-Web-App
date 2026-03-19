@@ -68,7 +68,6 @@ export default function DataForm() {
         label="Nombre completo"
         labelPlacement="inside"
         name="full_name"
-        
         defaultValue={capitalizeName}
         placeholder="John Doe"
         isRequired
@@ -78,7 +77,7 @@ export default function DataForm() {
         label="Email"
         labelPlacement="inside"
         variant="bordered"
-        name="full_name"
+        name="email"
         defaultValue={user?.email}
         placeholder="John Doe"
         isDisabled
