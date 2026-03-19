@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js";
-import { Preferences, Profile } from "./db";
+import { Preferences, Profile } from "./auth";
 
 export interface ProfileUpdate {
   full_name?: string

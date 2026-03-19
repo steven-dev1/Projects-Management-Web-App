@@ -1,19 +1,15 @@
 "use client";
 import { Avatar, AvatarGroup, useDisclosure } from "@heroui/react";
-import { useAppSelector } from "@/store/hooks";
 import { BoardMembersResponse } from "@/types";
 import MembersModal from "./MembersModal";
 
 export default function MembersGroup({
-  members,
-  boardOwnerId,
+  members
 }: {
   members: BoardMembersResponse;
   boardOwnerId: string;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const currentUser = useAppSelector((state) => state.auth.user);
-  const isAdmin = members.find((m) => m.user_id === currentUser?.id)?.role === "admin";
 
   return (
     <>
@@ -41,8 +37,6 @@ export default function MembersGroup({
         isOpen={isOpen}
         onClose={onClose}
         members={members}
-        isAdmin={isAdmin}
-        boardOwnerId={boardOwnerId}
       />
     </>
   );

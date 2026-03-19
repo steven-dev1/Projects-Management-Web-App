@@ -1,40 +1,30 @@
 "use client";
 import { removeMember, updateMemberRole } from "@/store/features/boards/MembersThunks";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { BoardMember, BoardMembersResponse } from "@/types";
 import {
-  Avatar,
-  Button,
-  Chip,
-  Divider,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
+  Avatar, Button, Chip, Divider, Dropdown, DropdownItem,
+  DropdownMenu, DropdownTrigger, Modal, ModalBody,
+  ModalContent, ModalHeader,
 } from "@heroui/react";
 import { Crown, MoreHorizontal, Trash2, UserCheck, UserX } from "lucide-react";
 import ShareButton from "./Invite/ShareButton";
+import { useAppSelector } from "@/store/hooks";
+import { useCurrentUserRole } from "@/hooks/useUserCurrentRole";
 
 export default function MembersModal({
   isOpen,
   onClose,
   members,
-  isAdmin,
-  boardOwnerId,
 }: {
   isOpen: boolean;
   onClose: () => void;
   members: BoardMembersResponse;
-  isAdmin: boolean;
-  boardOwnerId: string;
 }) {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.auth.user);
-  const boardId = useAppSelector((state) => state.boards.currentBoard?.id);
+  const { isAdmin, currentMember } = useCurrentUserRole();
+  const boardId = useAppSelector((s) => s.boards.currentBoard?.id);
+  const ownerId = useAppSelector((s) => s.boards.currentBoard?.owner_id);
 
   const handleRemove = async (member: BoardMember) => {
     await dispatch(removeMember({ memberId: member.id })).unwrap();
@@ -45,9 +35,13 @@ export default function MembersModal({
   };
 
   return (
-    <Modal backdrop="blur" classNames={{
-      closeButton:"top-2 right-2 cursor-pointer"
-    }} isOpen={isOpen} onClose={onClose} size="md">
+    <Modal
+      backdrop="blur"
+      classNames={{ closeButton: "top-2 right-2 cursor-pointer" }}
+      isOpen={isOpen}
+      onClose={onClose}
+      size="md"
+    >
       <ModalContent>
         <ModalHeader className="flex flex-col items-start justify-between">
           <span>Miembros del board</span>
@@ -56,8 +50,10 @@ export default function MembersModal({
         <ModalBody className="pb-6">
           <div className="flex flex-col gap-2">
             {members.map((member: BoardMember) => {
-              const isOwner = member.user_id === boardOwnerId;
-              const isCurrentUser = member.user_id === currentUser?.id;
+              // Estas dos variables son POR miembro, no globales
+              const isMemberOwner = member.user_id === ownerId;
+              const isCurrentUser = member.id === currentMember?.id;
+              const canManage = isAdmin && !isMemberOwner && !isCurrentUser;
 
               return (
                 <div key={member.id} className="flex items-center justify-between gap-3 py-2">
@@ -75,7 +71,7 @@ export default function MembersModal({
                         )}
                       </p>
                       <div className="flex items-center gap-1 mt-0.5">
-                        {isOwner && <Crown size={10} className="text-amber-500" />}
+                        {isMemberOwner && <Crown size={10} className="text-amber-500" />}
                         <Chip
                           size="sm"
                           variant="flat"
@@ -87,7 +83,8 @@ export default function MembersModal({
                       </div>
                     </div>
                   </div>
-                  {isAdmin && !isOwner && !isCurrentUser && (
+
+                  {canManage && (
                     <Dropdown>
                       <DropdownTrigger>
                         <Button isIconOnly size="sm" variant="light">
@@ -98,9 +95,7 @@ export default function MembersModal({
                         <DropdownItem
                           key="role"
                           startContent={member.role === "admin" ? <UserX size={14} /> : <UserCheck size={14} />}
-                          onPress={() =>
-                            handleRoleChange(member, member.role === "admin" ? "member" : "admin")
-                          }
+                          onPress={() => handleRoleChange(member, member.role === "admin" ? "member" : "admin")}
                         >
                           {member.role === "admin" ? "Cambiar a miembro" : "Hacer admin"}
                         </DropdownItem>

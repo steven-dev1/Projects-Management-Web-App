@@ -1,5 +1,5 @@
 "use client";
-import { signOutAction } from "@/lib/SignOutAction";
+import { signOutAction } from "@/lib/actions/SignOutAction";
 import { useAppSelector } from "@/store/hooks";
 import { Avatar } from "@heroui/avatar";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@heroui/dropdown";

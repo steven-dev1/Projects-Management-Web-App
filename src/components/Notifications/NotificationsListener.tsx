@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 import { addNotification } from "@/store/features/notifications/notificationsSlice";
 import { fetchNotifications } from "@/store/features/notifications/notificationsThunks";
 import { AppDispatch, RootState } from "@/store/store";
@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 export default function NotificationsListener() {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
-  const supabase = createClient();
 
   useEffect(() => {
     if (!user) return;
@@ -43,7 +42,6 @@ export default function NotificationsListener() {
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, dispatch]);
 
   return null;

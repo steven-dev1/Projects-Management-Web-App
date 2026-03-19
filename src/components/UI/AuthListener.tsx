@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 import { logout } from "@/store/features/auth/AuthSlice";
 import { fetchUserAndProfile } from "@/store/features/auth/AuthThunks";
 import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
@@ -8,7 +8,6 @@ import { useEffect, useRef } from "react";
 
 export default function AuthListener() {
   const dispatch = useAppDispatch();
-  const supabase = createClient();
   const currentUserId = useRef<string | null>(null);
 
   useEffect(() => {
@@ -39,7 +38,7 @@ export default function AuthListener() {
     });
 
     return () => subscription.unsubscribe();
-  }, [dispatch, supabase]);
+  }, [dispatch ]);
 
   return null;
 }

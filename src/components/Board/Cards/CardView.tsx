@@ -16,7 +16,6 @@ interface CardViewProps {
   dragListeners?: SyntheticListenerMap;
   dragAttributes?: DraggableAttributes;
   isClosed: boolean;
-  onOpenDetail?: () => void;
 }
 
 export default function CardView({ card, isOverlay, dragListeners, dragAttributes, isClosed }: CardViewProps) {

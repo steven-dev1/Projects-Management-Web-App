@@ -1,22 +1,17 @@
-// store/features/boards/MembersThunks.ts
-
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createClient } from "@/lib/supabaseClient";
 import { BoardMember } from "@/types";
-
-const supabase = createClient();
+import { membersService } from "@/services/membersService";
+import { handleThunkError } from "@/lib/handleThunkError";
 
 export const removeMember = createAsyncThunk<string, { memberId: string }, { rejectValue: string }>(
   "members/removeMember",
   async ({ memberId }, { rejectWithValue }) => {
     try {
-      const { error } = await supabase.from("board_members").delete().eq("id", memberId);
-
+      const { error } = await membersService.remove(memberId);
       if (error) return rejectWithValue(error.message);
       return memberId;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al eliminar miembro";
-      return rejectWithValue(message);
+      return rejectWithValue(handleThunkError(err, "Error al eliminar miembro"));
     }
   },
 );
@@ -27,17 +22,10 @@ export const updateMemberRole = createAsyncThunk<
   { rejectValue: string }
 >("members/updateRole", async ({ memberId, role }, { rejectWithValue }) => {
   try {
-    const { data, error } = await supabase
-      .from("board_members")
-      .update({ role })
-      .eq("id", memberId)
-      .select("*, profiles!user_id(full_name, avatar_url)")
-      .single();
-
+    const { data, error } = await membersService.updateRole(memberId, role);
     if (error) return rejectWithValue(error.message);
     return data;
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al actualizar rol";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al actualizar rol"));
   }
 });

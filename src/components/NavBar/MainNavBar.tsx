@@ -15,7 +15,7 @@ import ProfileDropdown from "./ProfileDropdown";
 import NotificationsBell from "../Notifications/NotificationsBell";
 import ButtonCreateProject from "../Dashboard/ButtonCreateProject";
 import { ThemeToggle } from "../UI/ThemeToggle";
-import { signOutAction } from "@/lib/SignOutAction";
+import { signOutAction } from "@/lib/actions/SignOutAction";
 import { useAppSelector } from "@/store/hooks";
 import { useState } from "react";
 import { BoardSearch } from "../Board/BoardSearch";

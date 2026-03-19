@@ -1,12 +1,5 @@
-import { createSelector } from 'reselect'
-import type { RootState } from '@/store/store'
+import { RootState } from "@/store/store";
 
-export const selectAvatarUrl = createSelector(
-  (state: RootState) => state.auth.profile,
-  (profile) => profile?.avatar_url ?? null
-)
-
-export const selectFullName = createSelector(
-  (state: RootState) => state.auth.profile,
-  profile => profile?.full_name ?? 'Usuario'
-)
+export const selectUser = (state: RootState) => state.auth.user;
+export const selectProfile = (state: RootState) => state.auth.profile;
+export const selectPreferences = (state: RootState) => state.auth.preferences;

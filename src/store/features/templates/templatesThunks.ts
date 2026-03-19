@@ -1,16 +1,13 @@
-// store/features/templates/templatesThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { boardTemplates } from "@/lib/templates";
-import { createClient } from "@/lib/supabaseClient";
-import { addLabelToCard } from "../boards/LabelsThunks";
+import { supabase } from "@/lib/supabase";
 
-const supabase = createClient();
 
 export const createBoardFromTemplate = createAsyncThunk<
   void,
   { templateId: string; boardName: string },
   { rejectValue: string }
->("templates/createBoard", async ({ templateId, boardName }, { rejectWithValue, dispatch }) => {
+>("templates/createBoard", async ({ templateId, boardName }, { rejectWithValue }) => {
   try {
     const {
       data: { user },
@@ -49,8 +46,6 @@ export const createBoardFromTemplate = createAsyncThunk<
         );
       }
     }
-
-    dispatch(addLabelToCard(board));
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Error creando board";
     return rejectWithValue(message);

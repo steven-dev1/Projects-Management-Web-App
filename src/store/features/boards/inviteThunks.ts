@@ -1,3 +1,4 @@
+import { handleThunkError } from "@/lib/handleThunkError";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const inviteMember = createAsyncThunk<
@@ -15,7 +16,6 @@ export const inviteMember = createAsyncThunk<
     const data = await response.json();
     if (!response.ok) return rejectWithValue(data.error);
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Error al enviar invitación";
-    return rejectWithValue(message);
+    return rejectWithValue(handleThunkError(err, "Error al invitar a un miembro"));
   }
 });
