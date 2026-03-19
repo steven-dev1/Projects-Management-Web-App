@@ -72,79 +72,86 @@ export default function BoardTable({ board }: { board: BoardResponse }) {
   };
 
   return (
-    <div className="p-6 h-full flex flex-col overflow-hidden">
+    <div className="p-4 md:p-6 h-full flex flex-col overflow-hidden">
       <BoardTableFilters lists={board.lists} filterListId={filterListId} onFilterChange={setFilterListId} />
 
       <div className="mt-4 rounded-lg border dark:border-zinc-800 border-zinc-200 overflow-hidden flex-1 overflow-y-auto">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 z-10">
-            <tr className="bg-zinc-50 border-b dark:bg-zinc-900 dark:border-zinc-800 border-zinc-200 text-zinc-500 dark:text-zinc-200 text-xs uppercase tracking-wide">
-              <SortableHeader
-                label="Tarjeta"
-                sortKeyValue="title"
-                setSortDir={setSortDir}
-                setSortKey={setSortKey}
-                sortDir={sortDir}
-                sortKey={sortKey}
-              />
-              <SortableHeader
-                label="Lista"
-                sortKeyValue="listName"
-                setSortDir={setSortDir}
-                setSortKey={setSortKey}
-                sortDir={sortDir}
-                sortKey={sortKey}
-              />
-              <SortableHeader
-                label="Asignado"
-                sortKeyValue="assigned_to"
-                setSortDir={setSortDir}
-                setSortKey={setSortKey}
-                sortDir={sortDir}
-                sortKey={sortKey}
-              />
-              <SortableHeader
-                label="Fecha límite"
-                sortKeyValue="due_date"
-                setSortDir={setSortDir}
-                setSortKey={setSortKey}
-                sortDir={sortDir}
-                sortKey={sortKey}
-              />
-              <th className="text-left px-4 py-3 font-medium">Labels</th>
-              <SortableHeader
-                label="Estado"
-                sortKeyValue="is_completed"
-                setSortDir={setSortDir}
-                setSortKey={setSortKey}
-                sortDir={sortDir}
-                sortKey={sortKey}
-              />
-            </tr>
-          </thead>
-          <tbody>
-            {sortedCards.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-12 text-zinc-400">
-                  No hay tarjetas
-                </td>
-              </tr>
-            ) : (
-              sortedCards.map((card) => (
-                <BoardTableRow
-                  key={card.id}
-                  card={card}
-                  listName={card.listName}
-                  members={board.board_members}
-                  onOpen={() => handleOpenCard(card)}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-150">
+            <thead className="sticky top-0 z-10">
+              <tr className="bg-zinc-50 border-b dark:bg-zinc-900 dark:border-zinc-800 border-zinc-200 text-zinc-500 dark:text-zinc-200 text-xs uppercase tracking-wide">
+                <SortableHeader
+                  label="Tarjeta"
+                  sortKeyValue="title"
+                  setSortDir={setSortDir}
+                  setSortKey={setSortKey}
+                  sortDir={sortDir}
+                  sortKey={sortKey}
                 />
-              ))
-            )}
-          </tbody>
-        </table>
+                <SortableHeader
+                  label="Lista"
+                  sortKeyValue="listName"
+                  setSortDir={setSortDir}
+                  setSortKey={setSortKey}
+                  sortDir={sortDir}
+                  sortKey={sortKey}
+                  className=""
+                />
+                <SortableHeader
+                  label="Asignado"
+                  sortKeyValue="assigned_to"
+                  setSortDir={setSortDir}
+                  setSortKey={setSortKey}
+                  sortDir={sortDir}
+                  sortKey={sortKey}
+                  className="hidden lg:table-cell"
+                />
+                <SortableHeader
+                  label="Fecha límite"
+                  sortKeyValue="due_date"
+                  setSortDir={setSortDir}
+                  setSortKey={setSortKey}
+                  sortDir={sortDir}
+                  sortKey={sortKey}
+                  className="hidden md:table-cell"
+                />
+                <th className="text-left px-4 py-3 font-medium">Labels</th>
+                <SortableHeader
+                  label="Estado"
+                  sortKeyValue="is_completed"
+                  setSortDir={setSortDir}
+                  setSortKey={setSortKey}
+                  sortDir={sortDir}
+                  sortKey={sortKey}
+                />
+              </tr>
+            </thead>
+            <tbody>
+              {sortedCards.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-zinc-400">
+                    No hay tarjetas
+                  </td>
+                </tr>
+              ) : (
+                sortedCards.map((card) => (
+                  <BoardTableRow
+                    key={card.id}
+                    card={card}
+                    listName={card.listName}
+                    members={board.board_members}
+                    onOpen={() => handleOpenCard(card)}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {selectedCard && <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />}
+      {selectedCard && (
+        <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />
+      )}
     </div>
   );
 }

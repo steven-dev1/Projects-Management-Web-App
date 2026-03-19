@@ -4,7 +4,7 @@ import { Progress } from "@heroui/react";
 
 export default function PanelMembers({ memberStats }: { memberStats: { member: BoardMember, total: number, completed: number }[] }) {
   return (
-    <div className="bg-content1 rounded-2xl p-5 shadow-small flex flex-col gap-3">
+    <div className="col-span-1 bg-content1 rounded-2xl p-5 shadow-small flex flex-col gap-3">
       <p className="text-sm font-semibold">Miembros con tareas</p>
       {memberStats
         .filter((m) => m.total > 0)

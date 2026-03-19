@@ -58,7 +58,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
         <Plus size={18} />
         Crear lista
       </Button>
-      <Modal backdrop="blur" isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -89,7 +89,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
                     <Button variant="flat" onPress={onClose}>
                       Cancelar
                     </Button>
-                    <Button className="bg-morado text-white" type="submit">
+                    <Button color="primary" type="submit">
                       {loading ? <Spinner color="default" size="sm" /> : "Crear"}
                     </Button>
                   </div>

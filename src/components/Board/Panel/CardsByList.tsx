@@ -3,7 +3,7 @@ import { Progress } from "@heroui/react";
 
 export default function CardsByList({ board }: { board: BoardResponse }) {
   return (
-    <div className="bg-content1 rounded-2xl p-5 shadow-small flex flex-col gap-3">
+    <div className="col-span-1 bg-content1 rounded-2xl p-5 shadow-small flex flex-col gap-3">
       <p className="text-sm font-semibold">Por lista</p>
       {board.lists
         .filter((l) => l.status === "active")

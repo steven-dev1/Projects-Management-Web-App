@@ -13,20 +13,20 @@ export function ThemeToggle({ iconOnly = false }: { iconOnly?: boolean }) {
       {theme === "dark" ? (
         <>
           {iconOnly ? (
-            <Moon size={18} />
+            <Sun size={18} />
           ) : (
             <>
-              Modo claro <Sun size={18} />
+              <Sun size={18} /> Modo claro 
             </>
           )}
         </>
       ) : (
         <>
           {iconOnly ? (
-            <Sun size={18} />
+            <Moon size={18} />
           ) : (
             <>
-              Modo oscuro <Moon size={18} />
+              <Moon size={18} /> Modo oscuro 
             </>
           )}
         </>
