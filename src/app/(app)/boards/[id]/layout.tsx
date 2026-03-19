@@ -6,9 +6,8 @@ import { fetchBoardById } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import dynamic from "next/dynamic";
 
-const BoardNavBar = dynamic(() => import("@/components/Board/BoardNavBar"), { ssr: false });
+
 export default function BoardLayout({ children }: { children: React.ReactNode }) {
   const { id } = useParams<{ id: string }>();
   const { currentBoard } = useAppSelector((state) => state.boards);
@@ -25,8 +24,7 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
   }, [dispatch, id]);
 
   return (
-    <div className="flex flex-col" style={{ height: "100dvh" }}>
-      <BoardNavBar />
+    <div className="flex flex-col" style={{ height: "calc(100dvh - 65px)" }}>
       {!currentBoard ? (
         <SkeletonBoardHeader />
       ) : (

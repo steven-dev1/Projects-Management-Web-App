@@ -6,7 +6,7 @@ import {addToast,Button,Divider,Form,Input,Modal,ModalBody,ModalContent,ModalHea
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+export default function ButtonCreateProject({ size = "md", className }: { size?: "sm" | "md" | "lg"; className?: string }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -41,14 +41,14 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
   };
   return (
     <>
-      <Button color="primary" size={size} className="min-w-fit whitespace-nowrap hidden sm:block" onPress={onOpen}>
+      <Button color="primary" size={size} className={"min-w-fit whitespace-nowrap " + className} onPress={onOpen}>
         Crear
       </Button>
-      <Modal backdrop="blur" isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Crear tarea</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Crear tablero</ModalHeader>
               <Divider className="my-2" />
               <ModalBody>
                 <Form
@@ -60,13 +60,13 @@ export default function ButtonCreateProject({ size = "md" }: { size?: "sm" | "md
                   <Input
                     name="name"
                     label="Nombre del proyecto"
-                    placeholder="Escribe el nombre del proyecto"
+                    placeholder="Escribe el nombre del tablero"
                     isRequired
                   />
                   <Input
                     name="description"
                     label="Descripción (Opcional)"
-                    placeholder="Escribe una descripción del proyecto"
+                    placeholder="Escribe una descripción del tablero"
                   />
                   <div className="flex items-center gap-2 justify-end w-full mt-2">
                     <Button variant="flat" onPress={onClose}>

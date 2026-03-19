@@ -9,9 +9,9 @@ import Link from "next/link";
 import { ThemeToggle } from "../UI/ThemeToggle";
 
 export default function ProfileDropdown() {
-  const { profile, isLoading } = useAppSelector((state) => state.auth);
+  const { user, profile, isLoading } = useAppSelector((state) => state.auth);
   return (
-    <Dropdown closeOnSelect={false} suppressHydrationWarning className="items-center gap-2 hidden sm:flex">
+    <Dropdown closeOnSelect={false} suppressHydrationWarning className="items-center gap-2">
       <DropdownTrigger className="cursor-pointer hidden sm:flex">
         {isLoading ? (
           <Skeleton className="w-10 h-10 rounded-full" />
@@ -29,8 +29,9 @@ export default function ProfileDropdown() {
       </DropdownTrigger>
       <DropdownMenu variant="flat">
         <DropdownSection showDivider>
-          <DropdownItem key="theme">
-            <ThemeToggle />
+          <DropdownItem key="profile" className="flex items-center gap-2">
+            <p className="text-sm font-medium">{profile?.full_name ?? "Usuario anónimo"}</p>
+            <p className="text-xs text-zinc-400">{user?.email ?? "usuario@ejemplo.com"}</p>
           </DropdownItem>
         </DropdownSection>
         <DropdownSection>
@@ -43,6 +44,9 @@ export default function ProfileDropdown() {
             <Link href="/settings" className="flex items-center gap-2">
               <Settings size={18} /> Ajustes
             </Link>
+          </DropdownItem>
+          <DropdownItem key="theme">
+            <ThemeToggle />
           </DropdownItem>
           <DropdownItem
             startContent={<ArrowRightFromLine size={18} />}

@@ -73,9 +73,10 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
     <>
       <Button className="w-full min-w-fit" variant="light" onPress={onOpen}>
         <Plus size={18} />
+        <span className="inline sm:hidden">Añadir</span>
         <span className="hidden sm:inline">Añadir tarjeta</span>
       </Button>
-      <Modal backdrop="blur" isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -112,7 +113,7 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
                     <Button variant="flat" onPress={onClose}>
                       Cancelar
                     </Button>
-                    <Button className="bg-morado text-white" type="submit">
+                    <Button color="primary" type="submit">
                       {loading ? <Spinner color="default" size="sm" /> : "Crear"}
                     </Button>
                   </div>

@@ -19,7 +19,7 @@ export default function BoardHeader() {
   const currentUser = useAppSelector((state) => state.auth.user);
   const isOwner = board?.owner_id === currentUser?.id;
 
-  if(!board) return null;
+  if (!board) return null;
 
   const handleDelete = async () => {
     await dispatch(deleteBoard(board.id)).unwrap();
@@ -29,21 +29,27 @@ export default function BoardHeader() {
   return (
     <>
       {isClosed && (
-        <div className="flex items-center justify-center py-3 dark:bg-primary-50 bg-[#dbeafe]">
-          <p className="flex items-center justify-between gap-2 text-sm font-medium">
-            <Info size={18} /> Este tablero está cerrado. Para modificarlo, debes abrirlo nuevamente.
-            <button className="underline hover:text-zinc-600 cursor-pointer" onClick={() => dispatch(restoreBoard(board.id!)).unwrap()}>
-              Abrir tablero
-            </button>
-          </p>
+        <div className="flex items-center justify-center py-4 dark:bg-primary-50 bg-[#dbeafe] px-5">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-center">
+            <Info size={18} className="shrink-0" />
+            <p>
+              Este tablero está cerrado. Abrelo nuevamente para modificarlo.{" "}
+              <button
+                className="underline ml-1 hover:text-zinc-600 cursor-pointer shrink-0"
+                onClick={() => dispatch(restoreBoard(board.id!)).unwrap()}
+              >
+                Abrir tablero
+              </button>
+            </p>
+          </div>
         </div>
       )}
-      <div className="flex gap-4 items-center justify-between py-2 px-8 border-y dark:border-zinc-800 border-zinc-200">
-        <div className="flex gap-4 items-center">
-          <h1 className="text-lg font-semibold">{board.name}</h1>
+      <div className="flex gap-2 items-center justify-between py-2 px-4 sm:px-8 border-b dark:border-zinc-800 border-zinc-200">
+        <div className="flex gap-2 sm:gap-4 items-center min-w-0">
+          <h1 className="text-base sm:text-lg font-semibold truncate max-w-30 sm:max-w-xs">{board.name}</h1>
           <ViewDropdown boardId={board.id as string} />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           {isOwner && <ShareButton boardId={board.id as string} />}
           <MembersGroup members={board.board_members} boardOwnerId={board.owner_id} />
           <Dropdown>

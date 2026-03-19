@@ -4,7 +4,7 @@ import { BoardMember } from "@/types";
 import { Avatar, Chip, Tooltip } from "@heroui/react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
-import { CheckSquare } from "lucide-react";
+import { Check, CheckSquare, Minus } from "lucide-react";
 
 interface Props {
   card: Card;
@@ -47,7 +47,7 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
       </td>
 
       {/* Asignado */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-3 hidden lg:table-cell">
         {assignedMember ? (
           <div className="flex items-center gap-2">
             <Avatar
@@ -64,7 +64,7 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
       </td>
 
       {/* Fecha límite */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-3 hidden md:table-cell">
         {card.due_date ? (
           <span
             className={`text-xs ${new Date(card.due_date) < new Date() && !card.is_completed ? "text-red-500 font-medium" : "text-zinc-600 dark:text-zinc-300"}`}
@@ -81,8 +81,10 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
         <div className="flex flex-wrap gap-1">
           {card.labels?.map((label) => (
             <Tooltip key={label.id} content={label.name} showArrow placement="top">
-              <div className="text-xs px-2 py-0.5 h-1.5 rounded-full text-white" style={{ backgroundColor: label.color }}>
-              </div>
+              <div
+                className="text-xs px-2 py-0.5 h-1.5 rounded-full text-white"
+                style={{ backgroundColor: label.color }}
+              ></div>
             </Tooltip>
           ))}
           {!card.labels?.length && <span className="text-xs text-zinc-400">—</span>}
@@ -92,7 +94,8 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
       {/* Estado */}
       <td className="px-4 py-3">
         <Chip size="sm" variant="flat" color={card.is_completed ? "success" : "default"}>
-          {card.is_completed ? "Completada" : "Pendiente"}
+          <span className="hidden md:flex">{card.is_completed ? "Completada" : "Pendiente"}</span>
+          <span className="flex md:hidden">{card.is_completed ? <Check size={14}/> : <Minus size={14}/>}</span>
         </Chip>
       </td>
     </tr>

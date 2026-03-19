@@ -124,8 +124,12 @@ export const restoreBoard = createAsyncThunk<BoardResponse, string, { rejectValu
   "boards/restoreBoard",
   async (boardId, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase.from("boards").update({ status: "active" }).eq("id", boardId).select().single();
-      console.log(data)
+      const { data, error } = await supabase
+        .from("boards")
+        .update({ status: "active" })
+        .eq("id", boardId)
+        .select()
+        .single();
       if (error) return rejectWithValue(error.message);
       return data;
     } catch (err: unknown) {

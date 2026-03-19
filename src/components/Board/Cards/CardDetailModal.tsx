@@ -61,14 +61,18 @@ export const CardDetailModal = ({
       size="3xl"
       backdrop="blur"
       scrollBehavior="inside"
-      classNames={{ wrapper: "custom-scrollbar-modal", closeButton: "right-60 top-2 cursor-pointer" }}
+      placement="center"
+      classNames={{
+        wrapper: "custom-scrollbar-modal",
+        closeButton: "right-2 top-2 md:right-60 md:top-2 cursor-pointer",
+      }}
     >
       <ModalContent>
         <ModalBody className="p-0">
-          <div className="flex flex-col md:flex-row gap-0 min-h-125">
-            <div className="flex-1 p-6 flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row gap-0 min-h-auto md:min-h-125">
+            <div className="flex-1 p-4 md:p-6 flex flex-col gap-4 md:gap-6">
               {/* Header */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 pr-6 md:pr-0">
                 <p className="text-xs text-zinc-400 dark:text-zinc-300">
                   En la lista: <span className="font-medium text-zinc-600 dark:text-white">{list?.title}</span>
                 </p>
@@ -85,7 +89,7 @@ export const CardDetailModal = ({
                 <CardChecklists isBoardClosed={isBoardClosed} card={card} />
               </div>
             </div>
-            <div className="md:w-56 bg-zinc-50 dark:bg-zinc-900 dark:text-white p-4 flex flex-col gap-2 border-l dark:border-zinc-800 border-zinc-100 rounded-r-xl">
+            <div className="md:w-56 bg-zinc-50 dark:bg-zinc-900 dark:text-white p-4 flex flex-col gap-2 border-t md:border-t-0 md:border-l dark:border-zinc-800 border-zinc-100 md:rounded-r-xl">
               <CardAssignee isBoardClosed={isBoardClosed} card={card} />
               {!isBoardClosed && (
                 <>

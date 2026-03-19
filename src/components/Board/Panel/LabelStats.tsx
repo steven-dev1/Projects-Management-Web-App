@@ -3,7 +3,7 @@ import { Label } from "@/types";
 export default function LabelStats({ labelStats }: { labelStats: { label: Label; count: number }[] }) {
   return (
     labelStats.length > 0 && (
-      <div className="bg-content1 col-span-1 rounded-2xl p-5 shadow-small flex flex-col gap-3">
+      <div className="col-span-1 bg-content1 rounded-2xl p-5 shadow-small flex flex-col gap-3">
         <p className="text-sm font-semibold">Etiquetas</p>
         <div className="flex flex-wrap gap-2">
           {labelStats.map(({ label, count }) => (

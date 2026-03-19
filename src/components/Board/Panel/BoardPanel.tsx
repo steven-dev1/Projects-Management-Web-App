@@ -42,21 +42,12 @@ export default function BoardPanel({ board }: { board: BoardResponse }) {
   const upcomingCards = [...overdue, ...dueSoon].slice(0, 5);
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Progreso general */}
+    <div className="h-full overflow-y-auto p-4 md:p-6">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
         <GeneralProgress completed={completed} total={total} overdue={overdue} dueSoon={dueSoon} rate={rate} />
-
-        {/* Tarjetas por lista */}
         <CardsByList board={board} />
-
-        {/* Miembros */}
         <PanelMembers memberStats={memberStats} />
-
-        {/* Etiquetas */}
         <LabelStats labelStats={labelStats} />
-
-        {/* Fechas límite */}
         <UpcomingCards
           upcomingCards={upcomingCards}
           board={board}
@@ -64,11 +55,11 @@ export default function BoardPanel({ board }: { board: BoardResponse }) {
           onOpen={onOpen}
           labelStats={labelStats}
         />
-
-
       </div>
 
-      {selectedCard && <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />}
+      {selectedCard && (
+        <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />
+      )}
     </div>
   );
 }

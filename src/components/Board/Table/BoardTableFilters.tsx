@@ -10,11 +10,11 @@ interface Props {
 
 export default function BoardTableFilters({ lists, filterListId, onFilterChange }: Props) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 flex-wrap">
       <Select
         size="sm"
         placeholder="Filtrar por lista"
-        className="w-48"
+        className="w-full sm:w-48"
         selectedKeys={filterListId ? [filterListId] : []}
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0] as string;
