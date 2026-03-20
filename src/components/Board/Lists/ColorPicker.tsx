@@ -13,7 +13,7 @@ export const ColorPicker = ({ value, onChange }: { value: string; onChange: (col
         const isSelected = value === color.id
 
         return (
-          <Tooltip key={color.light} content={color.label} showArrow placement="top">
+          <Tooltip closeDelay={0} key={color.light} content={color.label} showArrow placement="top">
             <button
               type="button"
               onClick={() => onChange(color.id)}

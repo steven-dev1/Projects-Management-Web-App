@@ -62,6 +62,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
               <div className="flex flex-wrap gap-1 mb-2">
                 {card.labels.slice(0, 3).map((label) => (
                   <Tooltip
+                    closeDelay={0}
                     size="sm"
                     key={label.id}
                     content={label.name ?? "Etiqueta sin nombre"}
@@ -87,6 +88,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
               )}
               {card.due_date && (
                 <Tooltip
+                  closeDelay={0}
                   size="sm"
                   showArrow
                   placement="bottom"

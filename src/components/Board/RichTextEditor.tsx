@@ -101,7 +101,7 @@ const ToolbarButton = ({
   tooltip: string;
   children: React.ReactNode;
 }) => (
-  <Tooltip content={tooltip} showArrow placement="top">
+  <Tooltip closeDelay={0} content={tooltip} showArrow placement="top">
     <button
       type="button"
       onClick={onClick}

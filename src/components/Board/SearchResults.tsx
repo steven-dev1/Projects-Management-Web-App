@@ -2,8 +2,7 @@ import { Card } from "@/store/features/boards/BoardsTypes";
 import { BoardList } from "@/store/features/boards/BoardsTypes";
 import { HighlightedText } from "./HighlightedText";
 import { CalendarIcon, CheckCircle2, Circle, SearchX } from "lucide-react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale/es";
+import { formatDueDateShort} from "@/lib/dateUtils";
 
 interface SearchGroup {
   list: BoardList;
@@ -29,14 +28,14 @@ export const SearchResults = ({ results, totalResults, query, onSelectCard }: Pr
 
   return (
     <>
-      <div className="px-3 py-2 border-b border-zinc-100">
+      <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800">
         <p className="text-xs text-zinc-400">
           {totalResults} {totalResults === 1 ? "resultado" : "resultados"}
         </p>
       </div>
       {results.map(({ list, cards }) => (
         <div key={list.id}>
-          <div className="flex items-center gap-2 px-3 py-2 bg-zinc-50 border-b border-zinc-100">
+          <div className="flex items-center gap-2 px-3 py-2 bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800 border-b border-zinc-100">
             <div
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: list.background_color ?? "#a742ff" }}
@@ -56,7 +55,7 @@ const SearchResultCard = ({ card, query, onSelect }: { card: Card; query: string
   <button
     type="button"
     onClick={onSelect}
-    className="w-full flex items-start gap-3 px-3 py-2.5 hover:bg-zinc-50 transition-colors border-b border-zinc-50 last:border-0 text-left"
+    className="w-full flex cursor-pointer items-start gap-3 px-3 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border-b border-zinc-50 dark:border-zinc-800 last:border-0 text-left"
   >
     {card.is_completed ? (
       <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
@@ -65,7 +64,7 @@ const SearchResultCard = ({ card, query, onSelect }: { card: Card; query: string
     )}
     <div className="min-w-0 flex-1">
       <p
-        className={`text-sm font-medium truncate ${card.is_completed ? "line-through text-zinc-400" : "text-zinc-700"}`}
+        className={`text-sm font-medium truncate ${card.is_completed ? "line-through text-zinc-400" : "text-zinc-700 dark:text-zinc-500"}`}
       >
         <HighlightedText text={card.title} query={query} />
       </p>
@@ -75,7 +74,7 @@ const SearchResultCard = ({ card, query, onSelect }: { card: Card; query: string
       {card.due_date && (
         <div className="flex items-center gap-1 mt-1">
           <CalendarIcon size={11} className="text-zinc-300" />
-          <span className="text-xs text-zinc-400">{format(new Date(card.due_date), "d MMM", { locale: es })}</span>
+          <span className="text-xs text-zinc-400">{formatDueDateShort(card.due_date)}</span>
         </div>
       )}
     </div>

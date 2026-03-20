@@ -3,6 +3,7 @@ import { Card, CreateCardPayload, UpdateCardPayload } from "./BoardsTypes";
 import { RootState } from "@/store/store";
 import { cardsService } from "@/services/cardsService";
 import { handleThunkError } from "@/lib/handleThunkError";
+import { Label } from "@/types";
 
 export const updateCardOrder = createAsyncThunk(
   "boards/updateCardOrder",
@@ -80,11 +81,14 @@ export const restoreCard = createAsyncThunk<Card, string, { rejectValue: string 
     try {
       const { data, error } = await cardsService.restore(cardId);
       if (error) return rejectWithValue(error.message);
-      return data;
+      return {
+        ...data,
+        labels: data.card_labels?.map((cl: { labels: Label }) => cl.labels) ?? [],
+      };
     } catch (err: unknown) {
       return rejectWithValue(handleThunkError(err, "Error al restaurar la tarjeta"));
     }
-  },
+  }
 );
 
 export const toggleCardCompletion = createAsyncThunk<

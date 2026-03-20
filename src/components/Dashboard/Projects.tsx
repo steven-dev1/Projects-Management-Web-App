@@ -1,10 +1,11 @@
-'use client'
+"use client";
 import { Board } from "@/store/features/boards/BoardsTypes";
 import ButtonCreateProject from "./ButtonCreateProject";
 import { Select, SelectItem } from "@heroui/react";
 import { FILTER_OPTIONS_BOARDS } from "@/lib/consts";
 import { useMemo, useState } from "react";
 import ProjectsList from "./ProjectsList";
+import Link from "next/link";
 
 export default function Projects({ boards }: { boards: Board[] }) {
   const [filter, setFilter] = useState("recent");
@@ -30,8 +31,8 @@ export default function Projects({ boards }: { boards: Board[] }) {
 
   return (
     <div className="w-full flex flex-col gap-2 justify-center">
-      <h1 className="text-xl font-bold text-center md:text-left">Proyectos</h1>
-      <div className="flex flex-col sm:flex-row items-center justify-center md:justify-between gap-4 mt-2 mb-4">
+      <h1 className="text-xl font-bold text-center md:text-left">Tableros</h1>
+      <div className="flex flex-col lg:flex-row items-center justify-center md:justify-between gap-4 mt-2 mb-4">
         <Select
           label="Ordenar por"
           className="max-w-xs"
@@ -48,7 +49,12 @@ export default function Projects({ boards }: { boards: Board[] }) {
           ))}
         </Select>
 
-        <ButtonCreateProject size="md" />
+        <div className="flex items-center gap-2">
+          <ButtonCreateProject size="md" />
+          <Link href="/dashboard/archived" className="dark:bg-zinc-900 dark:hover:bg-zinc-800 bg-zinc-100 hover:bg-zinc-200  text-sm dark:text-zinc-300 p-3 rounded-xl">
+              Ver tableros archivados
+          </Link>
+        </div>
       </div>
       <ProjectsList boards={view} />
     </div>

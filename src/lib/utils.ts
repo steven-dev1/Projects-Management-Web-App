@@ -1,3 +1,4 @@
+import { Board } from "@/store/features/boards/BoardsTypes";
 import { LIST_COLORS } from "./consts";
 
 export function capitalizeWords(str: string) {
@@ -29,3 +30,9 @@ export function resolveListColor(colorId: string | undefined, isDark: boolean, i
   if (isBoard) return found.board;
   return isDark ? found.dark : found.light;
 }
+
+export const getActiveOrArchivedBoards = (boards: Board[], status: "active" | "archived") => {
+  return boards.filter((b) => b.status === status);
+}
+
+

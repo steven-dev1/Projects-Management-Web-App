@@ -11,7 +11,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const currentBoard = useAppSelector((state) => state.boards.currentBoard);
 
   useEffect(() => {
-    // Sincronizar currentBoard en la lista de boards si hubo cambios
     if (currentBoard) {
       dispatch(syncCurrentBoard());
     }

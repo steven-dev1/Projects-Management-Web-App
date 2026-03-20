@@ -15,7 +15,6 @@ export const boardsService = {
         )
       `)
       .eq("board_members.user_id", userId)
-      .eq("status", "active")
       .order("created_at", { ascending: false });
   },
 
@@ -27,6 +26,7 @@ export const boardsService = {
     return supabase.rpc("create_board_with_owner", {
       board_name: form.name,
       board_description: form.description ?? null,
+      background_color: form.background_color ?? null,
     });
   },
 

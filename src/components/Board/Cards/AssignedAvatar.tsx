@@ -8,7 +8,7 @@ export const AssignedAvatar = ({ userId }: { userId: string }) => {
   if (!member) return null;
 
   return (
-    <Tooltip size="sm" content={`Asignado a ${member.profiles?.full_name}`} showArrow placement="bottom">
+    <Tooltip closeDelay={0} size="sm" content={`Asignado a ${member.profiles?.full_name}`} showArrow placement="bottom">
       <Avatar
         src={member.profiles?.avatar_url ?? undefined}
         name={member.profiles?.full_name ?? "U"}
