@@ -12,7 +12,9 @@ import { useDashboardStats } from "@/hooks/useDashboardStats";
 export default function DashboardPage() {
   const { boards, status, allCards, assignedCards, upcomingCards } = useDashboardStats();
 
-  if (status === "loading" && boards.length === 0) {
+  const isLoading = status === "loading" || status === "idle";
+
+  if (isLoading && boards.length === 0) {
     return (
       <div className="flex items-center justify-center">
         <Spinner color="default" size="lg" />
@@ -20,7 +22,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (boards.length === 0 && status === "succeeded") {
+  if (status === "succeeded" && boards.length === 0) {
     return <EmptyProjects />;
   }
 

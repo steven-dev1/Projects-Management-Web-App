@@ -1,6 +1,6 @@
 "use client";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Form, Input, Button } from "@heroui/react";
@@ -8,6 +8,7 @@ import { Form, Input, Button } from "@heroui/react";
 export default function RegisterForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +33,9 @@ export default function RegisterForm() {
       return;
     }
 
-    router.push("/signin");
+    const redirectTo = searchParams.get("redirectTo");
+    router.push(redirectTo ? `/signin?redirectTo=${redirectTo}` : "/signin");
+    router.refresh();
   };
 
   return (
@@ -90,13 +93,7 @@ export default function RegisterForm() {
               </div>
             )}
 
-            <Button
-              type="submit"
-              isLoading={loading}
-              className="w-full font-medium mt-1"
-              radius="lg"
-              variant="flat"
-            >
+            <Button type="submit" isLoading={loading} className="w-full font-medium mt-1" radius="lg" variant="flat">
               Crear cuenta
             </Button>
           </Form>
