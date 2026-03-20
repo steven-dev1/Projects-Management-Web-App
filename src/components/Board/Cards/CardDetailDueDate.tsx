@@ -1,13 +1,14 @@
 // CardDetailDueDate.tsx
 "use client";
 import { useState } from "react";
-import { DateInput, Button } from "@heroui/react";
+import { Button, DatePicker } from "@heroui/react";
 import { parseAbsoluteToLocal, now, getLocalTimeZone, type ZonedDateTime } from "@internationalized/date";
 import { CalendarIcon, Pencil } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { getCardDateStatus } from "@/lib/utils";
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { updateCard } from "@/store/features/boards/CardsThunks";
+import { formatDueDateWithTime } from "@/lib/dateUtils";
 
 export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();
@@ -26,12 +27,11 @@ export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoard
   };
 
   const handleSave = async () => {
-    if (!dueDate) return;
     await dispatch(updateCard({
       cardId: card.id!,
       title: card.title,
       description: card.description,
-      due_date: dueDate.toDate().toISOString(),
+      due_date: dueDate?.toDate().toISOString() ?? null,
     }));
     setIsEditing(false);
   };
@@ -40,7 +40,7 @@ export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoard
     return (
       <div className="flex flex-col gap-2">
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Fecha límite</p>
-        <DateInput value={dueDate} onChange={setDueDate} granularity="day" />
+        <DatePicker hideTimeZone fullWidth={false} isRequired={false} value={dueDate} onChange={setDueDate} granularity="minute" minValue={now(getLocalTimeZone())} />
         <div className="flex gap-2">
           <Button size="sm" variant="flat" color="primary" onPress={handleSave}>Guardar</Button>
           <Button size="sm" variant="flat" onPress={() => setIsEditing(false)}>Cancelar</Button>
@@ -59,9 +59,7 @@ export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoard
           <CalendarIcon size={14} />
           <span className="text-sm">
             {card.due_date
-              ? new Date(card.due_date).toLocaleDateString("es-ES", {
-                  weekday: "long", year: "numeric", month: "long", day: "numeric",
-                })
+              ? formatDueDateWithTime(card.due_date)
               : "Sin fecha"}
           </span>
           {isOverdue && <span className="text-xs font-bold">• Vencida</span>}

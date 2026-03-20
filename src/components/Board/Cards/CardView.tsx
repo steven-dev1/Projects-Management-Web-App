@@ -9,6 +9,7 @@ import { toggleCardCompletion } from "@/store/features/boards/CardsThunks";
 import { CardDetailModal } from "./CardDetailModal";
 import { getCardDateStatus } from "@/lib/utils";
 import { ChecklistSummary } from "./CheckLists/CheckListSummary";
+import { formatDueDateShort } from "@/lib/dateUtils";
 
 interface CardViewProps {
   card: Card;
@@ -40,15 +41,6 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
         ${isOverlay ? "border-2 border-zinc-300 dark:border-zinc-800 shadow-2xl dark:shadow-zinc-950" : " dark:bg-zinc-950"} 
     `}
       >
-        {/* {dragListeners && !isClosed && (
-          <div
-            {...dragAttributes}
-            {...dragListeners}
-            className="cursor-grab active:cursor-grabbing  hover:text-zinc-500 opacity-0 group-hover:opacity-100"
-          >
-            <GripVertical size={14} />
-          </div>
-        )} */}
         <div className="pl-2 min-w-0 flex gap-2 items-center pr-6">
           {!isClosed && (
             <div onPointerDown={(e) => e.stopPropagation()} className="shrink-0">
@@ -103,7 +95,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
                       ? "Tarea vencida"
                       : isDueSoon
                         ? "Vence pronto"
-                        : `Fecha límite: ${new Date(card.due_date).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`
+                        : `Fecha límite: ${formatDueDateShort(card.due_date)}`
                   }
                 >
                   <div

@@ -73,7 +73,7 @@ export const CardLabels = ({ card, isBoardClosed }: { card: Card; isBoardClosed:
                   setEditingId(label.id);
                   setEditingName(label.name ?? "");
                 }}
-                className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-white border border-zinc-200 rounded-full items-center justify-center hidden group-hover/label:flex shadow-sm z-10"
+                className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-white border border-zinc-200 rounded-full items-center justify-center flex sm:hidden group-hover/label:flex shadow-sm z-10"
               >
                 <Pencil size={8} className="text-zinc-500" />
               </button>
