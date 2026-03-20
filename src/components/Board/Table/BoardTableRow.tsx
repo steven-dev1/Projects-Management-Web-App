@@ -80,7 +80,7 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
       <td className="px-4 py-3">
         <div className="flex flex-wrap gap-1">
           {card.labels?.map((label) => (
-            <Tooltip key={label.id} content={label.name} showArrow placement="top">
+            <Tooltip closeDelay={0} key={label.id} content={label.name} showArrow placement="top">
               <div
                 className="text-xs px-2 py-0.5 h-1.5 rounded-full text-white"
                 style={{ backgroundColor: label.color }}

@@ -62,11 +62,11 @@ export const BoardSearch = () => {
             onFocus={() => { if (query.trim()) setIsOpen(true); }}
             placeholder="Buscar tarjetas..."
             type="search"
-            className="w-full pl-9 outline-none rounded-xl text-sm border p-2.5 dark:border-zinc-800 border-zinc-500"
+            className="w-full pl-9 outline-none rounded-xl text-sm border p-2.5 dark:border-zinc-800 border-zinc-400"
           />
         </div>
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-zinc-200 rounded-xl shadow-xl z-50 max-h-125 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 rounded-xl shadow-xl z-50 max-h-125 overflow-y-auto">
             <SearchResults
               results={results}
               totalResults={totalResults}

@@ -7,21 +7,20 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
-
 export default function BoardLayout({ children }: { children: React.ReactNode }) {
   const { id } = useParams<{ id: string }>();
   const { currentBoard } = useAppSelector((state) => state.boards);
+  const currentBoardId = currentBoard?.id;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!id) return;
+    if (currentBoardId === id) return;
+    
     dispatch(clearCurrentBoard());
     dispatch(fetchBoardById(id));
 
-    return () => {
-      dispatch(clearCurrentBoard());
-    };
-  }, [dispatch, id]);
+  }, [dispatch, id, currentBoardId]);
 
   return (
     <div className="flex flex-col" style={{ height: "calc(100dvh - 65px)" }}>

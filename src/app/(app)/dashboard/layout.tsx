@@ -1,16 +1,25 @@
 "use client";
+import { syncCurrentBoard } from "@/store/features/boards/BoardsSlice";
 // import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
 import { fetchBoards } from "@/store/features/boards/BoardsThunks";
-import { useAppDispatch } from "@/store/hooks";
-import { usePathname } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
-  const pathname = usePathname();
+  const { boards, status } = useAppSelector((state) => state.boards);
+  const currentBoard = useAppSelector((state) => state.boards.currentBoard);
+
   useEffect(() => {
+    if (currentBoard) {
+      dispatch(syncCurrentBoard());
+    }
+
+    if (status === "idle" || boards.length === 0) {
       dispatch(fetchBoards());
-  }, [dispatch, pathname]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, currentBoard, status]);
 
   return <>{children}</>;
 }

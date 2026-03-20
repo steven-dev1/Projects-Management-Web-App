@@ -1,19 +1,20 @@
 'use client'
 import EmptyProjects from "@/components/Dashboard/EmptyProjects";
-import ProjectsList from "@/components/Dashboard/Projects";
-import { useAppSelector } from "@/store/hooks";
+import Projects from "@/components/Dashboard/Projects";
+import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { Spinner } from "@heroui/react";
 
 export default function ProjectsPage() {
-    const { boards, status } = useAppSelector((state) => state.boards);
+  const { activeBoards, status } = useDashboardStats();
+  const activeBoardsLength = activeBoards.length;
 
-  if (status === 'loading' && boards.length === 0) {
+  if (status === 'loading' && activeBoardsLength === 0) {
     return <div className='flex items-center justify-center'><Spinner color="default" size="lg" /></div>
   }
 
-  if (boards.length === 0 && status === 'succeeded') {
+  if (activeBoardsLength === 0 && status === 'succeeded') {
     return <EmptyProjects />;
   }
 
-  return <ProjectsList boards={boards} />
+  return <Projects boards={activeBoards} />
 }

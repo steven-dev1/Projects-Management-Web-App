@@ -14,7 +14,7 @@ export default function DashboardStats({ boards, allCards }: Props) {
   const completionRate = totalCards > 0 ? Math.round((completedCards / totalCards) * 100) : 0;
 
   const stats = [
-    { label: "Boards", value: totalBoards, className: "bg-blue-50 text-blue-600 dark:bg-blue-600 dark:text-white" },
+    { label: "Tableros", value: totalBoards, className: "bg-blue-50 text-blue-600 dark:bg-blue-600 dark:text-white" },
     {
       label: "Tarjetas totales",
       value: totalCards,

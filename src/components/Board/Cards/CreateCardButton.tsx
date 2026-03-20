@@ -4,7 +4,7 @@ import { useAppDispatch } from "@/store/hooks";
 import {
   addToast,
   Button,
-  DateInput,
+  DatePicker,
   Divider,
   Form,
   Input,
@@ -41,13 +41,13 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
     const newDescription = data.description;
 
     if (!data.title) {
+      addToast({ title: "Faltan campos requeridos", color: "danger" });
       console.error("Faltan campos requeridos");
       return;
     }
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const result = await dispatch(
+      await dispatch(
         createCard({
           title: newTitle,
           description: newDescription,
@@ -63,10 +63,10 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
       });
       setLoading(false);
       onClose();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (rejectedValueOrError) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Error al crear tarea";
       setLoading(false);
-      addToast({ title: "Error al crear proyecto", color: "danger" });
+      addToast({ title: errorMessage , color: "danger" });
     }
   };
   return (
@@ -100,11 +100,14 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
                     label="Descripción (Opcional)"
                     placeholder="Escribe una descripción de la tarea"
                   />
-                  <DateInput
+                  <DatePicker
                     name="due_date"
+                    hideTimeZone
                     label="Fecha límite"
                     isRequired={false}
                     value={dueDate}
+                    defaultValue={tiempoActual}
+                    granularity="minute"
                     onChange={setDueDate}
                     minValue={tiempoActual}
                   />

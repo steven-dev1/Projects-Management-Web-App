@@ -1,12 +1,13 @@
 "use client";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Form, Input, Button } from "@heroui/react";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,8 +27,8 @@ export default function LoginForm() {
       setLoading(false);
       return;
     }
-
-    router.push("/dashboard");
+    const redirectTo = searchParams.get("redirectTo");
+    router.push(redirectTo ?? "/dashboard");
     router.refresh();
   };
 

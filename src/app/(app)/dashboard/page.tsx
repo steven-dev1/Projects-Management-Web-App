@@ -10,9 +10,11 @@ import LastActivity from "@/components/Dashboard/LastActivity";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 
 export default function DashboardPage() {
-  const { boards, status, allCards, assignedCards, upcomingCards } = useDashboardStats();
+  const { boards, status, allCards, assignedCards, upcomingCards, activeBoards } = useDashboardStats();
 
-  if (status === "loading" && boards.length === 0) {
+  const isLoading = status === "loading" || status === "idle";
+
+  if (isLoading && boards.length === 0) {
     return (
       <div className="flex items-center justify-center">
         <Spinner color="default" size="lg" />
@@ -20,14 +22,14 @@ export default function DashboardPage() {
     );
   }
 
-  if (boards.length === 0 && status === "succeeded") {
+  if (status === "succeeded" && boards.length === 0) {
     return <EmptyProjects />;
   }
 
   return (
     <MaxWidth className="flex flex-col gap-16 p-6">
       <DashboardStats boards={boards} allCards={allCards} />
-      <LastActivity boards={boards} />
+      <LastActivity boards={activeBoards} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <section>
           <h3 className="font-semibold flex items-center gap-2 mb-3">

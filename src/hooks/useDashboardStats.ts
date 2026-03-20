@@ -2,17 +2,15 @@ import { useAppSelector } from "@/store/hooks";
 import { useMemo } from "react";
 
 export function useDashboardStats() {
-  const { boards, status } = useAppSelector((s) => s.boards);
+  const { boards: firstBoards, status } = useAppSelector((s) => s.boards);
   const currentUser = useAppSelector((s) => s.auth.user);
+  const boards = [...firstBoards].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
 
-  const allCards = useMemo(
-    () => boards.flatMap((b) => (b.lists ?? []).flatMap((l) => l.cards ?? [])),
-    [boards]
-  );
+  const allCards = useMemo(() => boards.flatMap((b) => (b.lists ?? []).flatMap((l) => l.cards ?? [])), [boards]);
 
   const assignedCards = useMemo(
     () => allCards.filter((c) => c.assigned_to === currentUser?.id),
-    [allCards, currentUser]
+    [allCards, currentUser],
   );
 
   const upcomingCards = useMemo(() => {
@@ -25,5 +23,8 @@ export function useDashboardStats() {
     });
   }, [allCards]);
 
-  return { boards, status, allCards, assignedCards, upcomingCards };
+  const activeBoards = useMemo(() => boards.filter((b) => b.status === "active"), [boards]);
+  const archivedBoards = useMemo(() => boards.filter((b) => b.status === "archived"), [boards]);
+
+  return { boards, status, allCards, assignedCards, upcomingCards, activeBoards, archivedBoards };
 }

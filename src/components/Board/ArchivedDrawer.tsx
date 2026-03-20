@@ -23,7 +23,7 @@ export const ArchivedDrawer = ({
   const { isAdmin } = useCurrentUserRole();
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} placement="right" size="sm">
+    <Drawer backdrop="blur" isOpen={isOpen} onClose={onClose} placement="right" size="sm">
       <DrawerContent>
         <DrawerHeader className="flex flex-col gap-1 border-b border-zinc-100">
           <p className="text-base font-semibold">Elementos archivados</p>

@@ -2,10 +2,18 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const PUBLIC_ROUTES = ["/", "/signin", "/signup", "/invite"];
+const AUTH_ROUTES = ["/signin", "/signup"];
+
 export async function proxy(request: NextRequest) {
-  // Usamos una variable mutable porque setAll necesita poder reemplazarla
+  const { pathname } = request.nextUrl;
+
+  const isPublic = PUBLIC_ROUTES.some((route) =>
+    pathname === route || pathname.startsWith("/invite/")
+  );
+
   let response = NextResponse.next({
-    request,
+    request: { headers: request.headers },
   });
 
   const supabase = createServerClient(
@@ -17,39 +25,35 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
           response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
         },
       },
-    },
+    }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-
-  const isAuthPage = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/" || pathname.startsWith("/invite");
-
-  const isPublicRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname === "/" || pathname.startsWith("/invite");
-
-  if (!user && !isPublicRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/signin";
-    return NextResponse.redirect(url);
+  if (!user && !isPublic) {
+    const redirectUrl = new URL("/signin", request.url);
+    redirectUrl.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(redirectUrl);
   }
-
-  if (user && isAuthPage) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+  
+  if (user && AUTH_ROUTES.includes(pathname) || pathname === "/") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

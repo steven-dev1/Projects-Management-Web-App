@@ -75,6 +75,7 @@ export interface BoardForm {
   id?: string;
   name: string;
   description?: string;
+  background_color?: string;
 }
 
 export type UpdateCardPayload = {

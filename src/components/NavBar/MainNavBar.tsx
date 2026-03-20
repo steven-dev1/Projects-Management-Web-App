@@ -19,10 +19,14 @@ import { signOutAction } from "@/lib/actions/SignOutAction";
 import { useAppSelector } from "@/store/hooks";
 import { useState } from "react";
 import { BoardSearch } from "../Board/BoardSearch";
+import { usePathname } from "next/navigation";
 
-export default function MainNavBar({isBoard} : { isBoard?: boolean }) {
+export default function MainNavBar() {
   const { user, profile } = useAppSelector((state) => state.auth);
+  const pathname = usePathname();
+  const isBoard = pathname.startsWith("/boards");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const currentBoard = useAppSelector((state) => state.boards.currentBoard);
   return (
     <Navbar
       maxWidth="full"
@@ -42,8 +46,8 @@ export default function MainNavBar({isBoard} : { isBoard?: boolean }) {
           </Link>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent justify="center" className="hidden sm:flex">
-        {isBoard && <BoardSearch />}
+      <NavbarContent justify="center" className="hidden sm:flex flex-1">
+        {currentBoard && isBoard && <BoardSearch />}
         <ButtonCreateProject size="md" />
       </NavbarContent>
       <NavbarContent justify="end">
