@@ -24,18 +24,15 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
       state.status = "failed";
       state.error = action.payload as string;
     })
-    .addCase(fetchBoardById.pending, (state, action) => {
+    .addCase(fetchBoardById.pending, (state) => {
       state.status = "loading";
-      state.currentRequestId = action.meta.requestId;
       state.error = null;
     })
     .addCase(fetchBoardById.fulfilled, (state, action) => {
-      if (state.currentRequestId !== action.meta.requestId) return;
       state.status = "succeeded";
       state.currentBoard = action.payload;
     })
     .addCase(fetchBoardById.rejected, (state, action) => {
-      if (state.currentRequestId !== action.meta.requestId) return;
       state.status = "failed";
       state.error = action.payload ?? "Error desconocido";
     })

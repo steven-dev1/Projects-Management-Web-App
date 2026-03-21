@@ -23,8 +23,16 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
     <tr
       className="border-b border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900 hover:bg-zinc-50 cursor-pointer transition-colors"
       onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={`Abrir tarjeta ${card.title}`}
     >
-      {/* Título */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
           <span className={`font-medium text-zinc-800 dark:text-zinc-300 ${card.is_completed ? "text-zinc-400" : ""}`}>
@@ -39,14 +47,12 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
         </div>
       </td>
 
-      {/* Lista */}
       <td className="px-4 py-3">
         <span className="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 px-2 py-1 rounded-full">
           {listName}
         </span>
       </td>
 
-      {/* Asignado */}
       <td className="px-4 py-3 hidden lg:table-cell">
         {assignedMember ? (
           <div className="flex items-center gap-2">
@@ -63,7 +69,6 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
         )}
       </td>
 
-      {/* Fecha límite */}
       <td className="px-4 py-3 hidden md:table-cell">
         {card.due_date ? (
           <span
@@ -76,7 +81,6 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
         )}
       </td>
 
-      {/* Labels */}
       <td className="px-4 py-3">
         <div className="flex flex-wrap gap-1">
           {card.labels?.map((label) => (
@@ -91,11 +95,10 @@ export default function BoardTableRow({ card, listName, members, onOpen }: Props
         </div>
       </td>
 
-      {/* Estado */}
       <td className="px-4 py-3">
         <Chip size="sm" variant="flat" color={card.is_completed ? "success" : "default"}>
           <span className="hidden md:flex">{card.is_completed ? "Completada" : "Pendiente"}</span>
-          <span className="flex md:hidden">{card.is_completed ? <Check size={14}/> : <Minus size={14}/>}</span>
+          <span className="flex md:hidden">{card.is_completed ? <Check size={14} /> : <Minus size={14} />}</span>
         </Chip>
       </td>
     </tr>

@@ -4,26 +4,18 @@ import { configureStore } from "@reduxjs/toolkit";
 import boardsReducer from "@/store/features/boards/BoardsSlice";
 import { BoardList, BoardResponse, BoardsState } from "@/store/features/boards/BoardsTypes";
 
-const { mockSingle, mockEq } = vi.hoisted(() => ({
-  mockSingle: vi.fn(),
-  mockEq: vi.fn(),
+const { mockRestore } = vi.hoisted(() => ({
+  mockRestore: vi.fn(),
+}));
+
+vi.mock("@/services/listsService", () => ({
+  listsService: {
+    restore: mockRestore,
+  },
 }));
 
 vi.mock("@/lib/supabaseClient", () => ({
-  createClient: () => ({
-    from: () => ({
-      update: () => ({
-        eq: mockEq,
-      }),
-      select: () => ({
-        eq: () => ({
-          eq: () => ({
-            single: mockSingle,
-          }),
-        }),
-      }),
-    }),
-  }),
+  createClient: () => ({}),
 }));
 
 const mockRestoredList = {
@@ -44,6 +36,7 @@ const initialBoardsState: BoardsState = {
     lists: [],
   } as unknown as BoardResponse,
   boards: [],
+  currentBoardId: "board-1",
   status: "succeeded",
   error: null,
   searchQuery: "",
@@ -57,8 +50,7 @@ const makeStore = () =>
 
 describe("restoreList", () => {
   beforeEach(() => {
-    mockEq.mockResolvedValue({ error: null });
-    mockSingle.mockResolvedValue({ data: mockRestoredList, error: null });
+    mockRestore.mockResolvedValue({ data: mockRestoredList, error: null });
   });
 
   it("debería agregar la lista restaurada al board", async () => {
@@ -80,23 +72,23 @@ describe("restoreList", () => {
   });
 
   it("debería retornar rejected si el update falla", async () => {
-    mockEq.mockResolvedValueOnce({ error: { message: "Error al restaurar la lista" } });
-
+    mockRestore.mockResolvedValueOnce({
+      data: null,
+      error: { message: "Error al restaurar la lista" },
+    });
     const store = makeStore();
     const result = await store.dispatch(restoreList("list-1"));
-
     expect(result.meta.requestStatus).toBe("rejected");
     expect(result.payload).toBe("Error al restaurar la lista");
   });
 
-  it("debería retornar rejected si el fetch falla", async () => {
-    mockEq.mockResolvedValueOnce({ error: null });
-    mockSingle.mockResolvedValueOnce({ data: null, error: { message: "Error al obtener la lista" } });
-
+  it("debería retornar rejected si el service falla", async () => {
+    mockRestore.mockResolvedValueOnce({
+      data: null,
+      error: { message: "Error al restaurar la lista" },
+    });
     const store = makeStore();
     const result = await store.dispatch(restoreList("list-1"));
-
     expect(result.meta.requestStatus).toBe("rejected");
-    expect(result.payload).toBe("Error al obtener la lista");
   });
 });

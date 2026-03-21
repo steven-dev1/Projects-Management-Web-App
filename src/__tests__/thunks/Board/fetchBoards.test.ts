@@ -4,10 +4,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import boardsReducer from "@/store/features/boards/BoardsSlice";
 import { BoardsState } from "@/store/features/boards/BoardsTypes";
 
-const { mockGetUser, mockOrder } = vi.hoisted(() => ({
+const { mockFetchAll, mockGetUser } = vi.hoisted(() => ({
+  mockFetchAll: vi.fn(),
   mockGetUser: vi.fn(),
-  mockEq: vi.fn(),
-  mockOrder: vi.fn(),
+}));
+
+vi.mock("@/services/boardsService", () => ({
+  boardsService: {
+    fetchAll: mockFetchAll,
+  },
 }));
 
 vi.mock("@/lib/supabaseClient", () => ({
@@ -15,15 +20,6 @@ vi.mock("@/lib/supabaseClient", () => ({
     auth: {
       getUser: mockGetUser,
     },
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          eq: () => ({
-            order: mockOrder,
-          }),
-        }),
-      }),
-    }),
   }),
 }));
 
@@ -34,6 +30,7 @@ const mockBoards = [
 
 const initialBoardsState: BoardsState = {
   currentBoard: null,
+  currentBoardId: null,
   boards: [],
   status: "idle",
   error: null,
@@ -49,7 +46,7 @@ const makeStore = () =>
 describe("fetchBoards", () => {
   beforeEach(() => {
     mockGetUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
-    mockOrder.mockResolvedValue({ data: mockBoards, error: null });
+    mockFetchAll.mockResolvedValue({ data: mockBoards, error: null });
   });
 
   it("debería cargar los boards en el estado", async () => {
@@ -80,7 +77,7 @@ describe("fetchBoards", () => {
   });
 
   it("debería retornar rejected si Supabase falla", async () => {
-    mockOrder.mockResolvedValueOnce({ data: null, error: { message: "Error de base de datos" } });
+    mockFetchAll.mockResolvedValueOnce({ data: null, error: { message: "Error de base de datos" } });
 
     const store = makeStore();
     const result = await store.dispatch(fetchBoards());

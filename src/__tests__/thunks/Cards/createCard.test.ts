@@ -46,6 +46,7 @@ const initialBoardsState: BoardsState = {
   } as unknown as BoardResponse,
   boards: [],
   status: "succeeded",
+  currentBoardId: "board-1",
   error: null,
   searchQuery: "",
 };
