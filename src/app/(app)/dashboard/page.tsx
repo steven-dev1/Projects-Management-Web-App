@@ -10,7 +10,7 @@ import LastActivity from "@/components/Dashboard/LastActivity";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 
 export default function DashboardPage() {
-  const { boards, status, allCards, assignedCards, upcomingCards, activeBoards } = useDashboardStats();
+  const { boards, status, allCards, assignedCards, upcomingCards } = useDashboardStats();
 
   const isLoading = status === "loading" || status === "idle";
 
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   return (
     <MaxWidth className="flex flex-col gap-16 p-6">
       <DashboardStats boards={boards} allCards={allCards} />
-      <LastActivity boards={activeBoards} />
+      <LastActivity boards={boards} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <section>
           <h3 className="font-semibold flex items-center gap-2 mb-3">

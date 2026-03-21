@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit";
 import { BoardsState } from "./BoardsTypes";
 import { arrayMove } from "@dnd-kit/sortable";
 import { BoardReducers } from "./reducers/boardReducers";
@@ -7,12 +7,16 @@ import { ListReducers } from "./reducers/listReducers";
 import { LabelsReducers } from "./reducers/labelsReducers";
 import { ChecklistsReducers } from "./reducers/checklistsReducers";
 import { MembersReducers } from "./reducers/membersReducers";
+import { touchBoardInList } from "./reducers/stateHelpers";
+import { archiveCard, assignCard, createCard, deleteCard, restoreCard, toggleCardCompletion, updateCard } from "./CardsThunks";
+import { archiveList, createList, restoreList, updateList } from "./ListsThunks";
+import { addChecklistItem, createChecklist, deleteChecklist, deleteChecklistItem, toggleChecklistItem, updateChecklistItem } from "./ChecklistThunks";
+import { addLabelToCard, removeLabelFromCard, updateLabel } from "./LabelsThunks";
 
 const initialState: BoardsState = {
   boards: [],
   currentBoard: null,
   currentBoardId: null,
-  currentRequestId: undefined,
   status: "idle",
   error: null,
   searchQuery: "",
@@ -22,16 +26,6 @@ const boardsSlice = createSlice({
   name: "boards",
   initialState,
   reducers: {
-    syncCurrentBoard: (state) => {
-      if (!state.currentBoard) return;
-      const index = state.boards.findIndex((b) => b.id === state.currentBoard!.id);
-      if (index !== -1) {
-        state.boards[index] = {
-          ...state.boards[index],
-          lists: state.currentBoard.lists,
-        };
-      }
-    },
     clearCurrentBoard: (state) => {
       state.currentBoard = null;
     },
@@ -85,8 +79,36 @@ const boardsSlice = createSlice({
     LabelsReducers(builder);
     ChecklistsReducers(builder);
     MembersReducers(builder);
+
+    builder.addMatcher(
+      isAnyOf(
+        createCard.fulfilled,
+        updateCard.fulfilled,
+        deleteCard.fulfilled,
+        archiveCard.fulfilled,
+        restoreCard.fulfilled,
+        toggleCardCompletion.fulfilled,
+        assignCard.fulfilled,
+        createList.fulfilled,
+        archiveList.fulfilled,
+        restoreList.fulfilled,
+        updateList.fulfilled,
+        createChecklist.fulfilled,
+        deleteChecklist.fulfilled,
+        addChecklistItem.fulfilled,
+        toggleChecklistItem.fulfilled,
+        deleteChecklistItem.fulfilled,
+        updateChecklistItem.fulfilled,
+        addLabelToCard.fulfilled,
+        removeLabelFromCard.fulfilled,
+        updateLabel.fulfilled,
+      ),
+      (state) => {
+        touchBoardInList(state);
+      },
+    );
   },
 });
 
-export const { moveCard, moveList, clearCurrentBoard, setSearchQuery, syncCurrentBoard } = boardsSlice.actions;
+export const { moveCard, moveList, clearCurrentBoard, setSearchQuery } = boardsSlice.actions;
 export default boardsSlice.reducer;

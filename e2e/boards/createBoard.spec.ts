@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { login } from "../helpers/auth";
+import { cleanupTestBoards } from "../helpers/cleanUp";
 
 test.describe("Crear board", () => {
   test.beforeEach(async ({ page }) => {
@@ -32,5 +33,8 @@ test.describe("Crear board", () => {
     await page.getByRole("button", { name: "Crear" }).last().click();
 
     await expect(page).toHaveURL(/\/boards\/.+/);
+  });
+  test.afterEach(async () => {
+    await cleanupTestBoards();
   });
 });

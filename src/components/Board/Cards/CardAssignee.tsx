@@ -6,9 +6,10 @@ import { Button, Input } from "@heroui/react";
 import { Check, Search, UserX } from "lucide-react";
 import { useState } from "react";
 
-export const CardAssignee = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
+export const CardAssignee = ({ card }: { card: Card }) => {
   const dispatch = useAppDispatch();
   const members = useAppSelector((state) => state.boards.currentBoard?.board_members ?? []);
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [search, setSearch] = useState("");
 
   const filteredMembers = members.filter((member) =>

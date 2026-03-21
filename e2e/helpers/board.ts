@@ -2,11 +2,11 @@
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env.test" });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 export async function resetTestBoard() {
@@ -24,7 +24,6 @@ export async function resetTestBoard() {
     await supabase.from("lists").delete().eq("board_id", boardId);
   }
 
-  // Esperar un momento para asegurar que el borrado se completó
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   const { data: lists } = await supabase.from("lists").insert([

@@ -9,15 +9,14 @@ import { Divider } from "@heroui/react";
 import { OptionsList } from "./OptionsList";
 import { useTheme } from "next-themes";
 import { resolveListColor } from "@/lib/utils";
+import { useAppSelector } from "@/store/hooks";
 
 export default function List({
   list,
   children,
-  isClosed,
 }: {
   list: BoardList;
   children: React.ReactNode;
-  isClosed: boolean;
 }) {
   const {
     attributes,
@@ -42,6 +41,7 @@ export default function List({
   const isDark = resolvedTheme === "dark";
   const bgColor = resolveListColor(list.background_color, isDark);
   const bgColor2 = resolveListColor(list.background_color, isDark, true);
+  const isClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
 
   const style = {
     transform: CSS.Translate.toString(transform),

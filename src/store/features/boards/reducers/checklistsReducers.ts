@@ -8,30 +8,21 @@ import {
   toggleChecklistItem,
   updateChecklistItem,
 } from "../ChecklistThunks";
+import { findCardInState } from "./stateHelpers";
 
 export const ChecklistsReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
   builder
     .addCase(createChecklist.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const card = list.cards.find((c) => c.id === action.payload.card_id);
-        if (card) {
-          if (!card.checklists) card.checklists = [];
-          card.checklists.push(action.payload);
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload.card_id);
+      if (!found) return;
+      if (!found.card.checklists) found.card.checklists = [];
+      found.card.checklists.push(action.payload);
     })
 
     .addCase(deleteChecklist.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const card = list.cards.find((c) => c.id === action.payload.cardId);
-        if (card?.checklists) {
-          card.checklists = card.checklists.filter((cl) => cl.id !== action.payload.checklistId);
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload.cardId);
+      if (!found || !found.card.checklists) return;
+      found.card.checklists = found.card.checklists.filter((cl) => cl.id !== action.payload.checklistId);
     })
 
     .addCase(addChecklistItem.fulfilled, (state, action) => {

@@ -16,7 +16,6 @@ export default function BoardTable({ board }: { board: BoardResponse }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCard, setSelectedCardId] = useState<string | null>(null);
   const [filterListId, setFilterListId] = useState<string | null>(null);
-  const isBoardClosed = board.status === "archived";
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -150,7 +149,7 @@ export default function BoardTable({ board }: { board: BoardResponse }) {
       </div>
 
       {selectedCard && (
-        <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />
+        <CardDetailModal cardId={selectedCard} isOpen={isOpen} onClose={onClose} />
       )}
     </div>
   );

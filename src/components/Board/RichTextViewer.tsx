@@ -1,13 +1,18 @@
+import { sanitizeHtml } from "@/lib/sanitize";
+import { useAppSelector } from "@/store/hooks";
+
 export const RichTextViewer = ({
   content,
   onClick,
-  isBoardClosed,
 }: {
   content: string;
-  onClick?: () => void;
-  isBoardClosed: boolean;
+  onClick?: () => void
 }) => {
-  if (!content || content === "<p></p>") {
+
+  const safeContent = sanitizeHtml(content);
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
+
+  if (!safeContent || safeContent === "<p></p>") {
     return (
       <div
         onClick={onClick}
@@ -27,7 +32,7 @@ export const RichTextViewer = ({
         prose-em:text-zinc-700 dark:prose-em:text-zinc-300
         prose-code:text-zinc-800 dark:prose-code:text-zinc-200
         prose-li:text-zinc-700 dark:prose-li:text-zinc-300`}
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: safeContent }}
     />
   );
 };

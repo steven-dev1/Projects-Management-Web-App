@@ -1,11 +1,12 @@
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { updateCard } from "@/store/features/boards/CardsThunks";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Input } from "@heroui/react";
 import { useState } from "react";
 
-export const CardDetailTitle = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
+export const CardDetailTitle = ({ card }: { card: Card }) => {
   const dispatch = useAppDispatch();
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(card.title);
 
@@ -37,7 +38,7 @@ export const CardDetailTitle = ({ card, isBoardClosed }: { card: Card; isBoardCl
 
   return (
     <h2
-      className="text-lg font-semibold dark:text-zinc-300 text-zinc-800 cursor-pointer dark:hover:bg-zinc-800 hover:bg-zinc-100 rounded-lg py-1.5 px-2 -mx-1"
+      className={`${isBoardClosed ? "cursor-default dark:hover:bg-zinc-900 hover:bg-white" : "cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800"} text-lg font-semibold dark:text-zinc-300 text-zinc-800   rounded-lg py-1.5 px-2 -mx-1`}
       onClick={() => handleEdit()}
     >
       {card.title}

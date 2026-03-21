@@ -13,7 +13,6 @@ import { useBoardStats } from "@/hooks/useBoardStats";
 export default function BoardPanel({ board }: { board: BoardResponse }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const isBoardClosed = board.status === "archived";
 
   const { total, completed, rate, overdue, dueSoon, memberStats, labelStats, upcomingCards } = useBoardStats(board);
 
@@ -34,7 +33,7 @@ export default function BoardPanel({ board }: { board: BoardResponse }) {
       </div>
 
       {selectedCard && (
-        <CardDetailModal isBoardClosed={isBoardClosed} cardId={selectedCard} isOpen={isOpen} onClose={onClose} />
+        <CardDetailModal cardId={selectedCard} isOpen={isOpen} onClose={onClose} />
       )}
     </div>
   );

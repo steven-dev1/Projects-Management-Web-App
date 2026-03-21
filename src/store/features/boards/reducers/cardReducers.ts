@@ -9,6 +9,8 @@ import {
   toggleCardCompletion,
   updateCard,
 } from "../CardsThunks";
+import { findCardInState } from "./stateHelpers";
+
 
 export const CardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
   builder
@@ -20,45 +22,30 @@ export const CardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
       }
     })
     .addCase(updateCard.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
-        if (cardIndex !== -1) {
-          list.cards[cardIndex] = {
-            ...list.cards[cardIndex],
-            title: action.payload.title,
-            description: action.payload.description,
-            due_date: action.payload.due_date,
-          };
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload.id);
+      if (!found) return;
+      found.list.cards[found.cardIndex] = {
+        ...found.card,
+        title: action.payload.title,
+        description: action.payload.description,
+        due_date: action.payload.due_date,
+      };
     })
     .addCase(deleteCard.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const cardIndex = list.cards.findIndex((c) => c.id === action.payload);
-        if (cardIndex !== -1) {
-          list.cards.splice(cardIndex, 1);
-          list.cards.forEach((c, i) => {
-            c.position = i;
-          });
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload);
+      if (!found) return;
+      found.list.cards.splice(found.cardIndex, 1);
+      found.list.cards.forEach((c, i) => {
+        c.position = i;
+      });
     })
     .addCase(archiveCard.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const cardIndex = list.cards.findIndex((c) => c.id === action.payload);
-        if (cardIndex !== -1) {
-          list.cards.splice(cardIndex, 1);
-          list.cards.forEach((c, i) => {
-            c.position = i;
-          });
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload);
+      if (!found) return;
+      found.list.cards.splice(found.cardIndex, 1);
+      found.list.cards.forEach((c, i) => {
+        c.position = i;
+      });
     })
     .addCase(restoreCard.fulfilled, (state, action) => {
       if (!state.currentBoard) return;
@@ -69,26 +56,16 @@ export const CardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => {
       }
     })
     .addCase(toggleCardCompletion.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const cardIndex = list.cards.findIndex((c) => c.id === action.payload.cardId);
-        if (cardIndex !== -1) {
-          list.cards[cardIndex].is_completed = action.payload.is_completed;
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload.cardId);
+      if (!found) return;
+      found.card.is_completed = action.payload.is_completed;
     })
     .addCase(assignCard.fulfilled, (state, action) => {
-      if (!state.currentBoard) return;
-      for (const list of state.currentBoard.lists) {
-        const cardIndex = list.cards.findIndex((c) => c.id === action.payload.id);
-        if (cardIndex !== -1) {
-          list.cards[cardIndex] = {
-            ...list.cards[cardIndex],
-            assigned_to: action.payload.assigned_to,
-          };
-          break;
-        }
-      }
+      const found = findCardInState(state, action.payload.id);
+      if (!found) return;
+      found.list.cards[found.cardIndex] = {
+        ...found.card,
+        assigned_to: action.payload.assigned_to,
+      };
     });
 };

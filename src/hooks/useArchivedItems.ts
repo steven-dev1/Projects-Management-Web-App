@@ -1,44 +1,52 @@
 import { supabase } from "@/lib/supabase";
-import { BoardList, Card } from "@/store/features/boards/BoardsTypes";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
+
+async function fetchArchivedItems(boardId: string) {
+  const [cardsRes, listsRes] = await Promise.all([
+    supabase
+      .from("cards")
+      .select("*, lists!list_id(title)")
+      .eq("status", "archived")
+      .eq("lists.board_id", boardId)
+      .order("updated_at", { ascending: false }),
+    supabase
+      .from("lists")
+      .select("*")
+      .eq("status", "archived")
+      .eq("board_id", boardId)
+      .order("updated_at", { ascending: false }),
+  ]);
+  return {
+    cards: cardsRes.data ?? [],
+    lists: listsRes.data ?? [],
+  };
+}
 
 export function useArchivedItems(boardId: string, isOpen: boolean) {
-  const [archivedCards, setArchivedCards] = useState<Card[]>([]);
-  const [archivedLists, setArchivedLists] = useState<BoardList[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { data, isLoading, mutate } = useSWR(
+    isOpen ? `archived-items-${boardId}` : null,
+    () => fetchArchivedItems(boardId),
+    { revalidateOnFocus: false },
+  );
 
-  useEffect(() => {
-    if (!isOpen) return;
+  const removeCard = (cardId: string) => {
+    mutate(
+      (current) => (current ? { ...current, cards: current.cards.filter((c) => c.id !== cardId) } : current),
+      { revalidate: false },
+    );
+  };
 
-    const fetch = async () => {
-      setLoading(true);
-      const [cardsRes, listsRes] = await Promise.all([
-        supabase
-          .from("cards")
-          .select("*, lists!list_id(title)")
-          .eq("status", "archived")
-          .eq("lists.board_id", boardId)
-          .order("updated_at", { ascending: false }),
-        supabase
-          .from("lists")
-          .select("*")
-          .eq("status", "archived")
-          .eq("board_id", boardId)
-          .order("updated_at", { ascending: false }),
-      ]);
-      if (cardsRes.data) setArchivedCards(cardsRes.data);
-      if (listsRes.data) setArchivedLists(listsRes.data);
-      setLoading(false);
-    };
+  const removeList = (listId: string) => {
+    mutate((current) => (current ? { ...current, lists: current.lists.filter((l) => l.id !== listId) } : current), {
+      revalidate: false,
+    });
+  };
 
-    fetch();
-  }, [isOpen, boardId, ]);
-
-  const removeCard = (cardId: string) =>
-    setArchivedCards((prev) => prev.filter((c) => c.id !== cardId));
-
-  const removeList = (listId: string) =>
-    setArchivedLists((prev) => prev.filter((l) => l.id !== listId));
-
-  return { archivedCards, archivedLists, loading, removeCard, removeList };
+  return {
+    archivedCards: data?.cards ?? [],
+    archivedLists: data?.lists ?? [],
+    loading: isLoading,
+    removeCard,
+    removeList,
+  };
 }

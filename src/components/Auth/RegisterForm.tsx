@@ -83,7 +83,7 @@ export default function RegisterForm() {
               isRequired
               minLength={6}
               variant="bordered"
-              autoComplete="password"
+              autoComplete="new-password"
             />
 
             {error && (

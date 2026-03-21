@@ -1,11 +1,21 @@
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 import { NextResponse } from "next/server";
+import { inviteMemberSchema } from "@/lib/schemas";
 
 export async function POST(req: Request, context: { params: Promise<{ id: string }> }) {
   const { id: boardId } = await context.params;
   const supabase = await createServerSupabaseClient();
-  const body = await req.json();
-  const { email, role = "member" } = body;
+  const rawBody = await req.json();
+  const parsed = inviteMemberSchema.safeParse(rawBody);
+
+  if (!parsed.success) {
+  return NextResponse.json(
+    { error: parsed.error.issues[0]?.message ?? "Datos inválidos" },
+    { status: 422 }
+  );
+}
+
+const { email, role } = parsed.data;
 
   const {
     data: { user },

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button, Checkbox, Progress } from "@heroui/react";
 import { Trash2, Plus, X } from "lucide-react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Checklist } from "@/types";
 import {
   addChecklistItem,
@@ -16,17 +16,16 @@ import { ChecklistItemInput } from "./CheckListItemInput";
 export const CardChecklist = ({
   checklist,
   cardId,
-  isBoardClosed,
 }: {
   checklist: Checklist;
   cardId: string;
-  isBoardClosed: boolean;
 }) => {
   const dispatch = useAppDispatch();
   const [newItemTitle, setNewItemTitle] = useState("");
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
 
   const completed = checklist.items.filter((i) => i.is_completed).length;
   const total = checklist.items.length;

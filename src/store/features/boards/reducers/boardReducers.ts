@@ -33,7 +33,6 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
       if (state.currentRequestId !== action.meta.requestId) return;
       state.status = "succeeded";
       state.currentBoard = action.payload;
-      state.currentBoardId = action.meta.arg;
     })
     .addCase(fetchBoardById.rejected, (state, action) => {
       if (state.currentRequestId !== action.meta.requestId) return;

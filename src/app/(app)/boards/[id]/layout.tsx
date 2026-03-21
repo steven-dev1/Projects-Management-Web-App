@@ -1,7 +1,7 @@
 "use client";
 import BoardHeader from "@/components/Board/BoardHeader";
 import SkeletonBoardHeader from "@/components/Board/SkeletonBoardHeader";
-// import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
+import { ErrorBoundary } from "@/components/UI/ErrorBoundary";
 import { fetchBoardById } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
@@ -17,19 +17,21 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
     if (!id) return;
 
     dispatch(fetchBoardById(id));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
-    <div className="flex flex-col" style={{ height: "calc(100dvh - 65px)" }}>
-      {isLoadingBoard ? (
-        <SkeletonBoardHeader />
-      ) : (
-        <>
-          <BoardHeader />
-          <main className="flex-1 overflow-hidden">{children}</main>
-        </>
-      )}
-    </div>
+    <ErrorBoundary>
+      <div className="flex flex-col" style={{ height: "calc(100dvh - 65px)" }}>
+        {isLoadingBoard ? (
+          <SkeletonBoardHeader />
+        ) : (
+          <>
+            <BoardHeader />
+            <main className="flex-1 overflow-hidden">{children}</main>
+          </>
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }

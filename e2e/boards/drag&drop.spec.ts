@@ -121,7 +121,6 @@ test.describe("Drag and Drop", () => {
     const firstListTitle = (await firstList.locator("h3").first().textContent())?.trim();
     const secondListTitle = (await secondList.locator("h3").first().textContent())?.trim();
 
-    // Hacer drag directamente desde el grip de la primera lista a la segunda
     const gripHandle = firstList.locator(".cursor-grab").first();
     const gripBox = await gripHandle.boundingBox();
     const targetBox = await secondList.boundingBox();
@@ -129,15 +128,15 @@ test.describe("Drag and Drop", () => {
 
     await page.mouse.move(gripBox.x + gripBox.width / 2, gripBox.y + gripBox.height / 2);
     await page.mouse.down();
-    await page.waitForTimeout(500); // más tiempo presionado
-    // Movimiento inicial más pronunciado para activar el drag
+    await page.waitForTimeout(500);
+
     await page.mouse.move(gripBox.x + gripBox.width / 2 + 10, gripBox.y + gripBox.height / 2, { steps: 10 });
     await page.waitForTimeout(200);
-    // Luego al destino
+
     await page.mouse.move(
       targetBox.x + targetBox.width / 2,
       targetBox.y + targetBox.height / 2,
-      { steps: 50 }, // más steps para movimiento más suave
+      { steps: 50 }, 
     );
     await page.waitForTimeout(800);
     await page.mouse.up();
