@@ -7,9 +7,8 @@ import { Checkbox, Tooltip, useDisclosure } from "@heroui/react";
 import { useAppDispatch } from "@/store/hooks";
 import { toggleCardCompletion } from "@/store/features/boards/CardsThunks";
 import { CardDetailModal } from "./CardDetailModal";
-import { getCardDateStatus } from "@/lib/utils";
 import { ChecklistSummary } from "./CheckLists/CheckListSummary";
-import { formatDueDateShort } from "@/lib/dateUtils";
+import { formatDueDateShort, getCardDateStatus } from "@/lib/dateUtils";
 
 interface CardViewProps {
   card: Card;

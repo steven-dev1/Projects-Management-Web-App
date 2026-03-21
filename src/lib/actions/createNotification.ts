@@ -1,7 +1,7 @@
 "use server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!);
 
 interface CreateNotificationParams {
   userId?: string;
@@ -17,7 +17,7 @@ export async function createNotification({ userId, email, type, title, message, 
   let userIdToUse = userId;
 
   if (!userIdToUse && email) {
-    const { data } = await supabaseAdmin.rpc("get_user_id_by_email", { p_email: email });
+    const { data, } = await supabaseAdmin.rpc("get_user_id_by_email", { p_email: email });
     userIdToUse = data;
     if (!userIdToUse) return;
   }
@@ -30,4 +30,6 @@ export async function createNotification({ userId, email, type, title, message, 
     url,
     role,
   });
+
+  return { }
 }

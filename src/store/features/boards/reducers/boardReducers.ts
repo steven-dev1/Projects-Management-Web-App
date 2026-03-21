@@ -24,17 +24,21 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
       state.status = "failed";
       state.error = action.payload as string;
     })
-    .addCase(fetchBoardById.pending, (state) => {
+    .addCase(fetchBoardById.pending, (state, action) => {
       state.status = "loading";
+      state.currentRequestId = action.meta.requestId;
       state.error = null;
     })
     .addCase(fetchBoardById.fulfilled, (state, action) => {
+      if (state.currentRequestId !== action.meta.requestId) return;
       state.status = "succeeded";
       state.currentBoard = action.payload;
+      state.currentBoardId = action.meta.arg;
     })
     .addCase(fetchBoardById.rejected, (state, action) => {
+      if (state.currentRequestId !== action.meta.requestId) return;
       state.status = "failed";
-      state.error = action.payload as string;
+      state.error = action.payload ?? "Error desconocido";
     })
     .addCase(createBoard.fulfilled, (state, action) => {
       state.boards.unshift(action.payload);
@@ -70,7 +74,6 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
         state.currentBoard.status = "archived";
       }
     })
-
     .addCase(restoreBoard.fulfilled, (state, action) => {
       const index = state.boards.findIndex((b) => b.id === action.payload.id);
       if (index !== -1) state.boards[index] = { ...action.payload, status: "active" };

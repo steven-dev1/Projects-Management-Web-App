@@ -23,7 +23,7 @@ export const CardDetailModal = ({
       onOpenChange={(open) => !open && handleClose()}
       isOpen={isOpen}
       onClose={onClose}
-      size="3xl"
+      size="4xl"
       backdrop="blur"
       scrollBehavior="inside"
       placement="center"
@@ -34,7 +34,7 @@ export const CardDetailModal = ({
     >
       <ModalContent>
         <ModalBody className="p-0">
-          <div className="flex flex-col md:flex-row gap-0 min-h-auto md:min-h-125">
+          <div className="flex flex-col md:flex-row gap-0 min-h-auto md:min-h-125 max-w-4xl">
             <CardDetailBody card={card} listTitle={list?.title ?? ""} isBoardClosed={isBoardClosed} />
             <CardDetailSidebar card={card} isBoardClosed={isBoardClosed} onClose={onClose} />
           </div>

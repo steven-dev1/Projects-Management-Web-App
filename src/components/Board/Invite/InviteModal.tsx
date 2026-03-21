@@ -26,12 +26,12 @@ export const InviteModal = ({
 }) => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"admin" | "member" | undefined>(undefined);
+  const [role, setRole] = useState<"admin" | "member">("member");
   const [loading, setLoading] = useState(false);
   const currentBoard = useAppSelector((state) => state.boards.currentBoard);
 
   const handleInvite = async () => {
-    if (!email || !currentBoard) return;
+    if (!email || !currentBoard || !role) return;
     setLoading(true);
     try {
       await dispatch(inviteMember({ boardId, email, role })).unwrap();

@@ -14,7 +14,7 @@ export const CardDetailDescription = ({ card, isBoardClosed }: { card: Card; isB
     await dispatch(updateCard({
       cardId: card.id!,
       title: card.title,
-      description: html, // guardamos HTML directamente
+      description: html,
     })).unwrap();
     setEditing(false);
   };

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 import { Board } from "@/store/features/boards/BoardsTypes";
 
-
 export async function PUT(request: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -19,8 +18,6 @@ export async function PUT(request: Request) {
       .eq("id", body.id)
       .select()
       .single();
-    if (error) throw error;
-
     if (error) {
       console.error("Error actualizando board: ", error);
       return NextResponse.json({ error: error || "No se pudo actualizar el tablero" }, { status: 400 });
@@ -32,4 +29,4 @@ export async function PUT(request: Request) {
     const message = err instanceof Error ? err.message : "Error interno del servidor";
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}  
+}

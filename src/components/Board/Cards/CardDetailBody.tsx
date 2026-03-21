@@ -21,7 +21,7 @@ export const CardDetailBody = ({ card, listTitle, isBoardClosed }: Props) => (
     </div>
     <CardDetailDueDate isBoardClosed={isBoardClosed} card={card} />
     <CardLabels isBoardClosed={isBoardClosed} card={card} />
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Descripción</p>
       <CardDetailDescription isBoardClosed={isBoardClosed} card={card} />
       <CardChecklists isBoardClosed={isBoardClosed} card={card} />

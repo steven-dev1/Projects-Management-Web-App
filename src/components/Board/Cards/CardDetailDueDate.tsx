@@ -5,10 +5,9 @@ import { Button, DatePicker } from "@heroui/react";
 import { parseAbsoluteToLocal, now, getLocalTimeZone, type ZonedDateTime } from "@internationalized/date";
 import { CalendarIcon, Pencil } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
-import { getCardDateStatus } from "@/lib/utils";
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { updateCard } from "@/store/features/boards/CardsThunks";
-import { formatDueDateWithTime } from "@/lib/dateUtils";
+import { formatDueDateWithTime, getCardDateStatus } from "@/lib/dateUtils";
 
 export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
   const dispatch = useAppDispatch();

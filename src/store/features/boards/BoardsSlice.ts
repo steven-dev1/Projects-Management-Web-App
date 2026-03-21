@@ -11,6 +11,8 @@ import { MembersReducers } from "./reducers/membersReducers";
 const initialState: BoardsState = {
   boards: [],
   currentBoard: null,
+  currentBoardId: null,
+  currentRequestId: undefined,
   status: "idle",
   error: null,
   searchQuery: "",
@@ -24,7 +26,6 @@ const boardsSlice = createSlice({
       if (!state.currentBoard) return;
       const index = state.boards.findIndex((b) => b.id === state.currentBoard!.id);
       if (index !== -1) {
-        // Actualiza solo los datos relevantes para las stats del dashboard
         state.boards[index] = {
           ...state.boards[index],
           lists: state.currentBoard.lists,

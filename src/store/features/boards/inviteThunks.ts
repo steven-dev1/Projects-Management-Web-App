@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const inviteMember = createAsyncThunk<
   void,
-  { boardId: string; email: string; role?: string },
+  { boardId: string; email: string; role: "admin" | "member" },
   { rejectValue: string }
 >("boards/inviteMember", async (payload, { rejectWithValue }) => {
   try {

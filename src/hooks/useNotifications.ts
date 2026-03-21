@@ -8,6 +8,7 @@ import { acceptBoardInvitation } from "@/lib/actions/acceptBoardInvitation";
 export function useNotifications() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
   const notifications = useSelector((state: RootState) => state.notifications.items);
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
@@ -24,9 +25,17 @@ export function useNotifications() {
   const handleAcceptInvitation = async (notification: AppNotification) => {
     const boardId = getBoardIdFromUrl(notification.url!);
     if (notification.type !== "board_invited" || !boardId) return;
+    if (!currentUser) return;
+
+    console.log({ boardId, userId: notification.user_id, memberRole: notification.role });
     try {
       await dispatch(markAsRead(notification.id));
-      await acceptBoardInvitation({ boardId, userId: notification.user_id, memberRole: notification.role });
+      await acceptBoardInvitation({
+        boardId,
+        userId: notification.user_id,
+        memberRole: notification.role,
+        userEmail: currentUser.email!,
+      });
       router.push(`/boards/${boardId}`);
     } catch (err) {
       console.error(err);
