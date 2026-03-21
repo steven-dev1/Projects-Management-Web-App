@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       dispatch(fetchBoards());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, currentBoard, status]);
+  }, []);
 
   return <>{children}</>;
 }
