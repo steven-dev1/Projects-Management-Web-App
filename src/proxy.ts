@@ -1,16 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_ROUTES = ["/", "/signin", "/signup", "/invite"];
+const PUBLIC_ROUTES = ["/invite"];
 const AUTH_ROUTES = ["/signin", "/signup"];
+const LANDING_ROUTE = "/";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isPublic = PUBLIC_ROUTES.some((route) =>
-    pathname === route || pathname.startsWith("/invite/")
-  );
+  const isPublic = PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  const isLanding = pathname === LANDING_ROUTE;
 
   let response = NextResponse.next({
     request: { headers: request.headers },
@@ -39,14 +39,22 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user && !isPublic) {
+ 
+  if (!user && !isPublic && !isAuthRoute && !isLanding) {
     const redirectUrl = new URL("/signin", request.url);
     redirectUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(redirectUrl);
   }
-  
-  if (user && AUTH_ROUTES.includes(pathname) || pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+
+  if (user && (isAuthRoute || isLanding)) {
+    const redirectTo = request.nextUrl.searchParams.get("redirectTo");
+    const isValidRedirect = redirectTo &&
+      !AUTH_ROUTES.includes(redirectTo) &&
+      redirectTo !== LANDING_ROUTE;
+
+    return NextResponse.redirect(
+      new URL(isValidRedirect ? redirectTo : "/dashboard", request.url)
+    );
   }
 
   return response;
@@ -54,6 +62,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };
