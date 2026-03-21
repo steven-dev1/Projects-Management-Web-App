@@ -32,6 +32,7 @@ const initialBoardsState: BoardsState = {
   currentBoard: null,
   boards: [],
   status: "idle",
+  currentBoardId: null,
   error: null,
   searchQuery: "",
 };
@@ -90,6 +91,7 @@ describe("createBoard", () => {
     expect(mockRpc).toHaveBeenCalledWith("create_board_with_owner", {
       board_name: "Mi board",
       board_description: "Descripción",
+      background_color: null,
     });
   });
 
@@ -100,6 +102,7 @@ describe("createBoard", () => {
     expect(mockRpc).toHaveBeenCalledWith("create_board_with_owner", {
       board_name: "Mi board",
       board_description: null,
+      background_color: null,
     });
   });
 });

@@ -20,9 +20,11 @@ export const fetchBoards = createAsyncThunk("boards/fetchBoards", async (_, { re
 
 export const fetchBoardById = createAsyncThunk<BoardResponse, string, { rejectValue: string }>(
   "boards/fetchBoardById",
-  async (id, { rejectWithValue }) => {
+  async (id, { rejectWithValue, signal }) => {
     try {
-      const response = await fetch(`/api/boards/${id}`);
+      const response = await fetch(`/api/boards/${id}`, {
+        signal,
+      });
       const data = await response.json();
 
       if (!response.ok) return rejectWithValue(data.error || "Error obteniendo el board");

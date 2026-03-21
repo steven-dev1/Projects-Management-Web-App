@@ -4,27 +4,26 @@ import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { CalendarIcon, TextInitial } from "lucide-react";
 import { Checkbox, Tooltip, useDisclosure } from "@heroui/react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { toggleCardCompletion } from "@/store/features/boards/CardsThunks";
 import { CardDetailModal } from "./CardDetailModal";
-import { getCardDateStatus } from "@/lib/utils";
 import { ChecklistSummary } from "./CheckLists/CheckListSummary";
-import { formatDueDateShort } from "@/lib/dateUtils";
+import { formatDueDateShort, getCardDateStatus } from "@/lib/dateUtils";
 
 interface CardViewProps {
   card: Card;
   isOverlay?: boolean;
   dragListeners?: SyntheticListenerMap;
   dragAttributes?: DraggableAttributes;
-  isClosed: boolean;
 }
 
-export default function CardView({ card, isOverlay, dragListeners, dragAttributes, isClosed }: CardViewProps) {
+export default function CardView({ card, isOverlay, dragListeners, dragAttributes }: CardViewProps) {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dateStatus = getCardDateStatus(card.due_date, card.is_completed);
   const isOverdue = dateStatus === "overdue";
   const isDueSoon = dateStatus === "due-soon";
+  const isClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
 
   const dragListenersOn = !isClosed ? dragListeners : undefined;
   const dragAttributesOn = !isClosed ? dragAttributes : undefined;
@@ -123,7 +122,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
           </div>
         )}
       </div>
-      {!isOverlay && <CardDetailModal isBoardClosed={isClosed} cardId={card.id!} isOpen={isOpen} onClose={onClose} />}
+      {!isOverlay && <CardDetailModal cardId={card.id!} isOpen={isOpen} onClose={onClose} />}
     </>
   );
 }

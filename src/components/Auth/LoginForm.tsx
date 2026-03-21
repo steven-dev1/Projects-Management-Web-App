@@ -62,7 +62,7 @@ export default function LoginForm() {
               name="password"
               type="password"
               label="Contraseña"
-              autoComplete="password"
+              autoComplete="current-password"
               placeholder="••••••••"
               labelPlacement="outside"
               isRequired

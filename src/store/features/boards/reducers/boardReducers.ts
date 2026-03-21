@@ -34,7 +34,7 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
     })
     .addCase(fetchBoardById.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.payload as string;
+      state.error = action.payload ?? "Error desconocido";
     })
     .addCase(createBoard.fulfilled, (state, action) => {
       state.boards.unshift(action.payload);
@@ -70,7 +70,6 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
         state.currentBoard.status = "archived";
       }
     })
-
     .addCase(restoreBoard.fulfilled, (state, action) => {
       const index = state.boards.findIndex((b) => b.id === action.payload.id);
       if (index !== -1) state.boards[index] = { ...action.payload, status: "active" };

@@ -13,8 +13,6 @@ export const BoardSearch = () => {
   const { isOpen: isCardOpen, onOpen: onCardOpen, onClose: onCardClose } = useDisclosure();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const lists = useAppSelector((s) => s.boards.currentBoard?.lists);
-  const currentBoard = useAppSelector((s) => s.boards.currentBoard);
-  const isBoardClosed = currentBoard?.status === "archived";
 
   const results = useMemo(() => {
     if (!query.trim() || !lists) return [];
@@ -78,7 +76,6 @@ export const BoardSearch = () => {
       </div>
       {selectedCardId && (
         <CardDetailModal
-          isBoardClosed={isBoardClosed}
           cardId={selectedCardId}
           isOpen={isCardOpen}
           onClose={() => { onCardClose(); setSelectedCardId(null); }}

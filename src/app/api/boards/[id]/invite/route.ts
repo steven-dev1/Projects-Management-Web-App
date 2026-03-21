@@ -1,24 +1,31 @@
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 import { NextResponse } from "next/server";
+import { inviteMemberSchema } from "@/lib/schemas";
 
 export async function POST(req: Request, context: { params: Promise<{ id: string }> }) {
   const { id: boardId } = await context.params;
   const supabase = await createServerSupabaseClient();
-  const body = await req.json();
-  const { email, role = "member" } = body;
-  // Obtener usuario actual
+  const rawBody = await req.json();
+  const parsed = inviteMemberSchema.safeParse(rawBody);
+
+  if (!parsed.success) {
+  return NextResponse.json(
+    { error: parsed.error.issues[0]?.message ?? "Datos inválidos" },
+    { status: 422 }
+  );
+}
+
+const { email, role } = parsed.data;
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
 
-  // Obtener datos del board
   const { data: board } = await supabase.from("boards").select("name").eq("id", boardId).single();
 
-  // Obtener datos del invitador
   const { data: inviter } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
 
-  // Verificar que no esté ya invitado o sea miembro
   const { data: existing } = await supabase
     .from("invitations")
     .select("id")
@@ -28,7 +35,7 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
     .single();
 
   if (existing) {
-    return NextResponse.json({ error: "Ya existe una invitación pendiente para este email" }, { status: 400 });
+    return NextResponse.json({ error: "Ya existe una invitación para ese email" }, { status: 400 });
   }
 
   // Crear la invitación

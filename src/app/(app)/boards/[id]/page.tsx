@@ -1,4 +1,5 @@
 "use client";
+import BoardAccessDenied from "@/components/Board/BoardAccessDenied";
 import CardItem from "@/components/Board/Cards/CardItem";
 import CardView from "@/components/Board/Cards/CardView";
 import CreateListButton from "@/components/Board/Lists/CreateListButton";
@@ -7,18 +8,24 @@ import { useBoardDnd } from "@/hooks/useBoardDnd";
 import { useAppSelector } from "@/store/hooks";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { useRouter } from "next/navigation";
 
 export default function BoardPage() {
   const currentBoard = useAppSelector((state) => state.boards.currentBoard);
-  const router = useRouter();
   const lists = currentBoard?.lists ?? [];
+  const status = useAppSelector((state) => state.boards.status);
+  const isFailed = status === "failed";
+  const isSucceeded = status === "succeeded";
 
   const isClosed = currentBoard?.status === "archived";
 
- const { activeCard, activeColumn, sensors, collisionDetection, handleDragStart, handleDragEnd, handleDragOver } = useBoardDnd();
+  const { activeCard, activeColumn, sensors, collisionDetection, handleDragStart, handleDragEnd, handleDragOver } =
+    useBoardDnd();
 
-  if (!currentBoard) return router.push("/dashboard");
+  if (isFailed || (!currentBoard && isSucceeded)) {
+    return <BoardAccessDenied />;
+  }
+
+  if (!currentBoard) return null;
 
   return (
     <DndContext
@@ -31,9 +38,9 @@ export default function BoardPage() {
       <div className="h-full flex gap-4 p-8 items-start overflow-x-auto overflow-y-hidden transition-all duration-300 ease-in-out">
         <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
           {lists?.map((list) => (
-            <List list={list} key={list.id} isClosed={isClosed}>
+            <List list={list} key={list.id}>
               {list.cards.map((card, index) => (
-                <CardItem key={card.id} card={card} index={index} isClosed={isClosed} />
+                <CardItem key={card.id} card={card} index={index} />
               ))}
             </List>
           ))}
@@ -49,12 +56,12 @@ export default function BoardPage() {
             <h3 className="font-semibold mb-3">{activeColumn.title}</h3>
             <div className="flex flex-col gap-2">
               {activeColumn.cards.map((card) => (
-                <CardView isClosed={isClosed} key={card.id} card={card} isOverlay />
+                <CardView key={card.id} card={card} isOverlay />
               ))}
             </div>
           </div>
         ) : activeCard ? (
-          <CardView isClosed={isClosed} card={activeCard} isOverlay />
+          <CardView card={activeCard} isOverlay />
         ) : null}
       </DragOverlay>
     </DndContext>

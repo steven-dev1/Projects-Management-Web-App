@@ -5,9 +5,10 @@ import { Label } from "@/types";
 import { Check, Pencil } from "lucide-react";
 import { useState } from "react";
 
-export const CardLabels = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
+export const CardLabels = ({ card }: { card: Card }) => {
   const dispatch = useAppDispatch();
   const boardLabels = useAppSelector((state) => state.boards.currentBoard?.labels ?? []);
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
 

@@ -1,3 +1,4 @@
+import { plainTextToSafeHtml } from "@/lib/sanitize";
 import { CreateCardPayload } from "@/store/features/boards/BoardsTypes";
 import { createCard } from "@/store/features/boards/CardsThunks";
 import { useAppDispatch } from "@/store/hooks";
@@ -31,14 +32,17 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
   const [dueDate, setDueDate] = useState<ZonedDateTime | null>(null);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const zonaHoraria = getLocalTimeZone()
-  const tiempoActual = now(zonaHoraria)
+  const zonaHoraria = getLocalTimeZone();
+  const tiempoActual = now(zonaHoraria);
 
   const handleSubmit = async (formData: FormData, e: React.SyntheticEvent) => {
     e.preventDefault();
     const data = Object.fromEntries(formData) as unknown as CreateCardPayload;
     const newTitle = data.title || "";
     const newDescription = data.description;
+
+    const rawDescription = (newDescription as unknown as string) || "";
+    const safeDescription = rawDescription ? plainTextToSafeHtml(rawDescription) : undefined;
 
     if (!data.title) {
       addToast({ title: "Faltan campos requeridos", color: "danger" });
@@ -50,7 +54,7 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
       await dispatch(
         createCard({
           title: newTitle,
-          description: newDescription,
+          description: safeDescription,
           list_id: listId,
           due_date: dueDate?.toDate().toISOString() ?? undefined,
           position: lastPosition,
@@ -66,7 +70,7 @@ export default function CreateCardButton({ listId, lastPosition }: CreateCardBut
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Error al crear tarea";
       setLoading(false);
-      addToast({ title: errorMessage , color: "danger" });
+      addToast({ title: errorMessage, color: "danger" });
     }
   };
   return (

@@ -2,13 +2,14 @@
 import { useState } from "react";
 import { Button, Input, Divider } from "@heroui/react";
 import { CheckSquare, Plus, X } from "lucide-react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { createChecklist } from "@/store/features/boards/ChecklistThunks";
 import { CardChecklist } from "./CardCheckList";
 
-export const CardChecklists = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
+export const CardChecklists = ({ card }: { card: Card}) => {
   const dispatch = useAppDispatch();
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [isCreating, setIsCreating] = useState(false);
   const [title, setTitle] = useState("Checklist");
 
@@ -29,7 +30,7 @@ export const CardChecklists = ({ card, isBoardClosed }: { card: Card; isBoardClo
           </div>
           {card.checklists.map((checklist) => (
             <div key={checklist.id} className="flex flex-col gap-2">
-              <CardChecklist isBoardClosed={isBoardClosed} checklist={checklist} cardId={card.id!} />
+              <CardChecklist checklist={checklist} cardId={card.id!} />
               {!isBoardClosed && <Divider />}
             </div>
           ))}

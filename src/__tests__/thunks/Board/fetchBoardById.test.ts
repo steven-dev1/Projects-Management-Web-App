@@ -44,6 +44,7 @@ const mockBoard: Partial<BoardResponse> = {
 
 const initialBoardsState: BoardsState = {
   currentBoard: null,
+  currentBoardId: null,
   boards: [],
   status: "idle",
   error: null,
@@ -95,7 +96,10 @@ describe("fetchBoardById", () => {
     const store = makeStore();
     await store.dispatch(fetchBoardById("board-1"));
 
-    expect(mockFetch).toHaveBeenCalledWith("/api/boards/board-1");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/boards/board-1",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
   it("debería retornar fulfilled con el board", async () => {

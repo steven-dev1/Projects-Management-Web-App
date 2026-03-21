@@ -1,12 +1,13 @@
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { updateCard } from "@/store/features/boards/CardsThunks";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState } from "react";
 import { RichTextEditor } from "../RichTextEditor";
 import { RichTextViewer } from "../RichTextViewer";
 
-export const CardDetailDescription = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
+export const CardDetailDescription = ({ card}: { card: Card }) => {
   const dispatch = useAppDispatch();
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [editing, setEditing] = useState(false);
 
   const handleSave = async (html: string) => {
@@ -14,7 +15,7 @@ export const CardDetailDescription = ({ card, isBoardClosed }: { card: Card; isB
     await dispatch(updateCard({
       cardId: card.id!,
       title: card.title,
-      description: html, // guardamos HTML directamente
+      description: html,
     })).unwrap();
     setEditing(false);
   };
@@ -29,5 +30,5 @@ export const CardDetailDescription = ({ card, isBoardClosed }: { card: Card; isB
     );
   }
 
-  return <RichTextViewer isBoardClosed={isBoardClosed} content={card.description ?? ""} onClick={() => setEditing(true)} />;
+  return <RichTextViewer content={card.description ?? ""} onClick={() => setEditing(true)} />;
 };

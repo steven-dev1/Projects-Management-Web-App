@@ -83,7 +83,7 @@ export default function RegisterForm() {
               isRequired
               minLength={6}
               variant="bordered"
-              autoComplete="password"
+              autoComplete="new-password"
             />
 
             {error && (
@@ -101,7 +101,7 @@ export default function RegisterForm() {
 
         <p className="text-center text-xs text-zinc-400 mt-5">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+          <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
             Iniciar sesión
           </Link>
         </p>

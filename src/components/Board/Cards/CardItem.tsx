@@ -3,7 +3,12 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import CardView from "./CardView";
 
-export default function CardItem({ card, index, isClosed }: { card: Card; index: number; isClosed: boolean }) {
+interface CardItemProps {
+  card: Card;
+  index: number;
+}
+
+export default function CardItem({ card, index}: CardItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id as string,
     data: { type: "card", index },
@@ -18,7 +23,7 @@ export default function CardItem({ card, index, isClosed }: { card: Card; index:
 
   return (
     <div data-type="card"  ref={setNodeRef} style={style}  className={`bg-white dark:bg-zinc-900 m-1 rounded-lg`}>
-      <CardView isClosed={isClosed} card={card} dragListeners={listeners} dragAttributes={attributes} />
+      <CardView card={card} dragListeners={listeners} dragAttributes={attributes} />
     </div>
   );
 }

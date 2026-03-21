@@ -88,6 +88,7 @@ export type UpdateCardPayload = {
 export interface BoardsState {
   boards: Board[];
   currentBoard: BoardResponse | null;
+  currentBoardId: string | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   searchQuery: string,

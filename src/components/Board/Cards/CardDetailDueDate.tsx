@@ -4,14 +4,14 @@ import { useState } from "react";
 import { Button, DatePicker } from "@heroui/react";
 import { parseAbsoluteToLocal, now, getLocalTimeZone, type ZonedDateTime } from "@internationalized/date";
 import { CalendarIcon, Pencil } from "lucide-react";
-import { useAppDispatch } from "@/store/hooks";
-import { getCardDateStatus } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Card } from "@/store/features/boards/BoardsTypes";
 import { updateCard } from "@/store/features/boards/CardsThunks";
-import { formatDueDateWithTime } from "@/lib/dateUtils";
+import { formatDueDateWithTime, getCardDateStatus } from "@/lib/dateUtils";
 
-export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoardClosed: boolean }) => {
+export const CardDetailDueDate = ({ card }: { card: Card }) => {
   const dispatch = useAppDispatch();
+  const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [isEditing, setIsEditing] = useState(false);
   const [dueDate, setDueDate] = useState<ZonedDateTime | null>(
     card.due_date ? parseAbsoluteToLocal(card.due_date) : now(getLocalTimeZone())
@@ -65,9 +65,11 @@ export const CardDetailDueDate = ({ card, isBoardClosed }: { card: Card; isBoard
           {isOverdue && <span className="text-xs font-bold">• Vencida</span>}
           {isDueSoon && <span className="text-xs font-bold">• Vence pronto</span>}
         </div>
-        <button onClick={() => handleEdit()} className="text-zinc-400 dark:text-zinc-200 dark:hover:text-zinc-400 cursor-pointer hover:text-zinc-600">
-          <Pencil size={13} />
-        </button>
+        {!isBoardClosed && (
+          <button onClick={() => handleEdit()} className="text-zinc-400 dark:text-zinc-200 dark:hover:text-zinc-400 cursor-pointer hover:text-zinc-600">
+            <Pencil size={13} />
+          </button>
+        )}
       </div>
     </div>
   );
