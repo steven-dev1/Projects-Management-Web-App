@@ -1,18 +1,19 @@
 "use client";
-
 import { BoardTemplate } from "@/lib/templates";
 import { Button, useDisclosure } from "@heroui/react";
 import TemplateModal from "./TemplateModal";
+import { resolveListColor } from "@/lib/utils";
 
 export default function TemplateCard({ template }: { template: BoardTemplate }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const backgroundColor = resolveListColor(template.color, false, true);
   return (
     <>
       <div
         className={`rounded-xl template-card hover:border-zinc-400 dark:hover:border-zinc-600 p-5 border dark:bg-zinc-950 dark:border-zinc-800 border-zinc-300 flex justify-between flex-col gap-4 cursor-pointer transition-all duration-250`}
         onClick={onOpen}
       >
-        <div className="h-1.5 rounded-full w-full" style={{ backgroundColor: template.color ?? "#006fee" }} />
+        <div className="h-1.5 rounded-full w-full" style={{ backgroundColor: backgroundColor ?? "zinc" }} />
         <div className="flex flex-col items-center gap-3">
           <span className="text-3xl text-center">{template.icon}</span>
           <div className="text-center">

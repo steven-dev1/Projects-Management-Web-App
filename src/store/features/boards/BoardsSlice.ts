@@ -28,6 +28,7 @@ import {
 } from "./ChecklistThunks";
 import { addLabelToCard, removeLabelFromCard, updateLabel } from "./LabelsThunks";
 import { logout } from "@/store/features/auth/AuthSlice";
+import { createBoardFromTemplate } from "../templates/templatesThunks";
 
 const initialState: BoardsState = {
   boards: [],
@@ -96,6 +97,9 @@ const boardsSlice = createSlice({
     ChecklistsReducers(builder);
     MembersReducers(builder);
 
+    builder.addCase(createBoardFromTemplate.fulfilled, (state, action) => {
+      state.boards.unshift(action.payload);
+    });
     builder.addCase(logout, (state) => {
       console.log("🔴 logout case ejecutado, status antes:", state.status);
       return { ...initialState };
