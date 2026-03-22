@@ -6,7 +6,7 @@ import { Save } from "lucide-react";
 import { handleChangePassword } from "@/lib/resetPassword";
 import { useAppSelector } from "@/store/hooks";
 
-export default function ResetPasswordForm() {
+export default function ResetPasswordFormSettings() {
     const { user } = useAppSelector(state => state.auth)
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);

@@ -22,10 +22,11 @@ export const OptionsList = ({ listId }: { listId: string }) => {
             if (key === "edit") onOpen();
           }}
         >
-          <DropdownItem startContent={<PenBoxIcon size={16} />} key={"edit"} className="flex items-center gap-2">
+          <DropdownItem textValue="Editar" startContent={<PenBoxIcon size={16} />} key={"edit"} className="flex items-center gap-2">
             Editar
           </DropdownItem>
           <DropdownItem
+            textValue="Archivar"
             startContent={<Archive size={16} />}
             key={"archive"}
             color="danger"

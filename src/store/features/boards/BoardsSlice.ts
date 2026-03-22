@@ -8,10 +8,26 @@ import { LabelsReducers } from "./reducers/labelsReducers";
 import { ChecklistsReducers } from "./reducers/checklistsReducers";
 import { MembersReducers } from "./reducers/membersReducers";
 import { touchBoardInList } from "./reducers/stateHelpers";
-import { archiveCard, assignCard, createCard, deleteCard, restoreCard, toggleCardCompletion, updateCard } from "./CardsThunks";
+import {
+  archiveCard,
+  assignCard,
+  createCard,
+  deleteCard,
+  restoreCard,
+  toggleCardCompletion,
+  updateCard,
+} from "./CardsThunks";
 import { archiveList, createList, restoreList, updateList } from "./ListsThunks";
-import { addChecklistItem, createChecklist, deleteChecklist, deleteChecklistItem, toggleChecklistItem, updateChecklistItem } from "./ChecklistThunks";
+import {
+  addChecklistItem,
+  createChecklist,
+  deleteChecklist,
+  deleteChecklistItem,
+  toggleChecklistItem,
+  updateChecklistItem,
+} from "./ChecklistThunks";
 import { addLabelToCard, removeLabelFromCard, updateLabel } from "./LabelsThunks";
+import { logout } from "@/store/features/auth/AuthSlice";
 
 const initialState: BoardsState = {
   boards: [],
@@ -79,6 +95,11 @@ const boardsSlice = createSlice({
     LabelsReducers(builder);
     ChecklistsReducers(builder);
     MembersReducers(builder);
+
+    builder.addCase(logout, (state) => {
+      console.log("🔴 logout case ejecutado, status antes:", state.status);
+      return { ...initialState };
+    });
 
     builder.addMatcher(
       isAnyOf(

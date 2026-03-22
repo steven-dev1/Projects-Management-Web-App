@@ -30,13 +30,13 @@ export default function ViewDropdown({ boardId }: { boardId: string }) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Dropdown menu with icons" variant="faded">
-        <DropdownItem key="board" startContent={<LayoutPanelLeft size={18} />}>
+        <DropdownItem textValue="Tablero" key="board" startContent={<LayoutPanelLeft size={18} />}>
           <Link href={`/boards/${boardId}`}>Tablero</Link>
         </DropdownItem>
-        <DropdownItem key="table" startContent={<Table size={18} />}>
+        <DropdownItem textValue="Tabla" key="table" startContent={<Table size={18} />}>
           <Link href={`/boards/${boardId}/table`}>Tabla</Link>
         </DropdownItem>
-        <DropdownItem key="panel" startContent={<PieChart size={18} />}>
+        <DropdownItem textValue="Panel" key="panel" startContent={<PieChart size={18} />}>
           <Link href={`/boards/${boardId}/panel`}>Panel</Link>
         </DropdownItem>
       </DropdownMenu>

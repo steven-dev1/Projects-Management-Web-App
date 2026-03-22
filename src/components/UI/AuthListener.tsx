@@ -23,6 +23,7 @@ export default function AuthListener() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT") {
+        console.log("🔴 SIGNED_OUT detectado");
         currentUserId.current = null;
         dispatch(logout());
         dispatch(clearCurrentBoard());

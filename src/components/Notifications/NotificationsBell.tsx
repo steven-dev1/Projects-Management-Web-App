@@ -33,12 +33,13 @@ export default function NotificationsBell() {
       >
         <>
           {unreadCount > 0 && (
-            <DropdownItem key="mark-all" className="text-primary text-xs" onPress={() => dispatch(markAllAsRead())}>
+            <DropdownItem textValue="Marcar leidas" key="mark-all" className="text-primary text-xs" onPress={() => dispatch(markAllAsRead())}>
               Marcar todas como leídas
             </DropdownItem>
           )}
           {notifications.map((n) => (
             <DropdownItem
+              textValue={n.title}
               key={n.id}
               onPress={() => handleClick(n)}
               className={!n.is_read ? "bg-primary-50 dark:hover:bg-primary-50/50 my-1" : ""}

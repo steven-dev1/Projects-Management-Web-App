@@ -93,6 +93,7 @@ export default function MembersModal({
                       </DropdownTrigger>
                       <DropdownMenu>
                         <DropdownItem
+                          textValue="Cambiar rol"
                           key="role"
                           startContent={member.role === "admin" ? <UserX size={14} /> : <UserCheck size={14} />}
                           onPress={() => handleRoleChange(member, member.role === "admin" ? "member" : "admin")}
@@ -100,6 +101,7 @@ export default function MembersModal({
                           {member.role === "admin" ? "Cambiar a miembro" : "Hacer admin"}
                         </DropdownItem>
                         <DropdownItem
+                          textValue="Eliminar miembro"
                           key="remove"
                           className="text-danger"
                           color="danger"

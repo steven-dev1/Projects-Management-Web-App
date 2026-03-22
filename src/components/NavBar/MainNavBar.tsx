@@ -20,6 +20,7 @@ import { useAppSelector } from "@/store/hooks";
 import { useState } from "react";
 import { BoardSearch } from "../Board/BoardSearch";
 import { usePathname } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function MainNavBar() {
   const { user, profile } = useAppSelector((state) => state.auth);
@@ -91,7 +92,13 @@ export default function MainNavBar() {
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem className="my-1 text-red-400">
-          <button className="flex items-center  gap-2" onClick={async () => await signOutAction()}>
+          <button
+            className="flex items-center  gap-2"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              await signOutAction();
+            }}
+          >
             <ArrowRightFromLine size={18} /> Cerrar sesión
           </button>
         </NavbarMenuItem>
