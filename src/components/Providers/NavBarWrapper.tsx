@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import MaxWidth from "../UI/MaxWidth";
 import MainNavBar from "../NavBar/MainNavBar";
 
-const hideOn = ["/signin", "/signup"];
+const hideOn = ["/signin", "/signup", "/forgot-password", "/reset-password"];
 
 export function NavBarWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
