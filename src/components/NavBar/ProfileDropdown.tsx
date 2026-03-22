@@ -7,6 +7,7 @@ import { Skeleton } from "@heroui/react";
 import { ArrowRightFromLine, FolderOpenDot, Settings } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../UI/ThemeToggle";
+import { supabase } from "@/lib/supabase";
 
 export default function ProfileDropdown() {
   const { user, profile, isLoading } = useAppSelector((state) => state.auth);
@@ -29,31 +30,35 @@ export default function ProfileDropdown() {
       </DropdownTrigger>
       <DropdownMenu variant="flat">
         <DropdownSection showDivider>
-          <DropdownItem key="profile" className="flex items-center gap-2">
+          <DropdownItem key="profile" textValue="Perfil" className="flex items-center gap-2">
             <p className="text-sm font-medium">{profile?.full_name ?? "Usuario anónimo"}</p>
             <p className="text-xs text-zinc-400">{user?.email ?? "usuario@ejemplo.com"}</p>
           </DropdownItem>
         </DropdownSection>
         <DropdownSection>
-          <DropdownItem key="projects">
+          <DropdownItem key="projects" textValue="Mis proyectos">
             <Link href="/dashboard/projects" className="flex items-center gap-2">
               <FolderOpenDot size={18} /> Mis proyectos
             </Link>
           </DropdownItem>
-          <DropdownItem key="settings">
+          <DropdownItem key="settings" textValue="Ajustes">
             <Link href="/settings" className="flex items-center gap-2">
               <Settings size={18} /> Ajustes
             </Link>
           </DropdownItem>
-          <DropdownItem key="theme">
+          <DropdownItem key="theme" textValue="Tema">
             <ThemeToggle />
           </DropdownItem>
           <DropdownItem
+            textValue="Cerrar sesión"
             startContent={<ArrowRightFromLine size={18} />}
             key="left"
             className="text-danger"
             color="danger"
-            onClick={async () => await signOutAction()}
+            onClick={async () => {
+              await supabase.auth.signOut();
+              await signOutAction();
+            }}
           >
             Cerrar sesión
           </DropdownItem>

@@ -52,17 +52,17 @@ export default function BoardHeader() {
               }}
             >
               <DropdownSection showDivider>
-                <DropdownItem key="archived" startContent={<Archive size={14} />}>
+                <DropdownItem textValue="Elementos archivados" key="archived" startContent={<Archive size={14} />}>
                   Elementos archivados
                 </DropdownItem>
               </DropdownSection>
               <DropdownSection>
                 {board.status === "active" ? (
-                  <DropdownItem key="close" startContent={<X size={14} />}>
+                  <DropdownItem textValue="Cerrar tablero" key="close" startContent={<X size={14} />}>
                     Cerrar tablero
                   </DropdownItem>
                 ) : (
-                  <DropdownItem key="delete" startContent={<Trash2 size={14} />}>
+                  <DropdownItem textValue="Eliminar tablero definitivamente" key="delete" startContent={<Trash2 size={14} />}>
                     Eliminar tablero definitivamente
                   </DropdownItem>
                 )}

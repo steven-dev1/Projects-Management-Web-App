@@ -1,7 +1,7 @@
 import { archiveCard } from "@/store/features/boards/CardsThunks";
 import { useAppDispatch } from "@/store/hooks";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@heroui/react";
-import { Ellipsis, PenBoxIcon, Trash2 } from "lucide-react";
+import { Archive, Ellipsis, PenBoxIcon } from "lucide-react";
 
 export const OptionsCard = ({ cardId, onOpenDetail }: { cardId: string; onOpenDetail: () => void }) => {
   const dispatch = useAppDispatch();
@@ -19,11 +19,12 @@ export const OptionsCard = ({ cardId, onOpenDetail }: { cardId: string; onOpenDe
             if (key === "edit") onOpenDetail();
           }}
         >
-          <DropdownItem startContent={<PenBoxIcon size={16} />} key={"edit"} className="flex items-center gap-2">
+          <DropdownItem textValue="Editar" startContent={<PenBoxIcon size={16} />} key={"edit"} className="flex items-center gap-2">
             Editar
           </DropdownItem>
           <DropdownItem
-            startContent={<Trash2 size={16} />}
+            textValue="Archivar"
+            startContent={<Archive size={16} />}
             key={"archive"}
             color="danger"
             className="flex items-center gap-2"

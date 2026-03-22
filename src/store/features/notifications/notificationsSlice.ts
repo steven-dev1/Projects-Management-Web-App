@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchNotifications, markAllAsRead, markAsRead } from "./notificationsThunks";
 import { AppNotification } from "@/types";
+import { logout } from "@/store/features/auth/AuthSlice";
 
 interface NotificationsState {
   items: AppNotification[];
@@ -35,7 +36,8 @@ const notificationsSlice = createSlice({
       })
       .addCase(markAllAsRead.fulfilled, (state) => {
         state.items.forEach((n) => (n.is_read = true));
-      });
+      })
+      .addCase(logout, () => initialState)
   },
 });
 

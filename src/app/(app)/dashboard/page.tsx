@@ -8,13 +8,17 @@ import UpcomingDueDates from "@/components/Dashboard/UpcomingDueDates";
 import MaxWidth from "@/components/UI/MaxWidth";
 import LastActivity from "@/components/Dashboard/LastActivity";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { useAppSelector } from "@/store/hooks";
 
 export default function DashboardPage() {
   const { boards, status, allCards, assignedCards, upcomingCards, activeBoards } = useDashboardStats();
+  const user = useAppSelector((state) => state.auth.user);
 
   const isLoading = status === "loading" || status === "idle";
 
-  if (isLoading && boards.length === 0) {
+  if (!user) return null;
+
+  if (isLoading && boards.length === 0 && user) {
     return (
       <div className="flex items-center justify-center">
         <Spinner color="default" size="lg" />
@@ -22,7 +26,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (status === "succeeded" && boards.length === 0) {
+  if (status === "succeeded" && boards.length === 0 && user) {
     return <EmptyProjects />;
   }
 

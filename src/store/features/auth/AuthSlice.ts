@@ -94,7 +94,8 @@ const authSlice = createSlice({
       .addCase(refreshAvatarUrl.rejected, (state, action) => {
         state.error = action.payload ?? "Error refrescando avatar";
         console.warn("Refresh avatar falló:", action.payload);
-      });
+      })
+      .addCase(logout, () => initialState);
   },
 });
 

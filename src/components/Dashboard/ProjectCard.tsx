@@ -46,15 +46,15 @@ export function ProjectCard({ board }: { board: Board }) {
                     if (key === "restore") dispatch(restoreBoard(board.id!));
                   }}
                 >
-                  <DropdownItem key="edit" startContent={<PenBoxIcon size={14} />}>
+                  <DropdownItem textValue="Editar" key="edit" startContent={<PenBoxIcon size={14} />}>
                     Editar
                   </DropdownItem>
                   {board.status === "active" ? (
-                    <DropdownItem key="archive" startContent={<Archive size={14} />}>
+                    <DropdownItem textValue="Archivar" key="archive" startContent={<Archive size={14} />}>
                       Archivar
                     </DropdownItem>
                   ) : (
-                    <DropdownItem key="restore" startContent={<ArchiveRestore size={14} />}>
+                    <DropdownItem textValue="Restaurar" key="restore" startContent={<ArchiveRestore size={14} />}>
                       Restaurar
                     </DropdownItem>
                   )}
