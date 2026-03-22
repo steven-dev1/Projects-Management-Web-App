@@ -72,7 +72,13 @@ export const BoardReducers = (builder: ActionReducerMapBuilder<BoardsState>) => 
     })
     .addCase(restoreBoard.fulfilled, (state, action) => {
       const index = state.boards.findIndex((b) => b.id === action.payload.id);
-      if (index !== -1) state.boards[index] = { ...action.payload, status: "active" };
+      if (index !== -1) {
+        state.boards[index] = {
+          ...state.boards[index],
+          ...action.payload,
+          status: "active",
+        };
+      }
       if (state.currentBoard?.id === action.payload.id) {
         state.currentBoard.status = "active";
       }

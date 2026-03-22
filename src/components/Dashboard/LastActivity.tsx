@@ -13,7 +13,8 @@ export default function LastActivity({ boards }: { boards: Board[] }) {
       <h3 className="font-semibold flex items-center gap-2 mb-3">
         <Clock size={18} /> Actividad reciente
       </h3>
-      <ProjectsList boards={recentBoards} />
+      {recentBoards.length > 0 && <ProjectsList boards={recentBoards} />}
+      {recentBoards.length === 0 && <p className="text-sm text-zinc-400 w-full text-center">No hay actividad reciente</p>}
     </section>
   );
 }

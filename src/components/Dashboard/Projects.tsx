@@ -31,7 +31,6 @@ export default function Projects({ boards }: { boards: Board[] }) {
 
   return (
     <div className="w-full flex flex-col gap-2 justify-center">
-      <h1 className="text-xl font-bold text-center md:text-left">Tableros</h1>
       <div className="flex flex-col lg:flex-row items-center justify-center md:justify-between gap-4 mt-2 mb-4">
         <Select
           label="Ordenar por"
