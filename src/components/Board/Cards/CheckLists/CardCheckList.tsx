@@ -58,7 +58,7 @@ export const CardChecklist = ({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-1">
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-400">{checklist.title}</p>
@@ -83,7 +83,6 @@ export const CardChecklist = ({
         </div>
       )}
 
-      {/* Items */}
       {/* Items */}
       <div className="flex flex-col gap-1">
         {checklist.items.map((item) => (

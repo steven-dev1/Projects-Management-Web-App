@@ -3,9 +3,18 @@ import { removeMember, updateMemberRole } from "@/store/features/boards/MembersT
 import { useAppDispatch } from "@/store/hooks";
 import { BoardMember, BoardMembersResponse } from "@/types";
 import {
-  Avatar, Button, Chip, Divider, Dropdown, DropdownItem,
-  DropdownMenu, DropdownTrigger, Modal, ModalBody,
-  ModalContent, ModalHeader,
+  Avatar,
+  Button,
+  Chip,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
 } from "@heroui/react";
 import { Crown, MoreHorizontal, Trash2, UserCheck, UserX } from "lucide-react";
 import ShareButton from "./Invite/ShareButton";
@@ -37,7 +46,11 @@ export default function MembersModal({
   return (
     <Modal
       backdrop="blur"
-      classNames={{ closeButton: "top-2 right-2 cursor-pointer" }}
+      scrollBehavior="inside"
+      placement="center"
+      classNames={{
+        closeButton: "top-2 right-2 cursor-pointer",
+      }}
       isOpen={isOpen}
       onClose={onClose}
       size="md"
@@ -66,9 +79,7 @@ export default function MembersModal({
                     <div>
                       <p className="text-sm font-medium text-zinc-800 dark:text-zinc-300">
                         {member.profiles?.full_name}
-                        {isCurrentUser && (
-                          <span className="text-xs text-zinc-400 ml-1">(tú)</span>
-                        )}
+                        {isCurrentUser && <span className="text-xs text-zinc-400 ml-1">(tú)</span>}
                       </p>
                       <div className="flex items-center gap-1 mt-0.5">
                         {isMemberOwner && <Crown size={10} className="text-amber-500" />}

@@ -30,7 +30,7 @@ export default function TemplateModal({
 
     setIsLoading(true);
     try {
-      await dispatch(
+      const result = await dispatch(
         createBoardFromTemplate({
           templateId: template.id,
           description: template.description,
@@ -40,7 +40,7 @@ export default function TemplateModal({
       ).unwrap();
 
       onClose();
-      router.push("/dashboard/projects");
+      router.push(`/boards/${result.id}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error creando el board");
     } finally {

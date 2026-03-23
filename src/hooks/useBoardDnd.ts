@@ -3,7 +3,6 @@ import { moveCard, moveList } from "@/store/features/boards/BoardsSlice";
 import { updateCardOrder } from "@/store/features/boards/CardsThunks";
 import { updateListOrderSupabase } from "@/store/features/boards/ListsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { calculateCardMove, calculateListMove } from "./useBoardDndLogic";
 import { BoardList, Card } from "@/store/features/boards/BoardsTypes";
 import {
   DragEndEvent,
@@ -27,7 +26,9 @@ export function useBoardDnd() {
   const dragSnapshot = useRef<{ lists: BoardList[] } | null>(null);
   const lastOverContainer = useRef<string | null>(null);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  );
 
   const horizontalClosestCenter: CollisionDetection = (args) => {
     const { droppableRects, droppableContainers, pointerCoordinates } = args;
@@ -85,29 +86,47 @@ export function useBoardDnd() {
     const isColumn = active.data.current?.type === "column";
 
     if (isColumn) {
-      const move = calculateListMove(lists, activeId, overId);
-      if (move) {
-        dispatch(moveList(move));
-        dispatch(updateListOrderSupabase({ listId: activeId, newIndex: move.newIndex, boardId: currentBoard.id }));
+      const oldIndex = lists.findIndex((l) => l.id === activeId);
+      const newIndex = lists.findIndex((l) => l.id === overId);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        dispatch(moveList({ oldIndex, newIndex }));
+        dispatch(updateListOrderSupabase({ listId: activeId, newIndex, boardId: currentBoard.id }));
       }
+      dragSnapshot.current = null;
       return;
     }
 
     const snapshotLists = dragSnapshot.current?.lists ?? lists;
-    const move = calculateCardMove(snapshotLists, activeId, overId);
-    if (move) {
-      dispatch(
-        moveCard({ cardId: activeId, fromListId: move.fromListId, toListId: move.toListId, newIndex: move.newIndex }),
-      );
-      dispatch(
-        updateCardOrder({
-          cardId: activeId,
-          newListId: move.toListId,
-          newIndex: move.rpcIndex,
-          oldListId: move.fromListId,
-        }),
-      );
+    const fromList = snapshotLists.find((l) => l.cards.some((c) => c.id === activeId));
+    const toList = lists.find((l) => l.id === overId || l.cards.some((c) => c.id === overId));
+
+    if (!fromList || !toList) {
+      dragSnapshot.current = null;
+      return;
     }
+
+    if (fromList.id === toList.id) {
+      const activeIndexInSource = fromList.cards.findIndex((c) => c.id === activeId);
+      const overIndexInDest = toList.cards.findIndex((c) => c.id === overId);
+      if (activeIndexInSource === overIndexInDest || overIndexInDest === -1) {
+        dragSnapshot.current = null;
+        return;
+      }
+      const rpcIndex = activeIndexInSource < overIndexInDest ? overIndexInDest - 1 : overIndexInDest;
+      dispatch(moveCard({ cardId: activeId, fromListId: fromList.id, toListId: toList.id, newIndex: overIndexInDest }));
+      dispatch(updateCardOrder({ cardId: activeId, newListId: toList.id, newIndex: rpcIndex, oldListId: fromList.id }));
+      dragSnapshot.current = null;
+      return;
+    }
+
+    const currentToList = lists.find((l) => l.id === toList.id);
+    if (!currentToList) { dragSnapshot.current = null; return; }
+
+    const overCardIndex = currentToList.cards.findIndex((c) => c.id === overId);
+    const newIndex = overCardIndex === -1 ? currentToList.cards.length - 1 : overCardIndex;
+
+    dispatch(moveCard({ cardId: activeId, fromListId: toList.id, toListId: toList.id, newIndex }));
+    dispatch(updateCardOrder({ cardId: activeId, newListId: toList.id, newIndex: Math.max(0, newIndex), oldListId: fromList.id }));
     dragSnapshot.current = null;
   };
 
@@ -140,14 +159,7 @@ export function useBoardDnd() {
       }
     }
 
-    dispatch(
-      moveCard({
-        cardId: activeId,
-        fromListId: activeContainer.id,
-        toListId: overContainer.id,
-        newIndex: destinationIndex,
-      }),
-    );
+    dispatch(moveCard({ cardId: activeId, fromListId: activeContainer.id, toListId: overContainer.id, newIndex: destinationIndex }));
   };
 
   return { activeCard, activeColumn, sensors, collisionDetection, handleDragStart, handleDragEnd, handleDragOver };

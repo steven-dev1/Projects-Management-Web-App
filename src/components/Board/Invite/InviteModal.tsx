@@ -55,7 +55,7 @@ export const InviteModal = ({
   };
 
   return (
-    <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} placement="top-center">
+    <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} placement="center">
       <ModalContent>
         <ModalHeader>Invitar miembro</ModalHeader>
         <Divider />

@@ -26,11 +26,13 @@ export const RichTextViewer = ({
   return (
     <div
       onClick={onClick}
-      className={`${!isBoardClosed && "hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 cursor-pointer"} prose prose-sm dark:prose-invert max-w-none overflow-x-auto w-full rounded-lg p-2 -mx-2 transition-colors
+      className={`${!isBoardClosed && "hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 cursor-pointer"} prose border dark:border-zinc-700 border-zinc-50 prose-sm custom-scrollbar dark:prose-invert max-w-none overflow-x-hidden wrap-words w-full rounded-lg p-2 -mx-2 max-h-96 overflow-y-auto transition-colors
         prose-p:text-zinc-700 dark:prose-p:text-zinc-300
+        prose-pre:whitespace-pre-wrap
         prose-strong:text-zinc-800 dark:prose-strong:text-zinc-200
         prose-em:text-zinc-700 dark:prose-em:text-zinc-300
         prose-code:text-zinc-800 dark:prose-code:text-zinc-200
+
         prose-li:text-zinc-700 dark:prose-li:text-zinc-300`}
       dangerouslySetInnerHTML={{ __html: safeContent }}
     />

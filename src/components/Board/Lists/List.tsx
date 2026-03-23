@@ -11,13 +11,7 @@ import { useTheme } from "next-themes";
 import { resolveListColor } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
 
-export default function List({
-  list,
-  children,
-}: {
-  list: BoardList;
-  children: React.ReactNode;
-}) {
+export default function List({ list, children }: { list: BoardList; children: React.ReactNode }) {
   const {
     attributes,
     listeners,
@@ -51,12 +45,11 @@ export default function List({
 
   return (
     <div
-      className="flex relative min-w-72 max-w-78 max-h-full flex-col gap-2 rounded-lg duration-200"
+      className="flex relative min-w-72 max-w-80 max-h-full flex-col gap-2 rounded-lg duration-200"
       ref={combinedRef}
       data-type="column"
       style={style}
     >
-      {/* Header sin fondo */}
       <div className="font-semibold flex items-center justify-between gap-2 my-1">
         <div className="flex items-center flex-1 min-w-0 gap-2">
           {!isClosed && (
@@ -77,12 +70,14 @@ export default function List({
         )}
       </div>
 
-      {/* Cards */}
       <div
-        className="p-1 rounded-lg overflow-y-auto custom-scrollbar"
+        className="px-1 py-2 rounded-lg flex flex-col overflow-hidden min-h-0 flex-1"
         style={bgColor ? { backgroundColor: bgColor } : undefined}
       >
-        <div data-list-id={list.id} className="flex flex-col w-full min-h-25">
+        <div
+          data-list-id={list.id}
+          className="flex flex-col w-full overflow-y-auto custom-scrollbar flex-1 min-h-0"
+        >
           <SortableContext items={list.cards.map((c) => c.id as string)} strategy={verticalListSortingStrategy}>
             {children}
           </SortableContext>
@@ -95,7 +90,7 @@ export default function List({
         {!isClosed && (
           <>
             <Divider className="my-2" />
-            <div className="rounded-xl">
+            <div className="rounded-xl shrink-0">
               <CreateCardButton listId={list.id} boardId={list.board_id} lastPosition={list.cards.length} />
             </div>
           </>

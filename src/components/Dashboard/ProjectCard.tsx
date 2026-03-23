@@ -35,7 +35,7 @@ export function ProjectCard({ board }: { board: Board }) {
             <div className="shrink-0" onClick={(e) => e.preventDefault()}>
               <Dropdown className="cursor-pointer">
                 <DropdownTrigger>
-                  <button className="p-1 cursor-pointer rounded-lg dark:hover:bg-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-200 text-zinc-400 hover:text-zinc-600 opacity-0 sm:opacity-100 group-hover:opacity-100 transition-all">
+                  <button className="p-1 cursor-pointer rounded-lg dark:hover:bg-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-200 text-zinc-400 hover:text-zinc-600 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all">
                     <Ellipsis size={15} />
                   </button>
                 </DropdownTrigger>
