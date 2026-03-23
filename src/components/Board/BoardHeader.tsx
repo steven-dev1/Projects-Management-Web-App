@@ -11,6 +11,7 @@ import { archiveBoard, deleteBoard } from "@/store/features/boards/BoardsThunks"
 import { useRouter } from "next/navigation";
 import { ClosedBoardBanner } from "./ClosedBoardBanner";
 import { useCurrentUserRole } from "@/hooks/useUserCurrentRole";
+import { useConfirmDelete } from "../Providers/ConfirmDeleteContext";
 
 export default function BoardHeader() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -19,6 +20,7 @@ export default function BoardHeader() {
   const board = useAppSelector((state) => state.boards.currentBoard);
   const isClosed = board?.status === "archived";
   const { isOwner } = useCurrentUserRole();
+  const { confirm } = useConfirmDelete();
 
   if (!board) return null;
 
@@ -48,7 +50,7 @@ export default function BoardHeader() {
               onAction={(key) => {
                 if (key === "archived") onOpen();
                 if (key === "close") dispatch(archiveBoard(board.id!)).unwrap();
-                if (key === "delete") handleDelete();
+                if (key === "delete") confirm("¿Eliminar tablero?", "Esta acción no se puede deshacer, perderás todo el contenido del tablero.", handleDelete);
               }}
             >
               <DropdownSection showDivider>

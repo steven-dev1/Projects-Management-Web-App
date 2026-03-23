@@ -1,6 +1,7 @@
 "use client";
 import { useDispatch } from "react-redux";
-import { Bell, Check, CheckCircle2 } from "lucide-react";
+import {Bell} from '@gravity-ui/icons';
+import { Check, CheckCircle2 } from "lucide-react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Badge } from "@heroui/react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
@@ -22,7 +23,7 @@ export default function NotificationsBell() {
             size="sm"
             isInvisible={unreadCount === 0}
           >
-            <Bell size={20} />
+            <Bell />
           </Badge>
         </Button>
       </DropdownTrigger>

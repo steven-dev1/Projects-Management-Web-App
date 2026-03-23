@@ -17,12 +17,16 @@ import {
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { ColorPicker } from "./ColorPicker";
+import { resolveListColor } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export default function CreateListButton({ boardId, lastPosition }: { boardId: string; lastPosition: number }) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>(LIST_COLORS[0].id);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
 
   const handleSubmit = async (formData: FormData, e: React.SyntheticEvent) => {
@@ -62,7 +66,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Crear nuevo proyecto</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Crear nueva lista</ModalHeader>
               <Divider className="my-2" />
               <ModalBody>
                 <Form
@@ -73,8 +77,8 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
                 >
                   <Input
                     name="title"
-                    label="Nombre de la tarea"
-                    placeholder="Escribe el nombre de la tarea"
+                    label="Nombre de la lista"
+                    placeholder="Escribe el nombre de la lista"
                     isRequired
                   />
                   <div className="w-full">
@@ -83,7 +87,7 @@ export default function CreateListButton({ boardId, lastPosition }: { boardId: s
                   </div>
                   <div
                     className="w-full h-8 rounded-lg transition-colors duration-200"
-                    style={{ backgroundColor: selectedColor }}
+                    style={{ backgroundColor: resolveListColor(selectedColor, isDark, false) }}
                   />
                   <div className="flex items-center gap-2 justify-end w-full mt-2">
                     <Button variant="flat" onPress={onClose}>

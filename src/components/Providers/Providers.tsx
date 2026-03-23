@@ -4,6 +4,7 @@ import { ToastProvider } from "@heroui/react";
 import { ReduxProvider } from "./ReduxProvider";
 import AuthListener from "../UI/AuthListener";
 import NotificationsListener from "../Notifications/NotificationsListener";
+import { ConfirmDeleteProvider } from "./ConfirmDeleteContext";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <ToastProvider placement="bottom-right" />
         <AuthListener />
         <NotificationsListener />
-        {children}
+        <ConfirmDeleteProvider>{children}</ConfirmDeleteProvider>
       </ReduxProvider>
     </ThemeProvider>
   );
