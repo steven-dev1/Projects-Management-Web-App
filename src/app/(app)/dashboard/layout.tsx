@@ -1,6 +1,5 @@
 "use client";
 import { ErrorBoundary } from "@/components/UI/ErrorBoundary";
-// import { clearCurrentBoard } from "@/store/features/boards/BoardsSlice";
 import { fetchBoards } from "@/store/features/boards/BoardsThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
