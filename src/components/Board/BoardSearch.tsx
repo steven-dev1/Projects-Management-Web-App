@@ -56,6 +56,7 @@ export const BoardSearch = () => {
           <input
             ref={inputRef}
             value={query}
+            aria-label="Buscar tarjetas"
             onChange={(e) => { setQuery(e.target.value); setIsOpen(e.target.value.trim().length > 0); }}
             onFocus={() => { if (query.trim()) setIsOpen(true); }}
             placeholder="Buscar tarjetas..."

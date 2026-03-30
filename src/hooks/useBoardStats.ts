@@ -5,6 +5,7 @@ import { useMemo } from "react";
 export function useBoardStats(board: BoardResponse) {
   return useMemo(() => {
     const allCards = board.lists.flatMap((l) => l.cards);
+    const allCardsIncludingArchived = board.lists.flatMap((l) => l.cards);
     const total = allCards.length;
     const completed = allCards.filter((c) => c.is_completed).length;
     const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -29,6 +30,6 @@ export function useBoardStats(board: BoardResponse) {
 
     const upcomingCards = [...overdue, ...dueSoon].slice(0, 5);
 
-    return { allCards, total, completed, rate, overdue, dueSoon, memberStats, labelStats, upcomingCards };
+    return { allCards, allCardsIncludingArchived, total, completed, rate, overdue, dueSoon, memberStats, labelStats, upcomingCards };
   }, [board]);
 }

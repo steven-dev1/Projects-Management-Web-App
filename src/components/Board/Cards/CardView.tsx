@@ -56,7 +56,7 @@ export default function CardView({ card, isOverlay, dragListeners, dragAttribute
               />
             </div>
           )}
-          <div className={`w-full`}>
+          <div className={`w-full relative min-w-0`}>
             {card.labels && card.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
                 {card.labels.slice(0, 3).map((label) => (

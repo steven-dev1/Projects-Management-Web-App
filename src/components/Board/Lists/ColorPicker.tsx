@@ -7,7 +7,7 @@ export const ColorPicker = ({ value, onChange }: { value: string; onChange: (col
   const isDark = resolvedTheme === "dark";
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 justify-between">
       {LIST_COLORS.map((color) => {
         const bg = isDark ? color.dark : color.light;
         const isSelected = value === color.id

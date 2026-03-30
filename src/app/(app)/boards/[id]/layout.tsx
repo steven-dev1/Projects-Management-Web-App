@@ -28,7 +28,7 @@ export default function BoardLayout({ children }: { children: React.ReactNode })
         ) : (
           <>
             <BoardHeader />
-            <main className="flex-1 overflow-hidden">{children}</main>
+            <div className="flex-1 overflow-hidden">{children}</div>
           </>
         )}
       </div>

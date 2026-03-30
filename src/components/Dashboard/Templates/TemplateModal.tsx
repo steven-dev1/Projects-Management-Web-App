@@ -30,13 +30,17 @@ export default function TemplateModal({
 
     setIsLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await dispatch(
-        createBoardFromTemplate({ templateId: template.id, boardName: boardName.trim() }),
+        createBoardFromTemplate({
+          templateId: template.id,
+          description: template.description,
+          boardName: boardName.trim(),
+          backgroundColor: template.color,
+        }),
       ).unwrap();
 
       onClose();
-      router.push("/dashboard/projects");
+      router.push(`/boards/${result.id}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error creando el board");
     } finally {
@@ -52,11 +56,11 @@ export default function TemplateModal({
           <span>{template.name}</span>
         </ModalHeader>
         <ModalBody>
-          <p className="text-sm text-zinc-500 mb-2">{template.description}</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-200 mb-2">{template.description}</p>
 
           <div className="flex flex-wrap gap-1.5 mb-4">
             {template.lists.map((list) => (
-              <span key={list.name} className="text-xs bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full">
+              <span key={list.name} className="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 px-2 py-0.5 rounded-full">
                 {list.name}
               </span>
             ))}

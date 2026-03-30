@@ -7,7 +7,7 @@ import { Card } from "@/store/features/boards/BoardsTypes";
 import { createChecklist } from "@/store/features/boards/ChecklistThunks";
 import { CardChecklist } from "./CardCheckList";
 
-export const CardChecklists = ({ card }: { card: Card}) => {
+export const CardChecklists = ({ card }: { card: Card }) => {
   const dispatch = useAppDispatch();
   const isBoardClosed = useAppSelector((state) => state.boards.currentBoard?.status === "archived");
   const [isCreating, setIsCreating] = useState(false);
@@ -21,19 +21,21 @@ export const CardChecklists = ({ card }: { card: Card}) => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1 mt-4">
       {card.checklists && card.checklists.length > 0 && (
         <>
           <div className="flex items-center gap-2">
             <CheckSquare size={15} className="text-zinc-500 dark:text-zinc-300" />
             <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase tracking-wide">Checklists</p>
           </div>
-          {card.checklists.map((checklist) => (
-            <div key={checklist.id} className="flex flex-col gap-2">
-              <CardChecklist checklist={checklist} cardId={card.id!} />
-              {!isBoardClosed && <Divider />}
-            </div>
-          ))}
+          <div className="overflow-y-auto max-h-72 custom-scrollbar flex flex-col gap-2">
+            {card.checklists.map((checklist) => (
+              <div key={checklist.id} className="flex flex-col gap-2">
+                <CardChecklist checklist={checklist} cardId={card.id!} />
+                {!isBoardClosed && <Divider />}
+              </div>
+            ))}
+          </div>
         </>
       )}
 
