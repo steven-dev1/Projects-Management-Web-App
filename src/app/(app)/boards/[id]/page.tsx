@@ -12,6 +12,7 @@ import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortabl
 export default function BoardPage() {
   const currentBoard = useAppSelector((state) => state.boards.currentBoard);
   const lists = currentBoard?.lists ?? [];
+  const activeLists = lists.filter((l) => l.status === "active");
   const status = useAppSelector((state) => state.boards.status);
   const isFailed = status === "failed";
   const isSucceeded = status === "succeeded";
@@ -37,13 +38,14 @@ export default function BoardPage() {
     >
       <div className="h-full flex gap-4 p-8 items-start overflow-x-auto overflow-y-hidden transition-all duration-300 ease-in-out">
         <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
-          {lists?.map((list) => (
-            <List list={list} key={list.id}>
+          {activeLists?.map((list) => {
+            if(list.status === "archived") return null;
+            return <List list={list} key={list.id}>
               {list.cards.map((card, index) => (
                 <CardItem key={card.id} card={card} index={index} />
               ))}
             </List>
-          ))}
+          })}
         </SortableContext>
         {!isClosed && <CreateListButton boardId={currentBoard.id} lastPosition={lists.length} />}
       </div>

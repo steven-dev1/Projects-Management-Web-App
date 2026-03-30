@@ -6,6 +6,7 @@ export function ThemeToggle({ iconOnly = false }: { iconOnly?: boolean }) {
   const { theme, setTheme } = useTheme();
   return (
     <button
+      aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
       type="button"
       className="cursor-pointer w-full text-center flex gap-2 items-center"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
