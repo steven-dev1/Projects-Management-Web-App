@@ -9,7 +9,6 @@ import { ChecklistsReducers } from "./reducers/checklistsReducers";
 import { MembersReducers } from "./reducers/membersReducers";
 import { touchBoardInList } from "./reducers/stateHelpers";
 import {
-  archiveCard,
   assignCard,
   createCard,
   deleteCard,
@@ -17,7 +16,7 @@ import {
   toggleCardCompletion,
   updateCard,
 } from "./CardsThunks";
-import { archiveList, createList, restoreList, updateList } from "./ListsThunks";
+import { createList, restoreList, updateList } from "./ListsThunks";
 import {
   addChecklistItem,
   createChecklist,
