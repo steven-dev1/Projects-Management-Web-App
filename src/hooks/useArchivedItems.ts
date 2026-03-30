@@ -7,6 +7,7 @@ async function fetchArchivedItems(boardId: string) {
       .from("cards")
       .select("*, lists!list_id(title)")
       .eq("status", "archived")
+      .eq("lists.status", "active")
       .eq("lists.board_id", boardId)
       .order("updated_at", { ascending: false }),
     supabase
@@ -30,16 +31,22 @@ export function useArchivedItems(boardId: string, isOpen: boolean) {
   );
 
   const removeCard = (cardId: string) => {
-    mutate(
-      (current) => (current ? { ...current, cards: current.cards.filter((c) => c.id !== cardId) } : current),
-      { revalidate: false },
-    );
+    mutate((current) => (current ? { ...current, cards: current.cards.filter((c) => c.id !== cardId) } : current), {
+      revalidate: false,
+    });
   };
 
   const removeList = (listId: string) => {
-    mutate((current) => (current ? { ...current, lists: current.lists.filter((l) => l.id !== listId) } : current), {
-      revalidate: false,
-    });
+    mutate(
+      (current) =>
+        current
+          ? {
+              lists: current.lists.filter((l) => l.id !== listId),
+              cards: current.cards.filter((c) => c.list_id !== listId),
+            }
+          : current,
+      { revalidate: false },
+    );
   };
 
   return {
