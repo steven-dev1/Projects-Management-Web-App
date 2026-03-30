@@ -33,7 +33,7 @@ export default function UpcomingDueDates({ cards, boards }: Props) {
         return (
           <div
             key={card.id}
-            className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700 cursor-pointer transition-colors"
+            className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-zinc-900 dark:border-zinc-800 border border-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700 cursor-pointer"
             onClick={() => board && router.push(`/boards/${board.id}`)}
           >
             <div className="flex flex-col gap-0.5">

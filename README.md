@@ -1,167 +1,209 @@
-# 🗂️ Projects M.
+# Projects M. 📋
 
-**Projects M.** is a collaborative project management app inspired by Trello, built with a modern stack. It lets you organize your work in kanban boards, assign tasks to team members, set due dates, track progress with checklists, and get real-time notifications — all in one place.
+Aplicación de gestión de proyectos colaborativa basada en tableros Kanban, construida con Next.js, Supabase y Redux Toolkit.
 
----
+## Tabla de contenidos
 
-## ✨ Features
-
-### 🗃️ Boards & Lists
-- Create, edit, and delete boards with custom backgrounds
-- Drag & drop lists and cards with full position persistence
-- Archive boards and lists with soft delete
-- Board templates (Software, Marketing, Project Management, HR, Sales, Learning)
-
-### 🃏 Cards
-- Rich card detail modal with inline editing
-- Due dates with overdue highlighting
-- Labels with custom colors
-- Checklists with progress tracking
-- Mark cards as completed
-- Assign members to cards
-- Soft delete & restore cards
-
-### 👥 Collaboration
-- Invite members to boards via email (Brevo)
-- Role-based access (owner / member)
-- Board-level sharing with RLS policies
-
-### 🔔 Notifications
-- Real-time in-app notifications via Supabase Realtime
-- Toast alerts when a notification arrives
-- Bell icon with unread count in the navbar
-- Mark as read / mark all as read
-- Notifications triggered on: card assignment, board invite
-
-### 📊 Dashboard
-- Quick stats: total boards, cards, completed, completion rate
-- Recently active boards
-- My assigned cards
-- Upcoming due dates (next 7 days)
-
-### 📋 Table View
-- View all cards in a board as a sortable table
-- Sort by title, list, assignee, due date, or status
-- Filter by list
-- Click any row to open the card detail modal
-
-### 🧩 Templates
-- 6 predefined board templates
-- Each template creates a board with pre-filled lists and sample cards
-- Custom board name on creation
+- [Descripción](#descripción)
+- [Características](#características)
+- [Tecnologías](#tecnologías)
+- [Requisitos previos](#requisitos-previos)
+- [Instalación](#instalación)
+- [Variables de entorno](#variables-de-entorno)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Arquitectura](#arquitectura)
+- [Testing](#testing)
 
 ---
 
-## 🛠️ Tech Stack
+## Descripción
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript |
-| State Management | Redux Toolkit |
-| Database | Supabase (PostgreSQL + RLS) |
-| Auth | Supabase Auth |
-| Real-time | Supabase Realtime |
-| UI Components | HeroUI / NextUI |
-| Styling | Tailwind CSS v4 |
-| Drag & Drop | dnd-kit |
-| Rich Text | Tiptap |
-| Email | Brevo |
-| Icons | Lucide React |
-| Date Utils | date-fns |
+Projects M. es una herramienta de gestión de tareas y proyectos en equipo. Permite crear tableros Kanban con listas y tarjetas, asignar tareas a miembros, establecer fechas límite, agregar checklists, etiquetas y mucho más. Todo en tiempo real gracias a Supabase Realtime.
 
 ---
 
-## 🚀 Getting Started
+## Características
 
-### Prerequisites
+- **Tableros Kanban** — Crea tableros con múltiples listas y arrastra tarjetas entre ellas con drag & drop
+- **3 vistas por tablero** — Vista Kanban, Vista Tabla y Panel de estadísticas
+- **Tarjetas completas** — Título, descripción enriquecida, fecha límite, etiquetas, checklists y asignación de miembros
+- **Colaboración en equipo** — Invita miembros por email con roles (admin / miembro)
+- **Notificaciones en tiempo real** — Recibe alertas cuando te asignan una tarjeta o te invitan a un tablero
+- **Elementos archivados** — Archiva y restaura tarjetas y listas sin perder datos
+- **Plantillas** — Crea tableros desde plantillas predefinidas (Desarrollo, Marketing, Ventas, RRHH, etc.)
+- **Dashboard personal** — Estadísticas, tarjetas asignadas, fechas próximas y actividad reciente
+- **Autenticación completa** — Registro, login, recuperación y cambio de contraseña
+- **Modo claro / oscuro** — Tema configurable por el usuario
+- **Responsive** — Funciona en móvil, tablet y escritorio
+
+---
+
+## Tecnologías
+
+| Categoría | Tecnología |
+|-----------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Base de datos | Supabase (PostgreSQL) |
+| Autenticación | Supabase Auth |
+| Estado global | Redux Toolkit |
+| Estilos | Tailwind CSS v4 |
+| Componentes UI | HeroUI |
+| Drag & Drop | @dnd-kit |
+| Editor de texto | Tiptap |
+| Testing | Vitest + React Testing Library |
+| Email | Brevo (Sendinblue) |
+| Fetch de datos | SWR |
+| Validación | Zod |
+
+---
+
+## Requisitos previos
+
 - Node.js 18+
-- A Supabase project
-- A Brevo account (for email invitations)
+- npm o pnpm
+- Cuenta en [Supabase](https://supabase.com)
+- Cuenta en [Brevo](https://brevo.com) (para emails de invitación)
 
-### Installation
+---
+
+## Instalación
 
 ```bash
-git clone https://github.com/steven-dev1/Projects-Management-Web-App.git
-cd Projects-Management-Web-App
+# Clonar el repositorio
+git clone https://github.com/steven-dev1/projects-m.git
+cd projects-m
+
+# Instalar dependencias
 npm install
-```
 
-### Environment Variables
+# Configurar variables de entorno
+cp .env.example .env.local
 
-Create a `.env.local` file in the root:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
-NEXT_PUBLIC_APP_URL=your_app_url
-BREVO_API_KEY=your_brevo_api_key
-```
-
-### Run the development server
-
-```bash
+# Ejecutar en desarrollo
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+---
+
+## Variables de entorno
+
+Crea un archivo `.env.local` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu-anon-key
+SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Brevo (emails)
+BREVO_API_KEY=tu-api-key-de-brevo
+```
 
 ---
 
-## 🗄️ Database Schema
-
-### Core Tables
-- `boards` — project boards with owner and status
-- `lists` — columns inside a board, ordered by position
-- `cards` — tasks inside a list with title, description, due date, assignee
-- `board_members` — many-to-many between boards and users with roles
-- `profiles` — extended user info (full name, avatar)
-
-### Card Features
-- `labels` — label definitions per board
-- `card_labels` — many-to-many between cards and labels
-- `checklists` — checklists per card
-- `checklist_items` — individual items per checklist
-
-### System
-- `notifications` — in-app notifications per user
-
-All tables have **Row Level Security (RLS)** enabled.
-
----
-
-## 📁 Project Structure
+## Estructura del proyecto
 
 ```
 src/
-├── app/
-│   ├── (app)/
-│   │   ├── dashboard/          # Dashboard pages
-│   │   │   ├── page.tsx        # Home with stats
-│   │   │   ├── projects/       # All boards
-│   │   │   └── templates/      # Board templates
-│   │   └── boards/
-│   │       └── [id]/
-│   │           ├── page.tsx    # Kanban view
-│   │           ├── table/      # Table view
-│   │           └── panel/      # Panel view
-│   └── api/                    # API routes
-├── components/
-│   ├── board/                  # Board, list, card components
-│   ├── Dashboard/              # Dashboard components
-│   └── notifications/          # Bell, listener
-├── store/
-│   ├── features/               # Redux slices & thunks
-│   └── hooks.ts
-├── types/                      # TypeScript interfaces
-└── lib/
-    ├── supabase.ts
-    ├── supabase-server.ts
-    └── templates.ts
+├── app/                        # Rutas de Next.js (App Router)
+│   ├── (app)/                  # Rutas protegidas
+│   │   ├── boards/[id]/        # Vista de tablero (kanban, tabla, panel)
+│   │   ├── dashboard/          # Dashboard y proyectos
+│   │   ├── settings/           # Configuración de usuario
+│   │   └── invite/[token]/     # Aceptar invitaciones
+│   ├── (auth)/                 # Rutas de autenticación
+│   │   ├── signin/
+│   │   ├── signup/
+│   │   ├── forgot-password/
+│   │   └── reset-password/
+│   └── api/                    # API Routes
+│       └── boards/
+├── components/                 # Componentes React
+│   ├── Auth/                   # Formularios de autenticación
+│   ├── Board/                  # Componentes del tablero
+│   │   ├── Cards/              # Tarjetas y modal de detalle
+│   │   ├── Lists/              # Listas del tablero
+│   │   ├── Panel/              # Vista de estadísticas
+│   │   └── Table/              # Vista de tabla
+│   ├── Dashboard/              # Componentes del dashboard
+│   ├── Notifications/          # Sistema de notificaciones
+│   └── UI/                     # Componentes reutilizables
+├── hooks/                      # Custom hooks
+│   ├── useBoardDnd.ts          # Lógica de drag & drop
+│   ├── useBoardDndLogic.ts     # Cálculos de movimiento
+│   ├── useBoardStats.ts        # Estadísticas del tablero
+│   ├── useDashboardStats.ts    # Estadísticas del dashboard
+│   └── useArchivedItems.ts     # Elementos archivados
+├── store/                      # Redux store
+│   └── features/
+│       ├── auth/               # Estado de autenticación
+│       ├── boards/             # Estado de tableros, listas, tarjetas
+│       │   └── reducers/       # Reducers separados por dominio
+│       └── notifications/      # Estado de notificaciones
+├── services/                   # Servicios de Supabase
+│   ├── boardsService.ts
+│   ├── cardsService.ts
+│   ├── listsService.ts
+│   ├── checklistsService.ts
+│   ├── labelsService.ts
+│   └── membersService.ts
+├── lib/                        # Utilidades y configuración
+│   ├── supabaseClient.ts       # Cliente de Supabase (browser)
+│   ├── supabaseServer.ts       # Cliente de Supabase (server)
+│   ├── dateUtils.ts            # Utilidades de fechas
+│   ├── sanitize.ts             # Sanitización de HTML
+│   └── templates.ts            # Plantillas de tableros
+└── types/                      # Tipos de TypeScript
 ```
 
 ---
 
-## 📄 License
+## Arquitectura
 
-MIT
+### Estado global
+
+El estado se maneja con Redux Toolkit dividido en tres slices:
+
+- **`auth`** — Usuario, perfil y preferencias
+- **`boards`** — Tableros, listas, tarjetas y todo su contenido
+- **`notifications`** — Notificaciones del usuario
+
+Los thunks siguen el patrón: llaman al servicio correspondiente → si hay error retornan `rejectWithValue` → el reducer actualiza el estado optimísticamente.
+
+### Drag & Drop
+
+El sistema de DnD usa `@dnd-kit`:
+
+- **`useBoardDnd`** — Maneja los eventos del drag (start, over, end) y despacha acciones
+
+El movimiento es optimista: primero se actualiza el estado local con `moveCard`/`moveList`, luego se persiste en Supabase con `updateCardOrder`/`updateListOrderSupabase`.
+
+### Servicios
+
+Cada entidad tiene su propio servicio que encapsula las llamadas a Supabase. Los thunks de Redux consumen estos servicios. Esto facilita el testing y el mantenimiento.
+
+---
+
+## Testing
+
+El proyecto usa **Vitest** con **React Testing Library**. Los tests cubren:
+
+- Componentes UI (`CardDetailModal`, `CardView`, formularios de auth)
+- Thunks de Redux (boards, cards, listas, checklists, etiquetas)
+- Lógica pura de DnD (`calculateCardMove`, `calculateListMove`)
+
+```bash
+# Ejecutar todos los tests
+npm run test
+
+# Ejecutar en modo watch
+npm run test:watch
+
+# Ver cobertura
+npm run test:coverage
+```
+
+Los tests de thunks mockean Supabase y verifican que el estado de Redux se actualice correctamente después de cada acción.

@@ -1,8 +1,8 @@
 "use client";
 import EmptyProjects from "@/components/Dashboard/EmptyProjects";
 import Projects from "@/components/Dashboard/Projects";
+import { SpinnerComponent } from "@/components/UI/Spinner";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
-import { Spinner } from "@heroui/react";
 
 export default function ProjectsPage() {
   const { activeBoards, status } = useDashboardStats();
@@ -10,9 +10,7 @@ export default function ProjectsPage() {
 
   if (status === "loading" && activeBoardsLength === 0) {
     return (
-      <div className="flex items-center justify-center">
-        <Spinner color="default" size="lg" />
-      </div>
+      <SpinnerComponent />
     );
   }
 

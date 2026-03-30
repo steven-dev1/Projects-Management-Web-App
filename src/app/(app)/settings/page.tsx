@@ -1,4 +1,6 @@
-// app/settings/page.tsx
+export const metadata = {
+  title: "Ajustes",
+};
 import AvatarForm from "@/components/Settings/AvatarForm"
 import TabsComponent from "@/components/Settings/Tabs"
 import MaxWidth from "@/components/UI/MaxWidth"
