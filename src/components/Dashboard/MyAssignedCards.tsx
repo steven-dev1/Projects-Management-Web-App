@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { Chip } from "@heroui/react";
 import { Board, Card } from "@/store/features/boards/BoardsTypes";
+import { ClipboardX } from "lucide-react";
 
 interface Props {
   cards: Card[];
@@ -12,7 +13,10 @@ export default function MyAssignedCards({ cards, boards }: Props) {
   const router = useRouter();
 
   if (cards.length === 0) {
-    return <p className="text-sm text-zinc-400">No tienes tarjetas asignadas.</p>;
+    return <p className="text-sm text-zinc-400 flex flex-col border p-2 rounded-lg border-zinc-900 items-center gap-2">
+      <ClipboardX />
+      No tienes tarjetas asignadas.
+      </p>;
   }
 
   const findBoardByCard = (card: Card) =>

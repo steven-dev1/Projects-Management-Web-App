@@ -34,6 +34,7 @@ const mockBoard = {
 };
 
 const initialBoardsState: BoardsState = {
+  currentBoardId: null,
   currentBoard: null,
   boards: [
     {

@@ -33,6 +33,7 @@ const mockCard = {
 };
 
 const initialBoardsState: BoardsState = {
+  currentBoardId: "board-1",
   currentBoard: {
     id: "board-1",
     name: "Test Board",
@@ -46,7 +47,6 @@ const initialBoardsState: BoardsState = {
   } as unknown as BoardResponse,
   boards: [],
   status: "succeeded",
-  currentBoardId: "board-1",
   error: null,
   searchQuery: "",
 };

@@ -14,6 +14,7 @@ vi.mock("@/lib/supabaseClient", () => ({
 }));
 
 const initialBoardsState: BoardsState = {
+  currentBoardId: null,
   currentBoard: null,
   boards: [],
   status: "idle",
@@ -72,6 +73,7 @@ describe("inviteMember", () => {
     await store.dispatch(inviteMember({
       boardId: "board-1",
       email: "test@email.com",
+      role: "member",
     }));
 
     expect(mockFetch).toHaveBeenCalledWith(
@@ -92,6 +94,7 @@ describe("inviteMember", () => {
     const result = await store.dispatch(inviteMember({
       boardId: "board-1",
       email: "test@email.com",
+      role: "member",
     }));
 
     expect(result.meta.requestStatus).toBe("rejected");
@@ -105,6 +108,7 @@ describe("inviteMember", () => {
     const result = await store.dispatch(inviteMember({
       boardId: "board-1",
       email: "test@email.com",
+      role: "member",
     }));
 
     expect(result.meta.requestStatus).toBe("rejected");

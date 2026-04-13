@@ -9,13 +9,10 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
   const parsed = inviteMemberSchema.safeParse(rawBody);
 
   if (!parsed.success) {
-  return NextResponse.json(
-    { error: parsed.error.issues[0]?.message ?? "Datos inválidos" },
-    { status: 422 }
-  );
-}
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 422 });
+  }
 
-const { email, role } = parsed.data;
+  const { email, role } = parsed.data;
 
   const {
     data: { user },
