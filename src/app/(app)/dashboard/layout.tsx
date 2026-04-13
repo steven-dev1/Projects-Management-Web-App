@@ -6,10 +6,10 @@ import { useEffect } from "react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
-  const { status } = useAppSelector((state) => state.boards);
+  const { boards, status } = useAppSelector((state) => state.boards);
 
   useEffect(() => {
-    if (status === "idle") {
+    if (status === "idle" || (status === "succeeded" && boards.length === 0)) {
       dispatch(fetchBoards());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { format, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale/es";
 import { Board, Card } from "@/store/features/boards/BoardsTypes";
+import { CalendarOff } from "lucide-react";
 
 interface Props {
   cards: Card[];
@@ -13,7 +14,10 @@ export default function UpcomingDueDates({ cards, boards }: Props) {
   const router = useRouter();
 
   if (cards.length === 0) {
-    return <p className="text-sm text-zinc-400">No hay fechas límite próximas.</p>;
+    return <p className="text-sm text-zinc-400 flex flex-col border p-2 rounded-lg border-zinc-900 items-center gap-2">
+      <CalendarOff />
+      No hay fechas límite próximas.
+      </p>;
   }
 
   const findBoardByCard = (card: Card) =>

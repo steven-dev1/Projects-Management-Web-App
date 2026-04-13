@@ -19,6 +19,7 @@ vi.mock("@/lib/supabaseClient", () => ({
 }));
 
 const initialBoardsState: BoardsState = {
+  currentBoardId: null,
   currentBoard: null,
   boards: [
     { id: "board-1", name: "Board 1", status: "active" } as unknown as BoardResponse,

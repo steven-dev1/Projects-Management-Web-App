@@ -6,7 +6,6 @@ import { Board } from "@/store/features/boards/BoardsTypes";
 export default function LastActivity({ boards }: { boards: Board[] }) {
   const recentBoards = [...boards]
     .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-    .filter((board) => new Date(board.updated_at).getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 7)
     .slice(0, 3);
   return (
     <section>
